@@ -9,7 +9,8 @@ const S = {
   db: null, user: null, uid: null, canEdit: false, dbState: "connecting",
   real: [], sims: [], simEntries: [], winners: {},
   entered: false, savedSig: null, busy: false,
-  guest: null, ownerSnap: null, resRound: null, tickerText: ""
+  guest: null, ownerSnap: null, resRound: null, tickerText: "",
+  round: 1, passOpen: false, introOff: false, introOpen: false, seedOpen: false
 };
 const MAX_SIMS = 5000;
 const $ = id => document.getElementById(id);
@@ -92,6 +93,31 @@ function renderLive() {
   renderTicker();
 }
 
+// ---------- explainer ----------
+// Dismissal is remembered in localStorage under bs-intro. Open or collapsed is per visit: open on wide screens, collapsed on phones.
+const WIDE = typeof matchMedia === "function" ? matchMedia("(min-width: 721px)") : { matches: true };
+const introSaved = load("bs-intro");
+S.introOff = !!(introSaved && introSaved.dismissed);
+S.introOpen = WIDE.matches;
+function renderIntro() {
+  $("intro").hidden = S.introOff; $("introOpen").hidden = !S.introOff;
+  $("introToggle").setAttribute("aria-expanded", String(S.introOpen));
+  $("introBody").hidden = !S.introOpen;
+}
+$("introToggle").addEventListener("click", () => { S.introOpen = !S.introOpen; renderIntro(); });
+$("introClose").addEventListener("click", () => { S.introOff = true; store("bs-intro", { dismissed: true }); renderIntro(); $("introOpen").focus(); });
+$("introOpen").addEventListener("click", () => {
+  S.introOff = false; S.introOpen = true; store("bs-intro", { dismissed: false }); renderIntro();
+  $("intro").scrollIntoView({ block: "center" }); $("introToggle").focus({ preventScroll: true });
+});
+$("introHelper").addEventListener("click", () => {
+  if (!locked()) { S.helpOpen = true; renderHelper(); }
+  $("helperBar").scrollIntoView({ block: "start" }); $("helperBar").focus({ preventScroll: true });
+});
+function renderSeedTip() { $("seedBtn").setAttribute("aria-expanded", String(S.seedOpen)); $("seedTip").hidden = !S.seedOpen; }
+$("seedBtn").addEventListener("click", () => { S.seedOpen = !S.seedOpen; renderSeedTip(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && S.seedOpen) { S.seedOpen = false; renderSeedTip(); $("seedBtn").focus(); } });
+
 // ---------- helper (auto-fill) ----------
 function helperSummary() {
   if (S.root === "cn" && S.cnTeam) { const t = TEAMS[S.cnTeam]; return { title: `Rooting for Chinese players: ${t.name} wins it all`, sub: `${t.name} (${CN_PLAYERS[S.cnTeam]}) wins every game, and the other teams with Chinese players beat everyone else. Tap any game to change it.` }; }
@@ -104,7 +130,7 @@ function fillWith(root, cnTeam) {
   S.root = root; S.cnTeam = root === "cn" ? cnTeam : null;
   S.mode = root === "cn" ? "cn" : root ? "region" : "seed";
   S.picks = randomBracket(helperFor(S.root, S.cnTeam));
-  S.helpOpen = false;
+  S.helpOpen = false; S.round = 1;
   if (root === "cn" && cnTeam) S.br = TEAMS[cnTeam].br;
   saveDraft(); renderAllLocal();
 }
@@ -142,7 +168,7 @@ $("helperBar").addEventListener("click", () => { if (locked()) return; S.helpOpe
 document.querySelectorAll("#helperSeg button").forEach(b => b.addEventListener("click", () => { S.helpTab = b.dataset.h; renderHelper(); }));
 $("btnSeed").addEventListener("click", () => fillWith(null, null));
 $("btnShuffle").addEventListener("click", () => { if (locked()) return; S.picks = randomBracket(helperFor(S.root, S.cnTeam)); saveDraft(); renderAllLocal(); });
-$("btnClear").addEventListener("click", () => { if (locked()) return; S.picks = {}; S.root = null; S.cnTeam = null; S.mode = "manual"; saveDraft(); renderAllLocal(); });
+$("btnClear").addEventListener("click", () => { if (locked()) return; S.picks = {}; S.root = null; S.cnTeam = null; S.mode = "manual"; S.round = 1; saveDraft(); renderAllLocal(); });
 
 // ---------- bracket ----------
 function teamBtn(g, tid, elim) {
@@ -173,12 +199,58 @@ function renderBTabs() {
   RX.concat("F").forEach(X => {
     const b = el("button", "pill"); b.type = "button"; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", String(S.br === X));
     b.append(el("span", null, X === "F" ? "Final Four" : BR[X].name), el("span", "c", `${countPicks(S.picks, X)}/${X === "F" ? 3 : 15}`));
-    b.addEventListener("click", () => { S.br = X; renderBTabs(); renderBracket(); });
+    b.addEventListener("click", () => { S.br = X; S.round = openRound(X); renderBTabs(); renderBracket(); });
     box.append(b);
   });
 }
+function champBanner() {
+  const champ = S.picks["F6-0"] ? TEAMS[S.picks["F6-0"]] : null;
+  const ch = el("div", "champ"); const left = el("div");
+  left.append(el("div", "k", "Your champion"), el("div", "v", champ ? champ.name : "Not picked yet"));
+  ch.append(left);
+  if (champ) ch.append(el("div", "k", `${ROOTS[champ.home].name} school · ${champ.seed} seed${CN_PLAYERS[champ.id] ? ` · ${CN_PLAYERS[champ.id]}` : ""}`));
+  return ch;
+}
+// Phone view (600px wide or less): one round at a time as full-width cards. Wider screens keep the four-column bracket.
+const PHONE = typeof matchMedia === "function" ? matchMedia("(max-width: 600px)") : { matches: false };
+function roundGames(X, r) { return GAMES.filter(g => g.br === X && g.round === r); }
+function roundDone(X, r) { return roundGames(X, r).every(g => S.picks[g.id]); }
+function openRound(X) { if (X === "F") return 1; for (let r = 1; r <= 4; r++) if (!roundDone(X, r)) return r; return 1; }
+function goTo(X, r) { S.br = X; S.round = r; renderBTabs(); renderBracket(); $(X === "F" ? "btabs" : "rndTabs").scrollIntoView({ block: "start" }); }
+function renderPhoneBracket(view, elim) {
+  const tabs = $("rndTabs"); const X = S.br;
+  if (X === "F") {
+    const stack = el("div", "rlist");
+    const mk = (gid, label) => { const w = el("div"); w.append(el("div", "lab", label), gameCard(G[gid], elim)); return w; };
+    stack.append(mk("F5-0", "Semifinal · East vs South"), mk("F5-1", "Semifinal · West vs Midwest"), mk("F6-0", "Championship"));
+    view.append(stack, champBanner());
+    return;
+  }
+  tabs.hidden = false;
+  for (let r = 1; r <= 4; r++) {
+    const games = roundGames(X, r);
+    const b = el("button", "rnd"); b.type = "button"; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", String(S.round === r));
+    b.append(el("span", null, ROUND_NAME[r]), el("span", "c", `${games.filter(g => S.picks[g.id]).length}/${games.length}`));
+    b.addEventListener("click", () => { S.round = r; renderBracket(); });
+    tabs.append(b);
+  }
+  const games = roundGames(X, S.round); const list = el("div", "rlist");
+  if (games.some(g => !cands(g, S.picks).every(Boolean))) list.append(el("p", "sub", `Teams show up here as you pick the ${ROUND_NAME[S.round - 1]} winners.`));
+  games.forEach(g => list.append(gameCard(g, elim)));
+  if (roundDone(X, S.round)) {
+    const nx = RX[RX.indexOf(X) + 1] || "F";
+    const b = el("button", "btn next", S.round < 4 ? `Next round: ${ROUND_NAME[S.round + 1]}` : nx === "F" ? "Next: Final Four" : `Next: ${BR[nx].name} bracket`); b.type = "button";
+    b.addEventListener("click", () => { if (S.round < 4) goTo(X, S.round + 1); else goTo(nx, openRound(nx)); });
+    list.append(b);
+  }
+  view.append(list);
+}
+if (PHONE.addEventListener) PHONE.addEventListener("change", () => { renderBTabs(); renderBracket(); });
 function renderBracket() {
   const view = $("bracketView"); view.textContent = ""; const elim = eliminated(S.winners);
+  $("rndTabs").textContent = ""; $("rndTabs").hidden = true;
+  view.classList.toggle("phone", PHONE.matches);
+  if (PHONE.matches) { renderPhoneBracket(view, elim); return; }
   if (S.br !== "F") {
     const grid = el("div", "bracket");
     for (let r = 1; r <= 4; r++) {
@@ -192,13 +264,7 @@ function renderBracket() {
     const grid = el("div", "ff");
     const mk = (gid, label) => { const w = el("div"); w.append(el("div", "lab", label), gameCard(G[gid], elim)); return w; };
     grid.append(mk("F5-0", "Semifinal · East vs South"), mk("F6-0", "Championship"), mk("F5-1", "Semifinal · West vs Midwest"));
-    view.append(grid);
-    const champ = S.picks["F6-0"] ? TEAMS[S.picks["F6-0"]] : null;
-    const ch = el("div", "champ"); const left = el("div");
-    left.append(el("div", "k", "Your champion"), el("div", "v", champ ? champ.name : "Not picked yet"));
-    ch.append(left);
-    if (champ) ch.append(el("div", "k", `${ROOTS[champ.home].name} school · ${champ.seed} seed${CN_PLAYERS[champ.id] ? ` · ${CN_PLAYERS[champ.id]}` : ""}`));
-    view.append(ch);
+    view.append(grid, champBanner());
   }
 }
 function renderLegend() {
@@ -214,6 +280,8 @@ function renderPass() {
   box.hidden = !(S.canEdit && S.db);
   if (box.hidden) return;
   box.classList.toggle("active", !!S.guest);
+  const open = S.passOpen || !!S.guest;
+  $("passBar").setAttribute("aria-expanded", String(open)); $("passBody").hidden = !open;
   const n = classEntries().length;
   if (locked()) {
     $("passForm").hidden = true; $("passOn").hidden = true;
@@ -230,16 +298,17 @@ function startGuest() {
   if (!name) { $("passMsg").textContent = "Type their name first."; $("passMsg").className = "msg bad"; $("passName").focus(); return; }
   if (!S.guest) S.ownerSnap = { picks: S.picks, root: S.root, cnTeam: S.cnTeam, mode: S.mode };
   S.guest = { id: "g-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7), name };
-  S.picks = {}; S.root = null; S.cnTeam = null; S.mode = "manual"; S.br = "E"; S.helpOpen = false;
+  S.picks = {}; S.root = null; S.cnTeam = null; S.mode = "manual"; S.br = "E"; S.round = 1; S.helpOpen = false;
   $("passName").value = ""; $("passMsg").textContent = ""; $("sMsg").textContent = "";
   renderAllLocal();
 }
 function exitGuest(msg) {
   if (S.ownerSnap) { S.picks = S.ownerSnap.picks; S.root = S.ownerSnap.root; S.cnTeam = S.ownerSnap.cnTeam; S.mode = S.ownerSnap.mode; }
-  S.guest = null; S.ownerSnap = null; S.br = "E"; S.helpOpen = false;
+  S.guest = null; S.ownerSnap = null; S.br = "E"; S.round = 1; S.helpOpen = false;
   $("passMsg").textContent = msg || ""; $("passMsg").className = "msg good";
   renderAllLocal();
 }
+$("passBar").addEventListener("click", () => { if (S.guest) return; S.passOpen = !S.passOpen; renderPass(); });
 $("passStart").addEventListener("click", startGuest);
 $("passName").addEventListener("keydown", e => { if (e.key === "Enter") startGuest(); });
 $("passExit").addEventListener("click", () => exitGuest(""));
@@ -524,6 +593,7 @@ function localBackend() {
 }
 
 // ---------- boot ----------
+renderIntro();
 renderLegend();
 renderAll();
 (async () => {

@@ -72,6 +72,23 @@ knows nothing about March Madness or brackets). Put new source material from the
 ## UI behavior worth preserving
 
 - My bracket opens straight to the bracket. Auto-fill lives in a collapsed "Not sure who to pick?" bar.
+- "New to March Madness?" explainer card sits at the top of My bracket: five numbered steps for a fan who has never
+  seen a bracket. It opens expanded on screens wider than 720px and as a one-row strip with a "How it works" toggle
+  on phones, so the bracket card stays on the first screen at 390 x 844. The × button dismisses it, the choice is
+  remembered in `localStorage` under `bs-intro`, and a "How it works" link in the "Your bracket" header reopens it.
+  Step 5 is a button that opens the auto-fill bar. The copy names the prize ("Win 50,000 RMB") without saying which
+  prize rule applies, because the team has not chosen one.
+- Plain-language definitions: a "What is a seed?" button above the first game toggles a one-sentence definition
+  (tap, click or keyboard; Esc closes). The "Root for a region" panel starts with one line saying home regions
+  (东 南 西 北) are different from the NCAA's four bracket tabs.
+- Phone bracket (600px wide or less, chosen in `js/app.js` with `matchMedia`): the four-column bracket is replaced
+  by round buttons (Round of 64, Round of 32, Sweet 16, Elite 8, each with picks made) and that round's games as
+  full-width cards with 46px tap targets. A "Next round" button appears when the round is fully picked, and after
+  the Elite 8 it leads to the next bracket tab or the Final Four. The Final Four tab stacks both semifinals, the
+  championship and the champion banner. Wider screens keep the four-column bracket unchanged. This is rendering
+  only: picks still go through `applyPick` in `js/logic.js`.
+- Pass-around entries is collapsed to one line with an expand toggle on every screen size, because every visitor to
+  the public site sees it. It stays open while a pass-around entry is in progress.
 - Crowd tab: Round of 64 percentages use all brackets. Later rounds use only brackets still live in that game
   (they picked one of the two teams playing).
 - Standings: demo controls first (simulate next round, reset, add 1,000 simulated fans up to 5,000, remove them,
@@ -94,7 +111,7 @@ To share entries between visitors, swap `localBackend()` for a hosted database w
 `doc().get/set/delete/onSnapshot` and `collection().limit().onSnapshot` shape. Check that the service loads in
 mainland China without a VPN before choosing it.
 
-The draft bracket is kept separately in `localStorage` under `bs-draft`.
+The draft bracket is kept separately in `localStorage` under `bs-draft`, and the explainer dismissal under `bs-intro`.
 
 ## Open items
 
