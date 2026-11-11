@@ -42,19 +42,37 @@
 
     <!-- ===== My bracket ===== -->
     <section class="view" id="v-bracket">
-      <div class="card pass" id="pass" hidden>
-        <div class="pass-row">
-          <div class="pass-copy"><b>Pass-around entries</b><p class="sub" id="passSub"></p></div>
-          <div class="pass-form" id="passForm">
-            <input id="passName" type="text" maxlength="40" placeholder="Their name" autocomplete="off" aria-label="Name of the person entering">
-            <button class="btn" id="passStart">Start their entry</button>
-          </div>
-          <div class="pass-on" id="passOn" hidden>
-            <span>Now entering: <b id="passWho"></b></span>
-            <button class="btn ghost" id="passExit">Back to my bracket</button>
-          </div>
+      <div class="card intro" id="intro" hidden>
+        <div class="intro-head">
+          <h2 class="card-h">New to March Madness?</h2>
+          <button class="link intro-tog" id="introToggle" type="button" aria-expanded="false" aria-controls="introBody">How it works<span class="hb-chev" aria-hidden="true"></span></button>
+          <button class="intro-x" id="introClose" type="button" aria-label="Dismiss this guide">×</button>
         </div>
-        <span class="msg" id="passMsg" aria-live="polite"></span>
+        <ol class="intro-steps" id="introBody" hidden>
+          <li>64 college teams. One loss and you’re out. Six rounds in about three weeks, ending with the Final Four and a championship game.</li>
+          <li>Your <b>bracket</b>: pick all 63 winners before round one. Picks lock March 18.</li>
+          <li>Each bracket (East, West, South, Midwest) <b>seeds</b> its 16 teams from 1 (strongest) to 16. When a weaker seed (bigger number) wins, it’s an <b>upset</b>.</li>
+          <li>Correct picks score points, more in later rounds. Entry is free. Games stream free on Bilibili. <b>Win 50,000 RMB.</b></li>
+          <li>Don’t know the teams? <button class="link" id="introHelper" type="button">“Not sure who to pick?”</button> fills it by region or Chinese players.</li>
+        </ol>
+      </div>
+
+      <div class="card pass" id="pass" hidden>
+        <button class="pass-bar" id="passBar" type="button" aria-expanded="false" aria-controls="passBody"><b>Pass-around entries</b><span class="hb-chev" aria-hidden="true"></span></button>
+        <div class="pass-body" id="passBody" hidden>
+          <div class="pass-row">
+            <div class="pass-copy"><p class="sub" id="passSub"></p></div>
+            <div class="pass-form" id="passForm">
+              <input id="passName" type="text" maxlength="40" placeholder="Their name" autocomplete="off" aria-label="Name of the person entering">
+              <button class="btn" id="passStart">Start their entry</button>
+            </div>
+            <div class="pass-on" id="passOn" hidden>
+              <span>Now entering: <b id="passWho"></b></span>
+              <button class="btn ghost" id="passExit">Back to my bracket</button>
+            </div>
+          </div>
+          <span class="msg" id="passMsg" aria-live="polite"></span>
+        </div>
       </div>
 
       <div class="card">
@@ -62,6 +80,7 @@
           <h2 class="sec-h">Your bracket</h2>
           <div class="bhead-r">
             <span class="prog-mini" id="progMini">0 / 63</span>
+            <button class="link" id="introOpen" type="button" hidden>How it works</button>
             <button class="link" id="btnShuffle" hidden>Shuffle again</button>
             <button class="link" id="btnClear">Clear all</button>
           </div>
@@ -79,6 +98,7 @@
               <button role="tab" data-h="cn"><span class="cnb">中</span>Root for Chinese players</button>
             </div>
             <div id="hRegion" class="helper-body" style="padding:0">
+              <p class="rule">Home regions (东 南 西 北) show where a school is located. The four bracket tabs (East, West, South, Midwest) only set who plays whom.</p>
               <p class="rule">Pick a region. Its teams beat every team from another region. When two teams from your region meet, or two teams from other regions, it’s a coin flip weighted by seed. Each region has Chinese ambassadors who show you around.</p>
               <div class="opts" id="regionOpts"></div>
             </div>
@@ -91,6 +111,10 @@
         </div>
 
         <div class="pills" role="tablist" id="btabs" aria-label="Bracket regions"></div>
+        <div class="seedinfo">
+          <button class="info-btn" id="seedBtn" type="button" aria-expanded="false" aria-controls="seedTip"><span class="info-ic" aria-hidden="true">i</span>What is a seed?</button>
+          <p class="tip" id="seedTip" hidden>Seed: a team’s rank within its bracket, from 1 (strongest) to 16. The number beside each team is its seed.</p>
+        </div>
         <div class="bracket-scroll" id="bracketView"></div>
         <div class="legend" id="legend"></div>
       </div>

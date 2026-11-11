@@ -9,7 +9,8 @@ const S = {
   db: null, user: null, uid: null, canEdit: false, dbState: "connecting",
   real: [], sims: [], simEntries: [], winners: {},
   entered: false, savedSig: null, busy: false,
-  guest: null, ownerSnap: null, resRound: null, tickerText: ""
+  guest: null, ownerSnap: null, resRound: null, tickerText: "",
+  passOpen: false, introOff: false, introOpen: false, seedOpen: false
 };
 const MAX_SIMS = 5000;
 const $ = id => document.getElementById(id);
@@ -91,6 +92,31 @@ function renderLive() {
   else { $("liveN").textContent = fmt(N); $("liveL").textContent = `bracket${N === 1 ? "" : "s"} entered${S.simEntries.length ? ` · ${fmt(S.simEntries.length)} simulated` : ""}`; }
   renderTicker();
 }
+
+// ---------- explainer ----------
+// Dismissal is remembered in localStorage under bs-intro. Open or collapsed is per visit: open on wide screens, collapsed on phones.
+const WIDE = typeof matchMedia === "function" ? matchMedia("(min-width: 721px)") : { matches: true };
+const introSaved = load("bs-intro");
+S.introOff = !!(introSaved && introSaved.dismissed);
+S.introOpen = WIDE.matches;
+function renderIntro() {
+  $("intro").hidden = S.introOff; $("introOpen").hidden = !S.introOff;
+  $("introToggle").setAttribute("aria-expanded", String(S.introOpen));
+  $("introBody").hidden = !S.introOpen;
+}
+$("introToggle").addEventListener("click", () => { S.introOpen = !S.introOpen; renderIntro(); });
+$("introClose").addEventListener("click", () => { S.introOff = true; store("bs-intro", { dismissed: true }); renderIntro(); $("introOpen").focus(); });
+$("introOpen").addEventListener("click", () => {
+  S.introOff = false; S.introOpen = true; store("bs-intro", { dismissed: false }); renderIntro();
+  $("intro").scrollIntoView({ block: "center" }); $("introToggle").focus({ preventScroll: true });
+});
+$("introHelper").addEventListener("click", () => {
+  if (!locked()) { S.helpOpen = true; renderHelper(); }
+  $("helperBar").scrollIntoView({ block: "start" }); $("helperBar").focus({ preventScroll: true });
+});
+function renderSeedTip() { $("seedBtn").setAttribute("aria-expanded", String(S.seedOpen)); $("seedTip").hidden = !S.seedOpen; }
+$("seedBtn").addEventListener("click", () => { S.seedOpen = !S.seedOpen; renderSeedTip(); });
+document.addEventListener("keydown", e => { if (e.key === "Escape" && S.seedOpen) { S.seedOpen = false; renderSeedTip(); $("seedBtn").focus(); } });
 
 // ---------- helper (auto-fill) ----------
 function helperSummary() {
@@ -214,6 +240,8 @@ function renderPass() {
   box.hidden = !(S.canEdit && S.db);
   if (box.hidden) return;
   box.classList.toggle("active", !!S.guest);
+  const open = S.passOpen || !!S.guest;
+  $("passBar").setAttribute("aria-expanded", String(open)); $("passBody").hidden = !open;
   const n = classEntries().length;
   if (locked()) {
     $("passForm").hidden = true; $("passOn").hidden = true;
@@ -240,6 +268,7 @@ function exitGuest(msg) {
   $("passMsg").textContent = msg || ""; $("passMsg").className = "msg good";
   renderAllLocal();
 }
+$("passBar").addEventListener("click", () => { if (S.guest) return; S.passOpen = !S.passOpen; renderPass(); });
 $("passStart").addEventListener("click", startGuest);
 $("passName").addEventListener("keydown", e => { if (e.key === "Enter") startGuest(); });
 $("passExit").addEventListener("click", () => exitGuest(""));
@@ -524,6 +553,7 @@ function localBackend() {
 }
 
 // ---------- boot ----------
+renderIntro();
 renderLegend();
 renderAll();
 (async () => {
