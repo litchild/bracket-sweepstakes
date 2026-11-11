@@ -5,6 +5,10 @@ The pitch is a free March Madness bracket challenge for Chinese basketball fans,
 prize capped at 50,000 RMB (China's lottery-style prize cap under the Anti-Unfair Competition Law). This repo is the
 working prototype shown to classmates and the professor. It is a demo, not a live contest.
 
+**Read `docs/pitch-context.md` before changing copy, content or features.** It summarizes the pitch deck, the
+teammates' regional pitch, the prize options, precedents, promotion plan and the fan persona (a Chinese NBA fan who
+knows nothing about March Madness or brackets). Put new source material from the team in `docs/` too.
+
 ## Run, test, deploy
 
 - Run: open `index.html` in a browser, or `npm start` to serve the folder locally.
@@ -21,6 +25,10 @@ working prototype shown to classmates and the professor. It is a demo, not a liv
 - `js/app.js`: UI, rendering and storage. Depends on globals from `logic.js`.
 - `fonts/`: Barlow and Barlow Condensed woff2 files (SIL OFL, see `fonts/OFL.txt`).
 - `tests/logic.test.js`: rule and data checks.
+- `docs/`: project background, not part of the website.
+- `404.html`: Netlify's not-found page.
+- `netlify.toml`: publish settings, plus rules that keep `docs/`, `tests/`, `CLAUDE.md`, `README.md` and
+  `package.json` off the public site. Add any new non-site file or folder to those rules.
 
 ## Hard constraints
 
