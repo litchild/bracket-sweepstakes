@@ -1,0 +1,10 @@
+{
+  "name": "bracket-sweepstakes",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Student concept prototype: a free March Madness bracket sweepstakes for Chinese basketball fans.",
+  "scripts": {
+    "test": "node --test",
+    "start": "npx --yes serve ."
+  }
+}

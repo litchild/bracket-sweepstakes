@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Bracket Sweepstakes Prototype</title>
+<meta name="description" content="Student concept prototype: a free March Madness bracket sweepstakes for Chinese basketball fans.">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header class="hero">
+  <div class="wrap hero-in">
+    <div>
+      <div class="eyebrow"><span class="live" id="liveBadge"><i></i><span id="liveWord">Open</span></span><span id="eyeTxt">March Madness 2026</span></div>
+      <h1 class="title">Bracket Sweepstakes</h1>
+      <div class="prize-row">
+        <span class="prize"><span>Win 50,000 RMB</span></span>
+        <span class="chip">Free to enter</span>
+        <span class="chip">Picks lock March 18</span>
+      </div>
+    </div>
+    <div class="count" aria-live="polite"><div class="n" id="liveN">–</div><div class="l" id="liveL">Connecting…</div></div>
+  </div>
+  <div class="ticker" aria-label="Bracket wire">
+    <span class="t-lab">Bracket wire</span>
+    <div class="t-view"><div class="t-track" id="tTrack"></div></div>
+  </div>
+</header>
+
+<nav class="tabbar" aria-label="Sections">
+  <div class="wrap" role="tablist">
+    <button class="tab" role="tab" aria-selected="true" data-tab="bracket">My bracket</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="crowd">Crowd</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="standings">Standings</button>
+    <span class="concept">Student concept</span>
+  </div>
+</nav>
+
+<main>
+  <div class="wrap">
+    <div class="card" id="dbNotice" style="margin-bottom:14px;padding:10px 14px"><p class="sub">Demo copy: brackets entered here are saved in this browser only. Open Standings to add simulated fans and play rounds.</p></div>
+
+    <!-- ===== My bracket ===== -->
+    <section class="view" id="v-bracket">
+      <div class="card pass" id="pass" hidden>
+        <div class="pass-row">
+          <div class="pass-copy"><b>Pass-around entries</b><p class="sub" id="passSub"></p></div>
+          <div class="pass-form" id="passForm">
+            <input id="passName" type="text" maxlength="40" placeholder="Their name" autocomplete="off" aria-label="Name of the person entering">
+            <button class="btn" id="passStart">Start their entry</button>
+          </div>
+          <div class="pass-on" id="passOn" hidden>
+            <span>Now entering: <b id="passWho"></b></span>
+            <button class="btn ghost" id="passExit">Back to my bracket</button>
+          </div>
+        </div>
+        <span class="msg" id="passMsg" aria-live="polite"></span>
+      </div>
+
+      <div class="card">
+        <div class="bhead">
+          <h2 class="sec-h">Your bracket</h2>
+          <div class="bhead-r">
+            <span class="prog-mini" id="progMini">0 / 63</span>
+            <button class="link" id="btnShuffle" hidden>Shuffle again</button>
+            <button class="link" id="btnClear">Clear all</button>
+          </div>
+        </div>
+
+        <div class="helper">
+          <button class="helper-bar" id="helperBar" aria-expanded="false" aria-controls="helperBody">
+            <span class="hb-ic" aria-hidden="true">?</span>
+            <span class="hb-tx"><b id="hbTitle">Not sure who to pick?</b><span id="hbSub"></span></span>
+            <span class="hb-chev" aria-hidden="true"></span>
+          </button>
+          <div class="helper-body" id="helperBody" hidden>
+            <div class="seg" role="tablist" id="helperSeg" aria-label="Ways to fill your bracket">
+              <button role="tab" data-h="region">Root for a region</button>
+              <button role="tab" data-h="cn"><span class="cnb">中</span>Root for Chinese players</button>
+            </div>
+            <div id="hRegion" class="helper-body" style="padding:0">
+              <p class="rule">Pick a region. Its teams beat every team from another region. When two teams from your region meet, or two teams from other regions, it’s a coin flip weighted by seed. Each region has Chinese ambassadors who show you around.</p>
+              <div class="opts" id="regionOpts"></div>
+            </div>
+            <div id="hCn" class="helper-body" style="padding:0" hidden>
+              <p class="rule">Pick the team you want to win it all. That team wins every game. The other teams with Chinese players beat everyone else, and when two of them meet, it’s a coin flip weighted by seed.</p>
+              <div class="opts" id="cnOpts"></div>
+            </div>
+            <p class="sub">Or <button class="link" id="btnSeed">fill it randomly by seed</button>.</p>
+          </div>
+        </div>
+
+        <div class="pills" role="tablist" id="btabs" aria-label="Bracket regions"></div>
+        <div class="bracket-scroll" id="bracketView"></div>
+        <div class="legend" id="legend"></div>
+      </div>
+    </section>
+
+    <!-- ===== Crowd ===== -->
+    <section class="view" id="v-crowd" hidden>
+      <div class="card" style="gap:4px"><h2 class="sec-h">What the crowd picked</h2><p class="sub" id="crowdSub"></p></div>
+      <div class="two">
+        <div class="card"><h3 class="card-h">Champion picks</h3><div class="bars" id="champBars"></div></div>
+        <div class="card"><h3 class="card-h">Who fans root for</h3><div class="bars" id="rootBars"></div></div>
+      </div>
+      <div class="card">
+        <h3 class="card-h" id="muTitle">First-round picks</h3>
+        <p class="sub" id="muSub"></p>
+        <div class="pills" role="tablist" id="ctabs" aria-label="Bracket regions"></div>
+        <div id="muList"></div>
+      </div>
+    </section>
+
+    <!-- ===== Standings ===== -->
+    <section class="view" id="v-standings" hidden>
+      <div class="card" style="gap:4px"><h2 class="sec-h">Standings</h2><p class="sub" id="stSub"></p></div>
+      <div class="card demo" id="demo" hidden>
+        <h3 class="card-h">Demo controls</h3>
+        <p class="sub" id="demoSub">Demo controls. Results are simulated from seeds, not real games.</p>
+        <div class="row">
+          <button class="btn red" id="dSim">Simulate next round</button>
+          <button class="btn ghost" id="dReset">Reset results</button>
+          <button class="btn" id="dFans">Add 1,000 simulated fans</button>
+          <button class="btn ghost" id="dNoFans">Remove simulated fans</button>
+          <button class="btn ghost" id="dNoClass">Remove pass-around entries</button>
+        </div>
+        <span class="msg" id="dMsg" aria-live="polite"></span>
+      </div>
+      <div class="card" id="results">
+        <div class="res-head"><h3 class="card-h">Results</h3><div class="pills" role="tablist" id="rtabs" aria-label="Rounds played"></div></div>
+        <p class="sub" id="resSub"></p>
+        <div id="resBody"></div>
+      </div>
+      <div class="kpis">
+        <div class="card kpi"><div class="n" id="kEntries">0</div><div class="l">Brackets entered</div></div>
+        <div class="card kpi"><div class="n" id="kPerfect">0</div><div class="l" id="kPerfectL">Perfect brackets left</div></div>
+        <div class="card kpi"><div class="n" id="kGames">0 / 63</div><div class="l" id="kGamesL">Games played</div></div>
+      </div>
+      <div class="card">
+        <h3 class="card-h"><span class="cnb" style="font-size:13px;line-height:18px;vertical-align:3px">中</span> Chinese players tracker</h3>
+        <p class="sub">Teams with Chinese players on 2026-27 rosters, placed in last season’s field.</p>
+        <div class="cn-track" id="cnTrack"></div>
+      </div>
+      <div class="card" style="gap:10px">
+        <h3 class="card-h">Regions still alive</h3>
+        <div class="alive" id="aliveCards"></div>
+      </div>
+      <div class="card">
+        <h3 class="card-h">Leaderboard</h3>
+        <p class="sub" id="lbSub"></p>
+        <div class="tbl"><table><thead><tr><th class="n">#</th><th>Fan</th><th>Rooting for</th><th>Champion pick</th><th class="n">Points</th></tr></thead><tbody id="lb"></tbody></table></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer><div class="wrap">Student concept for NYU Experience Studio | ESPN China. Uses the 2026 tournament field. Chinese players from 2026-27 Division I rosters reported by Sina Sports. Not affiliated with or endorsed by ESPN, Bilibili or the NCAA. Prize rules are a concept, subject to legal review.</div></footer>
+
+<div class="bar">
+  <div class="wrap">
+    <div class="prog"><div class="t"><span id="pT">0 of 63 picked</span><span class="msg" id="sMsg" aria-live="polite"></span></div><div class="meter"><i id="pM"></i></div><div class="s" id="pS"></div></div>
+    <button class="enter" id="btnEnter" disabled>Enter free</button>
+  </div>
+</div>
+
+<script src="js/logic.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
