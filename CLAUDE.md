@@ -27,7 +27,8 @@ knows nothing about March Madness or brackets). Put new source material from the
 - `tests/logic.test.js`: rule and data checks.
 - `docs/`: project background, not part of the website.
 - `404.html`: Netlify's not-found page.
-- `netlify.toml`: publish settings, plus rules that keep `docs/`, `tests/`, `CLAUDE.md`, `README.md` and
+- `AGENTS.md`: short pointer to this file for other coding tools (Codex reads `AGENTS.md`).
+- `netlify.toml`: publish settings, plus rules that keep `docs/`, `tests/`, `CLAUDE.md`, `AGENTS.md`, `README.md` and
   `package.json` off the public site. Add any new non-site file or folder to those rules.
 
 ## Hard constraints
