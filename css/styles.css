@@ -209,6 +209,18 @@ main .wrap { padding-top: 16px; padding-bottom: 28px; }
 .team.tbd { color: var(--faint); cursor: default; }
 .ff { display: grid; grid-template-columns: repeat(3, minmax(200px, 1fr)); gap: 16px; align-items: center; min-width: 660px; }
 .ff .lab, .rg-lab { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--faint); margin-bottom: 6px; }
+/* Phone bracket: round buttons and full-width game cards (js/app.js renders this at 600px wide or less). */
+.rounds { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+.rnd { display: grid; gap: 1px; justify-items: center; align-content: center; min-height: 46px; padding: 5px 2px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); font-size: 12.5px; font-weight: 600; white-space: nowrap; cursor: pointer; }
+.rnd .c { color: var(--muted); font-weight: 500; font-variant-numeric: tabular-nums; }
+.rnd[aria-selected="true"] { background: var(--ink); color: var(--surface); border-color: var(--ink); }
+.rnd[aria-selected="true"] .c { color: inherit; opacity: .75; }
+.bracket-scroll.phone { overflow: visible; padding-bottom: 0; }
+.rlist { display: grid; gap: 10px; }
+.rlist .lab { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; }
+.phone .team { min-height: 46px; padding: 9px 12px; font-size: 16px; }
+.phone .team .seed { font-size: 13px; color: var(--muted); }
+.btn.next { width: 100%; min-height: 46px; margin-top: 4px; background: var(--red); color: var(--red-ink); }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; color: var(--muted); align-items: center; }
 .legend > span { display: inline-flex; align-items: center; gap: 6px; }
 .champ { position: relative; overflow: hidden; margin-top: 14px; background: var(--hero); color: var(--hero-ink); border-radius: 12px; padding: 16px 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }

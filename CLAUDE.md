@@ -80,6 +80,12 @@ knows nothing about March Madness or brackets). Put new source material from the
 - Plain-language definitions: a "What is a seed?" button above the first game toggles a one-sentence definition
   (tap, click or keyboard; Esc closes). The "Root for a region" panel starts with one line saying home regions
   (东 南 西 北) are different from the NCAA's four bracket tabs.
+- Phone bracket (600px wide or less, chosen in `js/app.js` with `matchMedia`): the four-column bracket is replaced
+  by round buttons (Round of 64, Round of 32, Sweet 16, Elite 8, each with picks made) and that round's games as
+  full-width cards with 46px tap targets. A "Next round" button appears when the round is fully picked, and after
+  the Elite 8 it leads to the next bracket tab or the Final Four. The Final Four tab stacks both semifinals, the
+  championship and the champion banner. Wider screens keep the four-column bracket unchanged. This is rendering
+  only: picks still go through `applyPick` in `js/logic.js`.
 - Pass-around entries is collapsed to one line with an expand toggle on every screen size, because every visitor to
   the public site sees it. It stays open while a pass-around entry is in progress.
 - Crowd tab: Round of 64 percentages use all brackets. Later rounds use only brackets still live in that game
