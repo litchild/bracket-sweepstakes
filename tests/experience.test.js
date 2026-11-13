@@ -5,7 +5,7 @@ const path=require('node:path');
 const archive=require('../js/history-data.js');
 const profiles=require('../js/profiles.js');
 const {archiveRoundGames,rankBrackets,PRACTICE_GAMES,practiceGame}=require('../js/experience.js');
-const {MOMENTS}=require('../js/home.js');
+const {MOMENTS,FEATURED_MOMENT,videoOrder,momentPoster}=require('../js/home.js');
 
 test('archives contain complete, consistent 63-game knockout tournaments',()=>{
   for(const [year,t] of Object.entries(archive)){
@@ -29,13 +29,13 @@ test('2026 archive includes the complete field and six Michigan wins',()=>{
   assert.deepEqual(Object.fromEntries(games.find(g=>g.round===6).teams.map(t=>[t.name,t.score])),{UConn:63,Michigan:69});
 });
 test('Home videos have unique clips, local previews and valid onward links',()=>{
-  const videos=Object.entries(MOMENTS);assert.equal(videos.length,7);
+  const videos=Object.entries(MOMENTS);assert.ok(videos.length>=10);
   assert.equal(new Set(videos.map(([,m])=>m.video)).size,videos.length);
-  assert.equal(videos.filter(([,m])=>m.collection==='2026').length,3);
-  assert.equal(videos.filter(([,m])=>m.collection==='classics').length,3);
+  assert.equal(FEATURED_MOMENT,'michigan');assert.equal(MOMENTS[FEATURED_MOMENT].year,2026);
+  assert.equal(new Set(videoOrder()).size,videos.length);assert.equal(videoOrder()[0],FEATURED_MOMENT);
   videos.forEach(([key,m])=>{
     assert.match(m.video,/^[\w-]{11}$/);
-    if(key!=='title')assert.equal(fs.readFileSync(path.join(__dirname,'..','images/moments',key+'.jpg')).subarray(0,3).toString('hex'),'ffd8ff');
+    assert.equal(fs.readFileSync(path.join(__dirname,'..',momentPoster(key))).subarray(0,3).toString('hex'),'ffd8ff');
     if(m.archive)assert.equal(archive[m.archive].games.filter(g=>g.round===m.round&&g.region===m.region&&g.teams.some(t=>t.name===m.team)).length,1);
     else assert.ok(m.source||PRACTICE_GAMES[m.practice]?.source);
   });
@@ -49,8 +49,8 @@ test('regional bracket columns preserve adjacent winners and all 15 games',()=>{
 });
 test('practice games reveal the matching historical matchup, including the title game',()=>{
   const games=PRACTICE_GAMES.map(d=>practiceGame(d,archive));
-  assert.deepEqual(games.map(g=>g.teams.find(t=>t.won).score),[80,63,65]);
-  assert.deepEqual(games.map(g=>g.teams.find(t=>!t.won).score),[76,58,63]);
+  assert.deepEqual(games.map(g=>g.teams.find(t=>t.won).score),[80,63,65,73,73,69]);
+  assert.deepEqual(games.map(g=>g.teams.find(t=>!t.won).score),[76,58,63,72,72,63]);
   assert.equal(games[2].round,6);
 });
 test('rankings award round points, count correct picks, and share tied ranks',()=>{

@@ -25,13 +25,14 @@ knows nothing about March Madness or brackets). Put new source material from the
 - `js/app.js`: UI, rendering and storage. Depends on globals from `logic.js`.
 - `js/guide.js`: first-visit journey, interactive home-region map and team profile dialogs.
 - `js/home.js`: official highlight playback and links into practice, players, archives and standings.
-- `js/experience.js`: three historical practice games, archive views and leaderboard presentation helpers.
+- `js/experience.js`: six historical practice games, archive views and leaderboard presentation helpers.
+- `js/camp.js`: browser-local learning XP, badges, a four-team mini bracket and a rules quiz.
 - `js/history-data.js`: complete 2023–2026 men's brackets, with actual scores and game source links.
 - `js/profiles.js`: archived team identities and two season-record snapshots; see `docs/team-sources.md`.
 - `js/players.js`: four featured Chinese-player profiles, with official roster sources and dated competition stats.
 - `images/teams/`: self-hosted school logos for every team in the prototype field.
 - `images/players/`: locally served official player portraits, resized for mobile loading.
-- `images/moments/`: local official video previews and a Florida Athletics championship photo. Court and trophy
+- `images/moments/`: local official video previews and a Michigan championship photo. Court and trophy
   SVGs are original drawings.
 - `images/history/`: local school marks for historical teams outside the current field.
 - `fonts/`: Barlow and Barlow Condensed woff2 files (SIL OFL, see `fonts/OFL.txt`).
@@ -92,17 +93,24 @@ knows nothing about March Madness or brackets). Put new source material from the
 
 ## UI behavior worth preserving
 
-- First visits open Home, with seven unique official NCAA videos: one featured clip and two collections of three,
-  2026 and Classics. Each video appears once. Local previews load before explicit playback. The Your turn section
-  has its own phone-and-hand illustration, distinct from the court drawing in Learn. How it works has a three-step journey: learn, explore, pick. Three historical
-  practice matchups teach seeds/upsets, single elimination, and the championship. Each reveals the actual result,
-  an explanation and a takeaway without changing real picks. Visitors may skip ahead.
+- First visits open Home. Michigan's 2026 title game is the featured headline, photo and clip. Eleven unique
+  official videos are available: one featured clip and five each in 2026 and Classics. Each appears once in
+  Home's cards. Previous/Next controls browse all eleven in one dialog; preserve the original trigger for focus
+  restoration and replace the iframe on each change. Local previews load before explicit playback.
+- Home and the game intro use the phone-and-hand illustration. How it works has a three-step journey:
+  learn, explore, pick. Fan camp offers ten learning challenges in three tabs: six historical game picks,
+  a three-pick Final Four mini bracket, and three rules questions. Each activity stays separate from real picks.
+  Practice choices reveal scores, an explanation and a takeaway. Save the first choice, then make it read-only.
+  Visitors may skip the warm-up and enter the real bracket at any time.
   Visiting My bracket stores `bs-onboarding: { started: true }`; returning visitors and saved drafts resume there.
   The How it works tab and bracket-header link always reopen the guide. Auto-fill remains in the collapsed helper.
 - Teams & regions separates school home regions from NCAA tournament groups. The map supports hover, focus,
   Enter/Space and touch; the buttons provide the same selection. Every roster row opens a school profile.
   Keep the explicit Purdue example and illustrative-map label so the two kinds of region cannot be confused.
-- Every bracket school has a local logo and a separate information button. Hover shows a compact profile preview;
+- The East map outline is simplified, with its label outside the narrow region and a leader line. Keep both
+  text labels inside the SVG viewBox and readable in light and dark modes.
+- Every bracket school has a local logo and a separate information button. Hover shows school name, seed, home
+  region and Chinese-player context only. Season record snapshots belong in the opened profile, never hover text;
   the information button opens a keyboard-accessible native dialog with archived recent history and form, Chinese
   player context where applicable, and an external team information link. Profile access remains available when
   predictions are locked.
@@ -111,7 +119,7 @@ knows nothing about March Madness or brackets). Put new source material from the
   Standings. Learn remains available from Home and the bracket's How it works button. The entry controls sit above it only
   on My picks. The header is smaller while picking, and pass-around controls follow the bracket. Keep both bars
   clear of content and honor safe-area insets. The three-step journey appears only in Learn and Explore.
-- Keep first-visit copy brief: one definition, a visual tournament path, and three short practice matchups. Extra rules,
+- Keep first-visit copy brief: one definition, a visual tournament path, and short practice activities. Extra rules,
   region explanations, and auto-fill mechanics belong in expandable details.
 - Teams & regions opens on the original regional map and school list. Players and Past brackets remain separate
   tabs. Four verified player profiles connect to
@@ -162,7 +170,13 @@ mainland China without a VPN before choosing it.
 
 The draft bracket is kept separately in `localStorage` under `bs-draft`. Journey completion uses `bs-onboarding`.
 The former `bs-intro` dismissal is no longer used. Validated practice choices use `bs-practice`, separately from
-draft picks. No shared signup or hosted leaderboard service is configured.
+draft picks. Fan camp uses `bs-camp` for validated mini picks, a mini-completion flag and correct quiz answers.
+Legacy practice choices retain their progress. XP is derived: 10 per game tried (60 total), 30 once for the mini
+bracket, and 10 per correct quiz answer (30 total). Replaying never adds XP. Badges are First pick, Bracket builder,
+and March ready (all ten challenges). Levels are Rookie, Playmaker (40 XP), and Bracket captain (90 XP).
+Mini semifinal changes clear any incompatible champion pick. Mini replays keep the earned completion badge.
+Practice XP is clearly labeled, never affects contest scoring, and saves only on this device. No shared signup or
+hosted leaderboard service is configured.
 
 ## Open items
 

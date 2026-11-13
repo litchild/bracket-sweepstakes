@@ -50,16 +50,16 @@
     <section class="view home-view" id="v-home" hidden aria-label="Home">
       <div class="home-intro"><div><p class="kicker">NCAA basketball · One loss. All the drama.</p><h2 class="sec-h">This is March.</h2></div></div>
       <article class="moment-feature">
-        <img class="moment-photo" src="images/moments/championship.jpg" alt="Florida players celebrating their 2025 national championship" width="1280" height="720" fetchpriority="high">
-        <div class="moment-shade"></div><span class="moment-tag">The title game · 2025</span>
-        <div class="moment-feature-copy"><span class="moment-doodle" aria-hidden="true">✦</span><h3>Down 12.<br>Still dreaming.</h3><p>Florida. Houston. A title decided by two points.</p><button class="btn play-feature" type="button" data-video="title"><span aria-hidden="true">▶</span> Play highlights</button></div>
-        <span class="moment-credit">Photo: Florida Athletics / Maddie Washburn · Video: NCAA</span>
+        <img class="moment-photo" src="images/moments/michigan-champions.jpg" alt="Michigan celebrating its 2026 national championship" width="1280" height="720" fetchpriority="high">
+        <div class="moment-shade"></div><span class="moment-tag">2026 national championship</span>
+        <div class="moment-feature-copy"><span class="moment-doodle" aria-hidden="true">✦</span><h3>Michigan takes<br>the title.</h3><p>Michigan 69. UConn 63. Relive the final.</p><button class="btn play-feature" type="button" data-video="michigan"><span aria-hidden="true">▶</span> Play highlights</button></div>
+        <span class="moment-credit">Photo: Michigan Photography · Video: NCAA</span>
       </article>
-      <section class="moments-section" aria-labelledby="momentsTitle"><div class="home-section-head"><div><p class="kicker">Start with the feeling</p><h3 class="sec-h" id="momentsTitle">Big shots. Bigger surprises.</h3></div><a class="link" href="https://www.ncaa.com/march-madness-live/watch" target="_blank" rel="noopener noreferrer">More on NCAA ↗</a></div>
+      <section class="moments-section" aria-labelledby="momentsTitle"><div class="home-section-head"><div><p class="kicker" id="videoLibraryCount">11 videos &amp; clips</p><h3 class="sec-h" id="momentsTitle">Big shots. Bigger surprises.</h3></div><a class="link" href="https://www.ncaa.com/march-madness-live/watch" target="_blank" rel="noopener noreferrer">More on NCAA ↗</a></div>
         <div class="discovery-tabs video-filters" role="tablist" aria-label="Highlight collection"><button type="button" role="tab" data-moments="2026" aria-selected="true">2026</button><button type="button" role="tab" data-moments="classics" aria-selected="false">Classics</button></div>
         <div class="moment-grid" id="momentGrid" role="tabpanel" aria-label="2026 highlights"></div><p class="sub media-note">Official NCAA videos · Press Play to watch. YouTube may be unavailable in mainland China.</p>
       </section>
-      <div class="home-next"><div><span class="kicker">Your turn</span><h3>Who’s your champion?</h3><p>Your picks. Your team. Your shot.</p><div class="welcome-actions"><button class="btn red" type="button" data-go="bracket">Make my bracket →</button><button class="link" type="button" data-go="learn">Try a practice game</button></div></div><img src="images/your-turn.svg" alt="Illustration of a fan choosing a champion on a phone" width="560" height="400" loading="lazy"></div>
+      <div class="home-next"><div><span class="kicker">Your turn</span><h3>Who’s your champion?</h3><p>Your picks. Your team. Your shot.</p><p class="home-camp-progress" id="homeCampProgress">Warm up with 10 short challenges.</p><div class="welcome-actions"><button class="btn red" type="button" data-go="bracket">Make my bracket →</button><button class="link" type="button" id="homeWarmup">Start the warm-up →</button></div></div><img src="images/your-turn.svg" alt="Illustration of a fan choosing a champion on a phone" width="560" height="400" loading="lazy"></div>
       <div class="home-shortcuts"><button type="button" data-home-archive><span class="shortcut-icon" aria-hidden="true">↗</span><span><b>Every champion has a path.</b><small>Explore the 2023–26 brackets</small></span><span aria-hidden="true">→</span></button><button type="button" data-go="standings"><img src="images/trophy.svg" alt="" width="70" height="60"><span><b>Bring a little competition.</b><small>See the leaderboard</small></span><span aria-hidden="true">→</span></button></div>
     </section>
 
@@ -69,9 +69,9 @@
           <p class="kicker">College basketball's knockout tournament</p>
           <h2>64 teams.<br>One champion.</h2>
           <p>Pick who wins each game. One loss sends a team home. Your predictions make a <b>bracket</b>.</p>
-          <div class="welcome-actions"><button class="btn red" type="button" id="tryPractice">Try three real games →</button><button class="link" type="button" data-go="bracket">Start my bracket</button></div>
+          <div class="welcome-actions"><button class="btn red" type="button" id="tryPractice">Start the warm-up →</button><button class="link" type="button" data-go="bracket">Start my bracket</button></div>
         </div>
-        <div class="court-art"><img src="images/court.svg" alt="A hand-drawn basketball and bracket leading to the hoop" width="560" height="360"><span class="art-sticker">Make your call.</span></div>
+        <div class="court-art"><img src="images/your-turn.svg" alt="A hand choosing a champion on a phone" width="560" height="400"><span class="art-sticker">Make your call.</span></div>
         <div class="tournament-path" aria-label="The tournament narrows from 64 teams to one champion">
           <div><b>64</b><span>Teams</span></div><i>→</i>
           <div><b>16</b><span>Sweet 16</span></div><i>→</i>
@@ -80,10 +80,16 @@
         </div>
       </div>
       <section class="practice-lab" id="practiceLab" aria-labelledby="practiceTitle">
-        <div class="practice-lab-head"><div><p class="kicker">A little warm-up</p><h3 class="sec-h" id="practiceTitle" tabindex="-1">Make a pick. See the story.</h3></div><span class="practice-count" id="practiceCount">0 / 3 tried</span></div>
-        <div class="practice-steps" id="practiceSteps" role="tablist" aria-label="Practice games"></div>
-        <div class="card lesson" id="practiceGame"></div>
-        <div class="practice-finish" id="practiceFinish" hidden><span class="finish-star" aria-hidden="true">✦</span><div><b>Warm-up complete.</b><p>You've seen how seeds, upsets, and the final work.</p></div><button type="button" class="btn" data-go="bracket">Make my picks →</button></div>
+        <div class="practice-lab-head"><div><p class="kicker">Your warm-up</p><h3 class="sec-h" id="practiceTitle" tabindex="-1">Fan camp</h3></div></div>
+        <div class="camp-progress-card" id="campStatus"></div>
+        <div class="camp-badges" id="campBadges" aria-label="Practice badges"></div>
+        <p class="camp-notice" id="campNotice" role="status" aria-live="polite"></p>
+        <div class="discovery-tabs camp-tabs" role="tablist" aria-label="Warm-up activities"><button type="button" role="tab" data-camp="games" aria-selected="true">Pick games</button><button type="button" role="tab" data-camp="mini" aria-selected="false">Mini bracket</button><button type="button" role="tab" data-camp="quiz" aria-selected="false">Quick quiz</button></div>
+        <section id="camp-games" class="camp-activity" aria-label="Historical practice games"><div class="practice-game-header"><h4>Make a pick. See the story.</h4><span class="practice-count" id="practiceCount">0 / 6 tried</span></div><div class="practice-steps" id="practiceSteps" role="tablist" aria-label="Practice games"></div><div class="card lesson" id="practiceGame"></div></section>
+        <section id="camp-mini" class="camp-activity" hidden aria-label="Mini bracket"><div class="camp-activity-head"><p class="kicker">2026 Final Four teams · Practice picks</p><h4 id="miniTitle" tabindex="-1">Four teams. Three calls.</h4><p class="sub">Pick both semifinal winners, then your champion.</p></div><div id="miniBracket" class="mini-bracket"></div><div id="miniFeedback" class="mini-feedback" role="status" aria-live="polite"></div></section>
+        <section id="camp-quiz" class="camp-activity" hidden aria-label="Rules quiz"><div class="camp-activity-head"><p class="kicker">Three quick questions · 10 XP each</p><h4 id="quizTitle" tabindex="-1">Know the game.</h4></div><div class="quiz-steps" id="quizSteps" role="tablist" aria-label="Quiz questions"></div><div id="campQuiz" class="card camp-quiz"></div></section>
+        <div class="practice-finish" id="practiceFinish" hidden><span class="finish-star" aria-hidden="true">★</span><div><b>March ready.</b><p>All 10 challenges complete. Your bracket is next.</p></div><button type="button" class="btn" data-go="bracket">Make my picks →</button></div>
+        <p class="sub camp-scope">Practice XP is separate from bracket points. Progress saves in this browser.</p>
       </section>
       <details class="card rules"><summary>Rules &amp; scoring</summary><div class="rules-body">
         <p>This prototype begins with 64 teams after the opening games. Teams advance through the Round of 64, Round of 32, Sweet 16, Elite 8, Final Four, and championship.</p>
@@ -108,7 +114,7 @@
               <g data-region="west" tabindex="0" role="button" aria-label="West home region" style="--c:var(--west)"><path d="M73 45 163 64 222 72 210 123 231 166 220 257 172 260 147 233 119 231 91 196 76 160 61 126 62 90Z"/><text x="145" y="145">西</text><text x="145" y="174" class="map-en">WEST</text><path d="M90 300 107 306 102 316 86 311ZM119 314 139 322 134 334 114 326Z"/><text x="155" y="327" class="map-note">Hawaii</text></g>
               <g data-region="midwest" tabindex="0" role="button" aria-label="Midwest home region" style="--c:var(--midwest)"><path d="M222 72 307 75 324 63 343 80 371 83 378 108 397 94 414 120 410 167 373 195 327 191 275 172 231 166 210 123Z"/><text x="310" y="124">北</text><text x="310" y="151" class="map-en">MIDWEST</text></g>
               <g data-region="south" tabindex="0" role="button" aria-label="South home region" style="--c:var(--south)"><path d="M231 166 275 172 327 191 373 195 410 167 458 166 496 187 486 213 463 232 441 259 431 287 451 323 443 340 429 326 413 291 386 277 356 278 336 267 309 270 285 302 263 281 252 252 220 257Z"/><text x="344" y="225">南</text><text x="344" y="254" class="map-en">SOUTH</text></g>
-              <g data-region="east" tabindex="0" role="button" aria-label="East home region" style="--c:var(--east)"><path d="M410 167 414 120 446 108 477 98 497 72 517 66 528 37 547 31 555 59 540 88 552 106 524 111 513 137 496 151 496 187 458 166Z"/><text x="488" y="115">东</text><text x="488" y="141" class="map-en">EAST</text></g>
+              <g data-region="east" tabindex="0" role="button" aria-label="East home region" style="--c:var(--east)"><path d="M410 167 414 120 445 108 473 98 494 76 515 66 528 38 546 31 554 59 540 88 548 105 523 114 511 138 496 153 496 187 458 166Z"/><path class="map-label-line" d="M490 132h53l14-14" aria-hidden="true"/><text x="585" y="119">东</text><text x="585" y="143" class="map-en">EAST</text></g>
             </svg>
             <p class="sub map-caption">Simplified map · Hawaii inset · 北 = Midwest (中西部)</p>
           </div>
@@ -267,7 +273,7 @@
 
 <dialog id="teamDialog" class="team-dialog" aria-labelledby="teamDialogTitle"><div class="profile-topbar"><button type="button" class="dialog-close" id="teamDialogClose" aria-label="Close profile">×</button></div><div id="teamDialogBody"></div></dialog>
 <div id="teamPeek" class="team-peek" role="tooltip" hidden></div>
-<dialog id="videoDialog" class="video-dialog" aria-labelledby="videoTitle"><div class="video-top"><h2 id="videoTitle"></h2><button type="button" id="videoClose" aria-label="Close video">×</button></div><div id="videoPlayer" class="video-player"></div><p class="sub">Official NCAA March Madness video on YouTube. Playback depends on your location and connection.</p><div class="video-actions"><a id="videoExternal" class="link" target="_blank" rel="noopener noreferrer">Open on YouTube ↗</a><a id="videoStory" class="link" target="_blank" rel="noopener noreferrer">Read the game story ↗</a><button type="button" class="btn" id="videoPractice">Try this game →</button></div></dialog>
+<dialog id="videoDialog" class="video-dialog" aria-labelledby="videoTitle"><div class="video-top"><h2 id="videoTitle"></h2><button type="button" id="videoClose" aria-label="Close video">×</button></div><div id="videoPlayer" class="video-player"></div><div class="video-navigation"><button type="button" class="btn ghost" id="videoPrev">← Previous clip</button><span id="videoPosition" aria-live="polite"></span><button type="button" class="btn ghost" id="videoNext">Next clip →</button></div><p class="sub">Official NCAA March Madness video on YouTube. Playback depends on your location and connection.</p><div class="video-actions"><a id="videoExternal" class="link" target="_blank" rel="noopener noreferrer">Open on YouTube ↗</a><a id="videoStory" class="link" target="_blank" rel="noopener noreferrer">Read the game story ↗</a><button type="button" class="btn" id="videoPractice">Try this game →</button></div></dialog>
 
 <div class="bar">
   <div class="wrap">
@@ -288,6 +294,7 @@
 <script src="js/profiles.js"></script>
 <script src="js/players.js"></script>
 <script src="js/history-data.js"></script>
+<script src="js/camp.js"></script>
 <script src="js/experience.js"></script>
 <script src="js/home.js"></script>
 <script src="js/guide.js"></script>

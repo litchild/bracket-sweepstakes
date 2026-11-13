@@ -103,7 +103,7 @@ function attachTeamPeek(row, id) {
     if ($('teamDialog').open) return;
     clearTimeout(peekTimer);
     const t = TEAMS[id], p = TEAM_PROFILES[id], tip = $('teamPeek'); tip.textContent = '';
-    tip.append(el('strong','',p.fullName),el('span','',`#${t.seed} seed · ${BR[t.br].name} tournament group`),el('span','',`Home: ${ROOTS[t.home].name}`),el('span','',`2024–25 snapshot: ${p.previous || 'unavailable'}`),el('span','',`2025–26 snapshot: ${p.recent || 'unavailable'}`),el('small','',CN_PLAYERS[id] ? `${CN_PLAYERS[id]} · 2026–27 roster` : 'Records show wins-losses. Tap ⓘ for more.'));
+    tip.append(el('strong','',p.fullName),el('span','',`#${t.seed} seed · ${BR[t.br].name} tournament group`),el('span','',`Home: ${ROOTS[t.home].name}`),el('small','',CN_PLAYERS[id] ? `${CN_PLAYERS[id]} · 2026–27 roster` : 'Tap ⓘ for the school profile.'));
     tip.hidden = false; row.querySelector('button')?.setAttribute('aria-describedby','teamPeek');
     const r = row.getBoundingClientRect();
     tip.style.left = `${Math.max(8,Math.min(r.left,innerWidth-tip.offsetWidth-8))}px`;

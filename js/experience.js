@@ -2,7 +2,10 @@
 const PRACTICE_GAMES = [
   {year:2024, team:'Oakland', title:'Can the underdog win?', label:'Seeds & upsets', clue:'Kentucky was a No. 3 seed. Oakland was No. 14. A smaller seed number means a higher rank.', why:'Oakland’s Jack Gohlke made 10 three-pointers. Hot shooting helped the No. 14 seed beat Kentucky, 80–76.', lesson:'A seed is a ranking, not a promise. A lower-ranked winner is an upset.', source:'https://ukathletics.com/news/2024/03/21/kentucky-falls-to-oakland-in-ncaa-first-round/'},
   {year:2023, team:'FDU', title:'What does one loss mean?', label:'Win or go home', clue:'Purdue was a No. 1 seed. FDU was No. 16. Choose who you think advanced.', why:'FDU held Purdue to 58 points and won by five. Purdue’s tournament ended after this single game.', lesson:'Every round is knockout basketball. Your winner moves forward; the other team goes home.', source:'https://purduesports.com/news/2023/03/17/purdue-season-ends-with-first-round-upset'},
-  {year:2025, team:'Florida', title:'Two No. 1 seeds. One title.', label:'Pick a champion', clue:'Florida and Houston both won their regions. Each entered the tournament as a No. 1 seed.', why:'Florida rallied from 12 points down and forced turnovers on Houston’s final two possessions to win, 65–63.', lesson:'Seeds belong to regions, so two No. 1 seeds can meet. Six straight wins make a champion.', source:'https://floridagators.com/news/2025/4/8/mens-basketball-florida-houston-ncaa-championship-game-april-7-2025'}
+  {year:2025, round:6, team:'Florida', title:'Two No. 1 seeds. One title.', label:'Pick a champion', clue:'Florida and Houston both won their regions. Each entered the tournament as a No. 1 seed.', why:'Florida rallied from 12 points down and forced turnovers on Houston’s final two possessions to win, 65–63.', lesson:'Seeds belong to regions, so two No. 1 seeds can meet. Six straight wins make a champion.', source:'https://floridagators.com/news/2025/4/8/mens-basketball-florida-houston-ncaa-championship-game-april-7-2025'},
+  {"year":2026,"round":4,"team":"UConn","title":"Who makes the Final Four?","label":"The regional final","clue":"Duke was a No. 1 seed. UConn was No. 2. The winner would be one of the last four teams.","why":"UConn won 73–72 on Braylon Mullins’ late three-pointer. That one shot turned an Elite Eight game into a Final Four place.","lesson":"The Elite Eight has eight teams. Its four winners reach the Final Four.","source":"https://www.youtube.com/watch?v=vHOJ4Gsk7oE"},
+  {"year":2026,"round":2,"team":"Iowa","title":"Can last year’s champion lose?","label":"A fresh start","clue":"Florida won the 2025 title and was a No. 1 seed in 2026. Iowa was No. 9.","why":"Alvaro Folgueiras hit a three with 4.5 seconds left, putting Iowa ahead for a 73–72 win.","lesson":"Every tournament starts fresh. Last year’s title cannot save a team from one loss.","source":"https://hawkeyesports.com/news/2026/03/22/hawkeyes-punch-ticket-to-sweet-16"},
+  {"year":2026,"round":6,"team":"Michigan","title":"Your final call.","label":"The 2026 title","clue":"Michigan and UConn had each won five games to reach this final. One more win would earn the title.","why":"Michigan held UConn to 30.9% shooting. Late free throws sealed the 69–63 championship win.","lesson":"Your champion needs a path through every round. Pick the team all the way to the final.","source":"https://mgoblue.com/news/2026/4/7/mens-basketball-wolverines-triumph-over-huskies-to-win-second-national-championship"}
 ];
 let practiceIndex=0, practiceAnswers={}, archiveYear=2026, archiveView='path', archiveRegion='East', archiveRound=1;
 function archiveRoundGames(tournament,region,round) {
@@ -26,30 +29,31 @@ function historyLogo(team) {
   const img=el('img','team-logo');img.src=current?`images/teams/${current}.png`:`images/history/${team.id}.png`;
   img.alt='';img.width=36;img.height=36;return img;
 }
-function practiceGame(def,tournaments=ARCHIVE) {return tournaments[def.year].games.find(g=>g.round===(def.year===2025?6:1)&&g.teams.some(t=>t.name===def.team));}
+function practiceGame(def,tournaments=ARCHIVE) {return tournaments[def.year].games.find(g=>g.round===(def.round||1)&&g.teams.some(t=>t.name===def.team));}
 function renderPractice() {
   const def=PRACTICE_GAMES[practiceIndex], game=practiceGame(def), answer=practiceAnswers[practiceIndex], complete=Object.keys(practiceAnswers).length;
-  $('practiceCount').textContent=`${complete} / 3 tried`; $('practiceFinish').hidden=complete!==3;
+  $('practiceCount').textContent=`${complete} / ${PRACTICE_GAMES.length} tried`;
   const steps=$('practiceSteps');steps.textContent='';
-  PRACTICE_GAMES.forEach((p,i)=>{const b=el('button','',`${practiceAnswers[i]?'✓':i+1} ${p.label}`);b.type='button';b.setAttribute('role','tab');b.setAttribute('aria-selected',String(practiceIndex===i));b.addEventListener('click',()=>{practiceIndex=i;renderPractice();$('practiceSteps').children[i].focus();});steps.append(b);});
+  PRACTICE_GAMES.forEach((p,i)=>{const b=el('button','',practiceAnswers[i]?'✓':String(i+1));b.type='button';b.setAttribute('role','tab');b.setAttribute('aria-label',`Game ${i+1}: ${p.label}`);b.setAttribute('aria-selected',String(practiceIndex===i));b.addEventListener('click',()=>{practiceIndex=i;renderPractice();$('practiceSteps').children[i].focus();});steps.append(b);});
   const box=$('practiceGame');box.textContent='';
-  box.append(el('p','kicker',`${def.year} · ${ROUND_NAME[game.round]}`),el('h4','practice-question',def.title),el('p','sub','Pick a winner, then reveal the real result.'));
+  const question=el('h4','practice-question',def.title);question.id='practiceQuestion';question.tabIndex=-1;
+  box.append(el('p','kicker',`Game ${practiceIndex+1} / 6 · ${def.year} · ${ROUND_NAME[game.round]}`),question,el('p','sub','Pick a winner. Reveal the result. Earn 10 practice XP.'));
   const clues=el('details','practice-clue');clues.append(el('summary','','A clue before you pick'),el('p','',def.clue));box.append(clues);
   const match=el('div','practice-match');
   const teams=game.teams.slice().sort((a,b)=>a.seed-b.seed);
   teams.forEach((t,i)=>{
     if(i)match.append(el('span','versus','VS'));
-    const b=el('button',answer?(t.won?'practice-winner':'practice-loser'):'');b.type='button';b.setAttribute('aria-pressed',String(answer===t.id));
+    const b=el('button',answer?(t.won?'practice-winner':'practice-loser'):'');b.type='button';b.disabled=!!answer;b.setAttribute('aria-pressed',String(answer===t.id));
     const text=el('span');text.append(el('b','',t.name),el('small','',`#${t.seed} seed`));b.append(historyLogo(t),text);
     if(answer)b.append(el('strong','practice-score',String(t.score)));
-    b.addEventListener('click',()=>{practiceAnswers[practiceIndex]=t.id;store('bs-practice',practiceAnswers);renderPractice();$('practiceReveal').focus({preventScroll:true});});match.append(b);
+    b.addEventListener('click',()=>{const before=campStats(practiceAnswers,campState).xp;practiceAnswers[practiceIndex]=t.id;store('bs-practice',practiceAnswers);renderPractice();refreshCamp(before);$('practiceReveal').focus({preventScroll:true});});match.append(b);
   });box.append(match);
   if(answer){
     const reveal=el('div','practice-reveal');reveal.id='practiceReveal';reveal.tabIndex=-1;reveal.setAttribute('aria-live','polite');
     reveal.append(el('b','result-label',game.teams.find(t=>t.won).id===answer?'You called it.':'That was the surprise.'),el('p','',def.why),el('div','lesson-label','Take this into your bracket'),el('p','',def.lesson));
-    const source=el('a','link','Read the game story ↗');source.href=def.source;source.target='_blank';source.rel='noopener noreferrer';reveal.append(source);box.append(reveal);
-    const next=el('button','btn practice-next',practiceIndex<2?'Try the next game →':'Explore past brackets →');next.type='button';
-    next.addEventListener('click',()=>{if(practiceIndex<2){practiceIndex++;renderPractice();$('practiceTitle').focus();}else{discoverMode='archive';renderDiscovery();navigateTo('explore');}});box.append(next);
+    const source=el('a','link',def.source.includes('youtube.com')?'Watch the game recap ↗':'Read the game story ↗');source.href=def.source;source.target='_blank';source.rel='noopener noreferrer';reveal.append(source);box.append(reveal);
+    const next=el('button','btn practice-next',practiceIndex<PRACTICE_GAMES.length-1?'Try the next game →':'Build a mini bracket →');next.type='button';
+    next.addEventListener('click',()=>{if(practiceIndex<PRACTICE_GAMES.length-1){practiceIndex++;renderPractice();$('practiceQuestion').focus();}else setCampMode('mini',true);});box.append(next);
   }
 }
 function archiveGameCard(game) {
@@ -85,11 +89,12 @@ function renderBoardEmpty(count,isDemo) {
 }
 function initExperience() {
   const saved=load('bs-practice');if(saved&&typeof saved==='object'){PRACTICE_GAMES.forEach((d,i)=>{if(practiceGame(d).teams.some(t=>t.id===saved[i]))practiceAnswers[i]=saved[i];});}
-  $('tryPractice').addEventListener('click',()=>{$('practiceLab').scrollIntoView({block:'start'});$('practiceTitle').focus({preventScroll:true});});
+  practiceIndex=Math.max(0,PRACTICE_GAMES.findIndex((_,i)=>!practiceAnswers[i]));
+  $('tryPractice').addEventListener('click',resumeCamp);
   document.querySelectorAll('[data-archive-view]').forEach(b=>b.addEventListener('click',()=>{archiveView=b.dataset.archiveView;renderArchive();}));
   document.querySelectorAll('[data-board]').forEach(b=>b.addEventListener('click',()=>{S.boardMode=b.dataset.board;renderStandings();}));
   document.querySelectorAll('[data-standings]').forEach(b=>b.addEventListener('click',()=>{S.standingsPanel=b.dataset.standings;renderStandings();}));
   matchMedia('(max-width:600px)').addEventListener('change',()=>{if(discoverMode==='archive')renderArchive();});
-  renderPractice();renderArchive();
+  renderPractice();renderArchive();initCamp();
 }
 if(typeof module!=='undefined'&&module.exports)module.exports={archiveRoundGames,rankBrackets,PRACTICE_GAMES,practiceGame};
