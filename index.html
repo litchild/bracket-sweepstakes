@@ -29,6 +29,7 @@
 
 <nav class="tabbar" aria-label="Sections">
   <div class="wrap" role="tablist">
+    <button class="tab" role="tab" aria-selected="false" data-tab="home">Home</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="learn">How it works</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="explore">Teams &amp; regions</button>
     <button class="tab" role="tab" aria-selected="true" data-tab="bracket">My bracket</button>
@@ -46,14 +47,33 @@
       <button type="button" data-step="bracket"><span>3</span> Pick</button>
     </nav>
 
+    <section class="view home-view" id="v-home" hidden aria-label="Home">
+      <div class="home-intro"><div><p class="kicker">NCAA basketball · One loss. All the drama.</p><h2 class="sec-h">This is March.</h2></div><button type="button" class="link" data-go="learn">New here? Try a game →</button></div>
+      <article class="moment-feature">
+        <img class="moment-photo" src="images/moments/championship.jpg" alt="Florida players celebrating their 2025 national championship" width="1280" height="720" fetchpriority="high">
+        <div class="moment-shade"></div><span class="moment-tag">The title game · 2025</span>
+        <div class="moment-feature-copy"><span class="moment-doodle" aria-hidden="true">✦</span><h3>Down 12.<br>Still dreaming.</h3><p>Florida. Houston. A title decided by two points.</p><button class="btn play-feature" type="button" data-video="title"><span aria-hidden="true">▶</span> Play highlights</button></div>
+        <span class="moment-credit">Photo: Florida Athletics / Maddie Washburn · Video: NCAA</span>
+      </article>
+      <section class="moments-section" aria-labelledby="momentsTitle"><div class="home-section-head"><div><p class="kicker">Start with the feeling</p><h3 class="sec-h" id="momentsTitle">Big shots. Bigger surprises.</h3></div><a class="link" href="https://www.ncaa.com/march-madness-live/watch" target="_blank" rel="noopener noreferrer">More on NCAA ↗</a></div>
+        <div class="moment-grid">
+          <article class="moment-card"><button type="button" class="moment-thumb" data-video="oakland" aria-label="Play Oakland versus Kentucky 2024 highlights"><img src="images/moments/oakland.jpg" alt="Oakland and Kentucky in the 2024 NCAA tournament highlight preview" width="1280" height="720" loading="lazy"><span class="play-disc" aria-hidden="true">▶</span><span class="moment-mini-tag">2024 · Upset</span></button><div class="moment-card-copy"><h4>Ten threes. One wild night.</h4><p>Jack Gohlke and No. 14 Oakland shake up March.</p><button class="link" type="button" data-warmup="0">Would you have picked them? →</button></div></article>
+          <article class="moment-card"><button type="button" class="moment-thumb" data-video="fdu" aria-label="Play FDU versus Purdue 2023 final-buzzer reactions"><img src="images/moments/fdu.jpg" alt="FDU players and fans reacting at the final buzzer in 2023" width="1280" height="720" loading="lazy"><span class="play-disc" aria-hidden="true">▶</span><span class="moment-mini-tag">2023 · Giant killers</span></button><div class="moment-card-copy"><h4>A No. 16 with other plans.</h4><p>FDU takes on top-seeded Purdue. One game changes everything.</p><button class="link" type="button" data-warmup="1">Try this matchup →</button></div></article>
+        </div><p class="sub media-note">Official NCAA highlights · Videos load only when you press Play. YouTube may be unavailable in mainland China.</p>
+      </section>
+      <div class="home-next"><div><span class="kicker">Your turn</span><h3>No NCAA knowledge needed.</h3><p>Try three picks. Find your team. Make your bracket.</p><div class="welcome-actions"><button class="btn red" type="button" data-go="learn">Warm up →</button><button class="link" type="button" data-go="explore">Meet the players</button></div></div><img src="images/court.svg" alt="" width="560" height="360" loading="lazy"></div>
+      <div class="home-shortcuts"><button type="button" data-home-archive><span class="shortcut-icon" aria-hidden="true">↗</span><span><b>Every champion has a path.</b><small>Explore the 2023–25 brackets</small></span><span aria-hidden="true">→</span></button><button type="button" data-go="standings"><img src="images/trophy.svg" alt="" width="70" height="60"><span><b>Bring a little competition.</b><small>See the leaderboard</small></span><span aria-hidden="true">→</span></button></div>
+    </section>
+
     <section class="view" id="v-learn" hidden aria-label="How it works">
       <div class="welcome card">
         <div class="welcome-copy">
           <p class="kicker">College basketball's knockout tournament</p>
           <h2>64 teams.<br>One champion.</h2>
           <p>Pick who wins each game. One loss sends a team home. Your predictions make a <b>bracket</b>.</p>
-          <div class="welcome-actions"><button class="btn red" type="button" data-go="explore">Meet the players →</button><button class="link" type="button" data-go="bracket">Start my bracket</button></div>
+          <div class="welcome-actions"><button class="btn red" type="button" id="tryPractice">Try three real games →</button><button class="link" type="button" data-go="bracket">Start my bracket</button></div>
         </div>
+        <div class="court-art"><img src="images/court.svg" alt="A hand-drawn basketball and bracket leading to the hoop" width="560" height="360"><span class="art-sticker">Make your call.</span></div>
         <div class="tournament-path" aria-label="The tournament narrows from 64 teams to one champion">
           <div><b>64</b><span>Teams</span></div><i>→</i>
           <div><b>16</b><span>Sweet 16</span></div><i>→</i>
@@ -61,14 +81,12 @@
           <div class="path-champ"><b>1</b><span>Champion</span></div>
         </div>
       </div>
-      <div class="learn-grid">
-        <div class="card lesson">
-          <p class="kicker">A practice game</p><h3 class="sec-h">Who advances?</h3>
-          <p class="sub">The seed is a team's rank. Smaller number, higher rank.</p>
-          <div class="practice-match"><button type="button" data-practice="favorite" aria-pressed="false"><img src="images/teams/E5.png" alt="" width="48" height="48"><span>St. John's<small>#5 · Favorite</small></span><span class="practice-check" aria-hidden="true">✓</span></button><span class="versus">VS</span><button type="button" data-practice="underdog" aria-pressed="false"><img src="images/teams/E12.png" alt="" width="48" height="48"><span>Northern Iowa<small>#12 · Underdog</small></span><span class="practice-check" aria-hidden="true">✓</span></button></div>
-          <p id="practiceFeedback" class="practice-feedback" aria-live="polite">Tap your winner.</p>
-        </div>
-      </div>
+      <section class="practice-lab" id="practiceLab" aria-labelledby="practiceTitle">
+        <div class="practice-lab-head"><div><p class="kicker">A little warm-up</p><h3 class="sec-h" id="practiceTitle" tabindex="-1">Make a pick. See the story.</h3></div><span class="practice-count" id="practiceCount">0 / 3 tried</span></div>
+        <div class="practice-steps" id="practiceSteps" role="tablist" aria-label="Practice games"></div>
+        <div class="card lesson" id="practiceGame"></div>
+        <div class="practice-finish" id="practiceFinish" hidden><span class="finish-star" aria-hidden="true">✦</span><div><b>Warm-up complete.</b><p>You've seen how seeds, upsets, and the final work.</p></div><button type="button" class="btn" data-go="bracket">Make my picks →</button></div>
+      </section>
       <details class="card rules"><summary>Rules &amp; scoring</summary><div class="rules-body">
         <p>This prototype begins with 64 teams after the opening games. Teams advance through the Round of 64, Round of 32, Sweet 16, Elite 8, Final Four, and championship.</p>
         <p>Correct picks earn 10, 20, 40, 80, 160, and 320 points in those rounds. A perfect bracket earns 1,920 points. Changing a winner clears later picks that depend on that team.</p>
@@ -77,7 +95,7 @@
     </section>
 
     <section class="view" id="v-explore" hidden aria-label="Teams and regions">
-      <div class="explore-title"><p class="kicker">Find someone to root for</p><h2 class="sec-h">Players &amp; teams</h2><div class="discovery-tabs" role="tablist" aria-label="Explore"><button type="button" role="tab" data-discover="players" aria-selected="true">Players</button><button type="button" role="tab" data-discover="regions" aria-selected="false">Regions &amp; schools</button></div></div>
+      <div class="explore-title"><p class="kicker">Find someone to root for</p><h2 class="sec-h">Explore March Madness</h2><div class="discovery-tabs" role="tablist" aria-label="Explore"><button type="button" role="tab" data-discover="players" aria-selected="true">Players</button><button type="button" role="tab" data-discover="regions" aria-selected="false">Regions</button><button type="button" role="tab" data-discover="archive" aria-selected="false">Past brackets</button></div></div>
       <div id="discoverPlayers"><p class="sub player-intro">Four players from China. Four teams to follow.</p><div id="playerCards" class="player-grid"></div><p class="sub roster-note">2026–27 rosters · This demo uses the 2026 bracket.</p><button class="btn red explore-pick" type="button" data-go="bracket">Make my picks →</button></div>
       <div id="discoverRegions" class="view" hidden>
       <div class="card explore-head">
@@ -104,6 +122,14 @@
       </div>
       <button type="button" class="btn red explore-pick" data-go="bracket">Make my picks →</button>
       </div>
+      <section id="discoverArchive" class="view" hidden aria-label="Past tournaments">
+        <div class="archive-heading"><div><p class="kicker">The games that made March</p><h3 class="sec-h">Past brackets</h3></div><div id="archiveYears" class="pills" role="tablist" aria-label="Tournament year"></div></div>
+        <div id="archiveChampion" class="archive-champion"></div>
+        <div class="seg" role="tablist" aria-label="Archive view"><button type="button" role="tab" data-archive-view="path" aria-selected="true">Champion's run</button><button type="button" role="tab" data-archive-view="full" aria-selected="false">Full bracket</button></div>
+        <div id="archiveRegions" class="pills" role="tablist" aria-label="Historical bracket regions" hidden></div>
+        <div id="archiveRounds" class="rounds" role="tablist" aria-label="Historical rounds" hidden></div>
+        <div id="archiveGames"></div><p class="sub roster-note">Actual NCAA men's results · Round of 64 onward · Select a game for its box score.</p>
+      </section>
     </section>
 
     <!-- ===== My bracket ===== -->
@@ -193,8 +219,8 @@
     <!-- ===== Standings ===== -->
     <section class="view" id="v-standings" hidden>
       <div class="card" style="gap:4px"><h2 class="sec-h">Standings</h2><p class="sub" id="stSub"></p></div>
-      <div class="card demo" id="demo" hidden>
-        <h3 class="card-h">Demo controls</h3>
+      <details class="card demo" id="demo" hidden>
+        <summary>Try demo fans &amp; results</summary>
         <p class="sub" id="demoSub">Demo controls. Results are simulated from seeds, not real games.</p>
         <div class="row">
           <button class="btn red" id="dSim">Simulate next round</button>
@@ -204,7 +230,9 @@
           <button class="btn ghost" id="dNoClass">Remove pass-around entries</button>
         </div>
         <span class="msg" id="dMsg" aria-live="polite"></span>
-      </div>
+      </details>
+      <div class="discovery-tabs standings-tabs" role="tablist" aria-label="Standings view"><button type="button" role="tab" data-standings="board" aria-selected="true">Leaderboard</button><button type="button" role="tab" data-standings="tournament" aria-selected="false">Tournament</button></div>
+      <div id="tournamentPanel" class="view" hidden>
       <div class="card" id="results">
         <div class="res-head"><h3 class="card-h">Results</h3><div class="pills" role="tablist" id="rtabs" aria-label="Rounds played"></div></div>
         <p class="sub" id="resSub"></p>
@@ -224,10 +252,14 @@
         <h3 class="card-h">Regions still alive</h3>
         <div class="alive" id="aliveCards"></div>
       </div>
-      <div class="card">
+      </div>
+      <div class="card leaderboard-card" id="leaderboardCard">
         <h3 class="card-h">Leaderboard</h3>
         <p class="sub" id="lbSub"></p>
-        <div class="tbl"><table><thead><tr><th class="n">#</th><th>Fan</th><th>Rooting for</th><th>Champion pick</th><th class="n">Points</th></tr></thead><tbody id="lb"></tbody></table></div>
+        <div class="seg" id="boardModes" role="tablist" aria-label="Leaderboard entries" hidden><button type="button" role="tab" data-board="entries" aria-selected="true">Entries</button><button type="button" role="tab" data-board="demo" aria-selected="false">Demo fans</button></div>
+        <div id="boardEmpty" class="board-empty"></div><div id="boardPodium" class="board-podium" hidden></div>
+        <div class="tbl" id="boardTable" hidden><table><thead><tr><th class="n">#</th><th>Fan</th><th class="lb-root">Rooting for</th><th>Champion</th><th class="n">Correct</th><th class="n">Points</th></tr></thead><tbody id="lb"></tbody></table></div>
+        <p class="sub roster-note" id="boardScope">Local demo · Only entries saved in this browser appear here.</p>
       </div>
     </section>
   </div>
@@ -237,6 +269,7 @@
 
 <dialog id="teamDialog" class="team-dialog" aria-labelledby="teamDialogTitle"><div class="profile-topbar"><button type="button" class="dialog-close" id="teamDialogClose" aria-label="Close profile">×</button></div><div id="teamDialogBody"></div></dialog>
 <div id="teamPeek" class="team-peek" role="tooltip" hidden></div>
+<dialog id="videoDialog" class="video-dialog" aria-labelledby="videoTitle"><div class="video-top"><h2 id="videoTitle"></h2><button type="button" id="videoClose" aria-label="Close video">×</button></div><div id="videoPlayer" class="video-player"></div><p class="sub">Official NCAA March Madness video on YouTube. Playback depends on your location and connection.</p><div class="video-actions"><a id="videoExternal" class="link" target="_blank" rel="noopener noreferrer">Open on YouTube ↗</a><a id="videoStory" class="link" target="_blank" rel="noopener noreferrer">Read the game story ↗</a><button type="button" class="btn" id="videoPractice">Try this game →</button></div></dialog>
 
 <div class="bar">
   <div class="wrap">
@@ -246,7 +279,7 @@
 </div>
 
 <nav class="mobile-nav" aria-label="Mobile sections">
-  <button type="button" data-go="learn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6l2 2 2-2h6v15h-6l-2 2-2-2H4ZM12 6v15"/></svg><span>Learn</span></button>
+  <button type="button" data-go="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7M5 9v12h5v-7h4v7h5V9"/></svg><span>Home</span></button>
   <button type="button" data-go="explore"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m16 8-2 6-6 2 2-6Z"/></svg><span>Explore</span></button>
   <button type="button" data-go="bracket"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4v5h5v6H3v5M21 4v5h-5v6h5v5M8 12h8"/></svg><span>My picks</span></button>
   <button type="button" data-go="crowd"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3M16 5a3 3 0 0 1 0 6M18 15a5 5 0 0 1 3 5"/></svg><span>Crowd</span></button>
@@ -256,6 +289,9 @@
 <script src="js/logic.js"></script>
 <script src="js/profiles.js"></script>
 <script src="js/players.js"></script>
+<script src="js/history-data.js"></script>
+<script src="js/experience.js"></script>
+<script src="js/home.js"></script>
 <script src="js/guide.js"></script>
 <script src="js/app.js"></script>
 </body>

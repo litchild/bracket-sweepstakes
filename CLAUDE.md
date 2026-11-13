@@ -23,11 +23,17 @@ knows nothing about March Madness or brackets). Put new source material from the
 - `js/logic.js`: pure logic (team data, game tree, auto-fill rules, scoring, compact storage). Loaded as a classic
   script in the browser (globals) and via `require()` in tests. Keep it free of DOM code.
 - `js/app.js`: UI, rendering and storage. Depends on globals from `logic.js`.
-- `js/guide.js`: first-visit journey, practice pick, interactive home-region map and team profile dialogs.
+- `js/guide.js`: first-visit journey, interactive home-region map and team profile dialogs.
+- `js/home.js`: official highlight playback and links into practice, players, archives and standings.
+- `js/experience.js`: three historical practice games, archive views and leaderboard presentation helpers.
+- `js/history-data.js`: complete 2023–2025 men's brackets, with actual scores and game source links.
 - `js/profiles.js`: archived team identities and two season-record snapshots; see `docs/team-sources.md`.
 - `js/players.js`: four featured Chinese-player profiles, with official roster sources and dated competition stats.
 - `images/teams/`: self-hosted school logos for every team in the prototype field.
 - `images/players/`: locally served official player portraits, resized for mobile loading.
+- `images/moments/`: local official video previews and a Florida Athletics championship photo. Court and trophy
+  SVGs are original drawings.
+- `images/history/`: local school marks for historical teams outside the current field.
 - `fonts/`: Barlow and Barlow Condensed woff2 files (SIL OFL, see `fonts/OFL.txt`).
 - `tests/logic.test.js`: rule and data checks.
 - `docs/`: project background, not part of the website.
@@ -38,10 +44,14 @@ knows nothing about March Madness or brackets). Put new source material from the
 
 ## Hard constraints
 
-- **No external requests.** Classmates in mainland China may open the site without a VPN. Google Fonts, Google
+- **Local page assets.** Classmates in mainland China may open the site without a VPN. Google Fonts, Google
   services and most foreign CDNs are blocked or very slow there, and a blocked stylesheet can leave the page blank.
   Keep fonts, scripts and images in the repo. User-initiated profile links may open an external team page in a new
-  tab, but the experience must never depend on it. Vercel is blocked in mainland China, so the site stays on Netlify.
+  tab, but the experience must never depend on it. The user's requested video playback is the only runtime
+  exception: pressing Play may create an official youtube-nocookie.com iframe. Never preload external players,
+  fonts, scripts or image assets. Remove the iframe on close and offer external video and game-story links plus
+  a local practice path. Label the mainland-China playback limitation. Vercel is blocked in mainland China, so the
+  site stays on Netlify. See `docs/history-sources.md` for video and archive sources.
 - **No ESPN or Bilibili logos or wordmarks.** A working entry page with real logos could pass as an official contest.
   The look borrows the feel (black broadcast hero, red slashes, condensed italic headlines, a scrolling ticker,
   Bilibili-style gray canvas with white rounded cards). Keep the "Student concept" tag and the footer disclaimer.
@@ -77,8 +87,10 @@ knows nothing about March Madness or brackets). Put new source material from the
 
 ## UI behavior worth preserving
 
-- First visits open How it works, with a three-step journey: learn the game, find your team, make your picks.
-  A favorite/underdog practice pick explains an upset without changing the real bracket. Visitors may skip ahead.
+- First visits open Home, with three official NCAA moments, local photo previews, and paths into practice, players,
+  past brackets and standings. How it works has a three-step journey: learn, explore, pick. Three historical
+  practice matchups teach seeds/upsets, single elimination, and the championship. Each reveals the actual result,
+  an explanation and a takeaway without changing real picks. Visitors may skip ahead.
   Visiting My bracket stores `bs-onboarding: { started: true }`; returning visitors and saved drafts resume there.
   The How it works tab and bracket-header link always reopen the guide. Auto-fill remains in the collapsed helper.
 - Teams & regions separates school home regions from NCAA tournament groups. The map supports hover, focus,
@@ -89,10 +101,11 @@ knows nothing about March Madness or brackets). Put new source material from the
   player context where applicable, and an external team information link. Profile access remains available when
   predictions are locked.
 - The bracket key and home-region color legend appear above the picks.
-- At 600px and below, the primary navigation is a fixed five-item bottom bar. The entry controls sit above it only
+- At 600px and below, the primary navigation is a fixed five-item bottom bar: Home, Explore, My picks, Crowd,
+  Results. Learn remains available from Home and the bracket's How it works button. The entry controls sit above it only
   on My picks. The header is smaller while picking, and pass-around controls follow the bracket. Keep both bars
   clear of content and honor safe-area insets. The three-step journey appears only in Learn and Explore.
-- Keep first-visit copy brief: one definition, a visual tournament path, and a practice matchup. Extra rules,
+- Keep first-visit copy brief: one definition, a visual tournament path, and three short practice matchups. Extra rules,
   region explanations, and auto-fill mechanics belong in expandable details.
 - Explore defaults to Players, with a separate Regions & schools tab. Four verified player profiles connect to
   their school profiles through School/Player tabs in the same dialog. On phones this dialog is a bottom sheet
@@ -111,9 +124,13 @@ knows nothing about March Madness or brackets). Put new source material from the
   the public site sees it. It stays open while a pass-around entry is in progress.
 - Crowd tab: Round of 64 percentages use all brackets. Later rounds use only brackets still live in that game
   (they picked one of the two teams playing).
-- Standings: demo controls first (simulate next round, reset, add 1,000 simulated fans up to 5,000, remove them,
-  remove pass-around entries), then Results by round with upset tags, KPIs, Chinese players tracker, regions alive,
-  leaderboard.
+- Past brackets lives in Explore. Years 2023, 2024 and 2025 each contain all 63 games after the First Four. Default
+  to the champion's six wins. Full bracket uses region and round tabs on mobile; larger screens show round
+  columns. Preserve adjacent-game ordering and source links. Historical results never populate current results.
+- Standings defaults to Leaderboard, with a separate Tournament tab for results, KPIs and trackers. Demo controls
+  are collapsed. The leaderboard shows a friendly empty state until two real local entries exist. Simulated fans
+  use a separate Demo fans tab and never count toward revealing the real-entry board. Ties share ranks. Show
+  podiums only after results exist and label demo results. Preserve the explicit browser-local scope.
 - Pass-around entries let several people enter on one device during class.
 
 ## Storage
@@ -132,7 +149,8 @@ To share entries between visitors, swap `localBackend()` for a hosted database w
 mainland China without a VPN before choosing it.
 
 The draft bracket is kept separately in `localStorage` under `bs-draft`. Journey completion uses `bs-onboarding`.
-The former `bs-intro` dismissal is no longer used.
+The former `bs-intro` dismissal is no longer used. Validated practice choices use `bs-practice`, separately from
+draft picks. No shared signup or hosted leaderboard service is configured.
 
 ## Open items
 

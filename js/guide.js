@@ -18,12 +18,12 @@ function navigateTo(tab, focus = true) {
 }
 function updateJourney() {
   document.body.dataset.page = S.tab;
-  ['learn','explore','bracket','crowd','standings'].forEach(tab => { $(`v-${tab}`).hidden = S.tab !== tab; });
+  ['home','learn','explore','bracket','crowd','standings'].forEach(tab => { $(`v-${tab}`).hidden = S.tab !== tab; });
   document.querySelectorAll('.tab').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === S.tab)));
   document.querySelectorAll('[data-step]').forEach(b => {
     if (b.dataset.step === S.tab) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
   });
-  document.querySelector('.journey').hidden = ['bracket','crowd','standings'].includes(S.tab);
+  document.querySelector('.journey').hidden = !['learn','explore'].includes(S.tab);
   document.querySelector('.bar').hidden = S.tab !== 'bracket';
   document.querySelectorAll('.mobile-nav button').forEach(b=>{
     if (b.dataset.go === S.tab) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current');
@@ -94,6 +94,7 @@ function renderPlayers() {
 }
 function renderDiscovery() {
   $('discoverPlayers').hidden=discoverMode!=='players';$('discoverRegions').hidden=discoverMode!=='regions';
+  $('discoverArchive').hidden=discoverMode!=='archive';if(discoverMode==='archive')renderArchive();
   document.querySelectorAll('[data-discover]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.discover===discoverMode)));
 }
 function hideTeamPeek() { clearTimeout(peekTimer); $('teamPeek').hidden = true; document.querySelectorAll('[aria-describedby="teamPeek"]').forEach(n=>n.removeAttribute('aria-describedby')); }
@@ -144,7 +145,7 @@ function renderRegion() {
   });
 }
 function initGuide() {
-  const onboard=load('bs-onboarding'); S.tab = countPicks(S.picks) || onboard?.started ? 'bracket' : 'learn';
+  const onboard=load('bs-onboarding'); S.tab = countPicks(S.picks) || onboard?.started ? 'bracket' : 'home';
   // Class-demo controls follow the main bracket rather than preceding a fan's first game.
   $('v-bracket').append($('pass'));
   document.querySelectorAll('[data-go],[data-step]').forEach(b=>b.addEventListener('click',()=>navigateTo(b.dataset.go || b.dataset.step)));
@@ -158,11 +159,6 @@ function initGuide() {
     tabs[next].click(); list.querySelectorAll('[role="tab"]')[next]?.focus({preventScroll:true});
   });
   document.querySelectorAll('[data-discover]').forEach(b=>b.addEventListener('click',()=>{discoverMode=b.dataset.discover;renderDiscovery();}));
-  document.querySelectorAll('[data-practice]').forEach(b=>b.addEventListener('click',()=>{
-    document.querySelectorAll('[data-practice]').forEach(x=>x.setAttribute('aria-pressed',String(b===x)));
-    $('practiceFeedback').textContent = b.dataset.practice === 'underdog' ? 'Northern Iowa advances. A lower-ranked team beating a favorite is an upset.' : "St. John's advances. You've made your first pick.";
-    $('practiceFeedback').classList.add('complete');
-  }));
   document.querySelectorAll('[data-map-mode]').forEach(b=>b.addEventListener('click',()=>{
     mapMode=b.dataset.mapMode; document.querySelectorAll('[data-map-mode]').forEach(x=>x.setAttribute('aria-selected',String(x===b))); renderRegion();
   }));
@@ -180,5 +176,5 @@ function initGuide() {
   $('teamPeek').addEventListener('mouseenter',()=>clearTimeout(peekTimer)); $('teamPeek').addEventListener('mouseleave',hideTeamPeek);
   document.addEventListener('keydown',e=>{if(e.key==='Escape')hideTeamPeek();});
   window.addEventListener('scroll',hideTeamPeek,true); window.addEventListener('resize',hideTeamPeek);
-  renderPlayers(); renderDiscovery(); renderRegion(); updateJourney();
+  renderPlayers(); renderDiscovery(); renderRegion(); updateJourney(); initExperience(); initHome();
 }

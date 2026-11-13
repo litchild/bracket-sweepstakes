@@ -469,10 +469,16 @@ function renderResults() {
 
 // ---------- standings ----------
 async function renderStandings() {
+  const boardRequest=S.boardRequest=(S.boardRequest||0)+1;
+  $('tournamentPanel').hidden=S.standingsPanel!=='tournament';
+  $('leaderboardCard').hidden=S.standingsPanel==='tournament';
+  document.querySelectorAll('[data-standings]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.standings===(S.standingsPanel||'board'))));
+  if(S.boardMode==='demo'&&!S.simEntries.length)S.boardMode='entries';
   renderResults();
-  const E = allEntries(); const N = E.length; const win = S.winners; const played = decidedIds(win).length;
+  const E = S.boardMode==='demo'?S.simEntries:S.real; const N = E.length; const win = S.winners; const played = decidedIds(win).length;
   const perfect = E.filter(e => isPerfect(e.picks, win));
   $("kEntries").textContent = fmt(N);
+  $("kEntries").nextElementSibling.textContent=S.boardMode==='demo'?'Demo brackets':'Brackets entered';
   $("kPerfect").textContent = fmt(perfect.length);
   $("kPerfectL").textContent = played ? `Perfect brackets left of ${fmt(N)}` : "Perfect brackets left (all of them, until games start)";
   $("kGames").textContent = `${played} / 63`;
@@ -501,24 +507,33 @@ async function renderStandings() {
     ac.append(c);
   });
   // leaderboard
-  const rows = E.map(e => ({ e, pts: score(e.picks, win) })).sort((a, b) => b.pts - a.pts || (a.e.sim === b.e.sim ? 0 : a.e.sim ? 1 : -1));
+  const rows = rankBrackets(E,win,Object.fromEntries(GAMES.map(g=>[g.id,POINTS[g.round]])));
   const top = rows.slice(0, 10);
   const meRow = rows.find(r => r.e.id === S.uid);
   if (meRow && !top.includes(meRow)) top.push(meRow);
-  $("lbSub").textContent = N ? (played ? "Best bracket so far. Ties share a rank." : "Everyone starts at zero until games are played.") : "No entries yet.";
+  const canShow=N>=2;
+  $("boardEmpty").hidden=canShow;$("boardTable").hidden=!canShow;
+  $("boardModes").hidden=!S.simEntries.length;
+  document.querySelectorAll('[data-board]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.board===(S.boardMode||'entries'))));
+  $("lbSub").textContent = canShow ? `${fmt(N)} ${S.boardMode==='demo'?'simulated brackets':'entries'} · ${played?'Ties share a rank.':'Points begin when results are added.'}` : "A little friendly competition.";
+  $("boardScope").textContent=S.boardMode==='demo'?'Demo fans and results are simulated. They are separate from entered brackets.':'Local demo · Only entries saved in this browser appear here.';
+  if(!canShow)renderBoardEmpty(N,S.boardMode==='demo');
   const ids = top.filter(r => !r.e.sim && !r.e.guest).map(r => r.e.id);
   let ps = {};
   if (S.user && ids.length) { try { ps = await S.user.profiles(ids); } catch (e) { ps = {}; } }
+  if(boardRequest!==S.boardRequest)return;
   const tb = $("lb"); tb.textContent = "";
-  top.forEach(r => {
+  const podium=$("boardPodium");podium.textContent='';podium.hidden=!canShow||!played;
+  (canShow?top:[]).forEach((r,i) => {
     const tr = el("tr"); if (r.e.id === S.uid) tr.className = "me";
-    const rank = rows.findIndex(x => x.pts === r.pts) + 1;
+    const rank = r.rank;
     const pn = (ps[r.e.id] && ps[r.e.id].name) || "";
     const name = r.e.sim ? `Simulated fan ${r.e.n}` : r.e.guest ? (r.e.name || "Guest") : r.e.id === S.uid ? (pn ? `${pn} (you)` : "You") : (pn || "Someone");
-    const rc = el("td"); rc.append(fanTag(r.e.root, r.e.cnTeam));
+    const rc = el("td",'lb-root'); rc.append(fanTag(r.e.root, r.e.cnTeam));
     const ch = r.e.picks["F6-0"] ? TEAMS[r.e.picks["F6-0"]] : null;
-    tr.append(el("td", "n", String(rank)), el("td", null, name), rc, el("td", null, ch ? `${ch.seed} ${ch.name}${elim.has(ch.id) ? " (out)" : ""}` : "–"), el("td", "n", String(r.pts)));
+    tr.append(el("td", "n", played?String(rank):'–'), el("td", null, name), rc, el("td", null, ch ? ch.name : "–"),el('td','n',`${r.correct}/${played}`), el("td", "n", String(r.pts)));
     tb.append(tr);
+    if(i<3&&played){const card=el('div','podium-place');card.append(el('span','podium-rank',`#${rank}`),el('b','',name),el('strong','',`${r.pts}`),el('small','','points'));podium.append(card);}
   });
   $("demo").hidden = !S.canEdit || !S.db;
   $("dSim").disabled = S.busy || played === 63; $("dReset").disabled = S.busy || !played;
