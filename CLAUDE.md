@@ -13,8 +13,14 @@ knows nothing about March Madness or brackets). Put new source material from the
 
 - Run: open `index.html` in a browser, or `npm start` to serve the folder locally.
 - Test: `npm test` (Node's built-in test runner; no dependencies). Run it after any change to `js/logic.js`.
-- Deploy: Netlify publishes the repository root on every push to `main` (`netlify.toml`, no build step).
-  Pull requests get Netlify deploy previews.
+- Current public review site: https://timely-klepon-8e4d37.netlify.app/ (Netlify project
+  `timely-klepon-8e4d37`, Derrick Li's team). Published November 13, 2026 by manually uploading the static site
+  files. This project is not connected to GitHub; update it with another static upload until that connection is
+  configured. Exclude docs, tests, repository metadata and other non-site files from manual uploads.
+- The original repository deployment configuration publishes the repository root on pushes to `main`
+  (`netlify.toml`, no build step), with pull-request previews. Do not assume those pushes update the current review
+  site. The GitHub integration can read this repo but its upload endpoint currently returns 403, so the reviewed
+  changes are committed locally on `feat/guided-onboarding` and have not been pushed or merged.
 
 ## Files
 
