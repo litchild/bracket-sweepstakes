@@ -1,0 +1,1 @@
+.title{font-size:62rpx;max-width:620rpx}.favorite{padding:20rpx 0;border-radius:0;text-align:left;font-weight:500;width:100%}.favorite progress{margin:20rpx 0 10rpx}.root-row{display:flex;align-items:center;justify-content:space-between;padding:20rpx 0;border-bottom:1rpx solid #E7E9EE}.root-row:last-child{border:0}

@@ -13,6 +13,10 @@ knows nothing about March Madness or brackets). Put new source material from the
 
 - Run: open `index.html` in a browser, or `npm start` to serve the folder locally.
 - Test: `npm test` (Node's built-in test runner; no dependencies). Run it after any change to `js/logic.js`.
+- WeChat development: import `wechat/project.config.json` in WeChat Developer Tools using a test account.
+  The user requested a development version first, without a registered AppID. See `wechat/README.md` for the
+  import guide, native verification limit, preview and media setup. `wechat/miniprogram/` is the native app root.
+  Run `node --test wechat/tests/native.test.js` and `python3 wechat/scripts/preview.py --check` after changes.
 - Current public review site: https://timely-klepon-8e4d37.netlify.app/ (Netlify project
   `timely-klepon-8e4d37`, Derrick Li's team). Published November 13, 2026 by manually uploading the static site
   files. This project is not connected to GitHub; update it with another static upload until that connection is
@@ -45,6 +49,8 @@ knows nothing about March Madness or brackets). Put new source material from the
 - `tests/logic.test.js`: rule and data checks.
 - `docs/`: project background, not part of the website.
 - `404.html`: Netlify's not-found page.
+- `wechat/`: native WXML/WXSS Mini Program, shared-data sync scripts, controller tests and a browser review adapter.
+  Keep this directory off the public website with the `/wechat/*` 404 rule. Manual Netlify uploads exclude it.
 - `AGENTS.md`: short pointer to this file for other coding tools (Codex reads `AGENTS.md`).
 - `netlify.toml`: publish settings, plus rules that keep `docs/`, `tests/`, `CLAUDE.md`, `AGENTS.md`, `README.md` and
   `package.json` off the public site. Add any new non-site file or folder to those rules.
@@ -160,6 +166,14 @@ knows nothing about March Madness or brackets). Put new source material from the
 - Pass-around entries let several people enter on one device during class.
 
 ## Storage
+
+The native WeChat development version stores its own validated state under `bs-wechat-v1` with
+`wx.getStorageSync` / `wx.setStorageSync`. It has no configured shared backend or WeChat login flow. Keep the local
+scope visible. Reuse `js/logic.js` through the content sync script, never copy DOM/browser globals into native
+pages. Practice XP stays separate from bracket points. Eleven native clip pages accept licensed HTTPS sources
+from `wechat/miniprogram/utils/videos.js`; no sources are configured yet. Keep the explicit playback state, local
+poster and copy-source/practice fallback. Do not insert YouTube iframes or a website wrapper. Never commit an
+AppSecret. The browser adapter is for review, not native compilation or a public Mini Program deployment.
 
 `js/app.js` uses `localBackend()`, which keeps everything in `localStorage` under `bs-local-db`, so each visitor sees
 only their own entries plus simulated fans. Documents:

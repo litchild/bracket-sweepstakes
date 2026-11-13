@@ -15,5 +15,7 @@ Not affiliated with or endorsed by ESPN, Bilibili or the NCAA.
 - All 64 school profiles and logos load locally. Profiles include archived season records and optional external
   links for more information. Source notes are in `docs/team-sources.md`.
 - The original Netlify configuration publishes `main`; the current review site requires a separate upload.
+- A native [WeChat development version](wechat/README.md) is available in `wechat/`. Import its
+  `project.config.json` in WeChat Developer Tools using a test account.
 
 Project context for Claude Code is in `CLAUDE.md`.

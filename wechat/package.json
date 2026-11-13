@@ -1,0 +1,11 @@
+{
+  "name":"ncaa-wechat-development",
+  "version":"0.1.0",
+  "private":true,
+  "scripts":{
+    "sync":"node scripts/sync-content.js && node scripts/prepare-icons.js",
+    "test":"node --test tests/*.test.js",
+    "preview":"python3 scripts/preview.py"
+  },
+  "devDependencies":{"sharp":"^0.34.3"}
+}
