@@ -23,6 +23,9 @@ knows nothing about March Madness or brackets). Put new source material from the
 - `js/logic.js`: pure logic (team data, game tree, auto-fill rules, scoring, compact storage). Loaded as a classic
   script in the browser (globals) and via `require()` in tests. Keep it free of DOM code.
 - `js/app.js`: UI, rendering and storage. Depends on globals from `logic.js`.
+- `js/guide.js`: first-visit journey, practice pick, interactive home-region map and team profile dialogs.
+- `js/profiles.js`: archived team identities and two season-record snapshots; see `docs/team-sources.md`.
+- `images/teams/`: self-hosted school logos for every team in the prototype field.
 - `fonts/`: Barlow and Barlow Condensed woff2 files (SIL OFL, see `fonts/OFL.txt`).
 - `tests/logic.test.js`: rule and data checks.
 - `docs/`: project background, not part of the website.
@@ -35,7 +38,8 @@ knows nothing about March Madness or brackets). Put new source material from the
 
 - **No external requests.** Classmates in mainland China may open the site without a VPN. Google Fonts, Google
   services and most foreign CDNs are blocked or very slow there, and a blocked stylesheet can leave the page blank.
-  Keep fonts, scripts and images in the repo. Vercel is blocked in mainland China, so the site stays on Netlify.
+  Keep fonts, scripts and images in the repo. User-initiated profile links may open an external team page in a new
+  tab, but the experience must never depend on it. Vercel is blocked in mainland China, so the site stays on Netlify.
 - **No ESPN or Bilibili logos or wordmarks.** A working entry page with real logos could pass as an official contest.
   The look borrows the feel (black broadcast hero, red slashes, condensed italic headlines, a scrolling ticker,
   Bilibili-style gray canvas with white rounded cards). Keep the "Student concept" tag and the footer disclaimer.
@@ -71,21 +75,26 @@ knows nothing about March Madness or brackets). Put new source material from the
 
 ## UI behavior worth preserving
 
-- My bracket opens straight to the bracket. Auto-fill lives in a collapsed "Not sure who to pick?" bar.
-- "New to March Madness?" explainer card sits at the top of My bracket: five numbered steps for a fan who has never
-  seen a bracket. It opens expanded on screens wider than 720px and as a one-row strip with a "How it works" toggle
-  on phones, so the bracket card stays on the first screen at 390 x 844. The × button dismisses it, the choice is
-  remembered in `localStorage` under `bs-intro`, and a "How it works" link in the "Your bracket" header reopens it.
-  Step 5 is a button that opens the auto-fill bar. The copy names the prize ("Win 50,000 RMB") without saying which
-  prize rule applies, because the team has not chosen one.
+- First visits open How it works, with a three-step journey: learn the game, find your team, make your picks.
+  A favorite/underdog practice pick explains an upset without changing the real bracket. Visitors may skip ahead.
+  Visiting My bracket stores `bs-onboarding: { started: true }`; returning visitors and saved drafts resume there.
+  The How it works tab and bracket-header link always reopen the guide. Auto-fill remains in the collapsed helper.
+- Teams & regions separates school home regions from NCAA tournament groups. The map supports hover, focus,
+  Enter/Space and touch; the buttons provide the same selection. Every roster row opens a school profile.
+  Keep the explicit Purdue example and illustrative-map label so the two kinds of region cannot be confused.
+- Every bracket school has a local logo and a separate information button. Hover shows a compact profile preview;
+  the information button opens a keyboard-accessible native dialog with archived recent history and form, Chinese
+  player context where applicable, and an external team information link. Profile access remains available when
+  predictions are locked.
+- The bracket key and home-region color legend appear above the picks.
 - Plain-language definitions: a "What is a seed?" button above the first game toggles a one-sentence definition
   (tap, click or keyboard; Esc closes). The "Root for a region" panel starts with one line saying home regions
   (东 南 西 北) are different from the NCAA's four bracket tabs.
-- Phone bracket (600px wide or less, chosen in `js/app.js` with `matchMedia`): the four-column bracket is replaced
-  by round buttons (Round of 64, Round of 32, Sweet 16, Elite 8, each with picks made) and that round's games as
-  full-width cards with 46px tap targets. A "Next round" button appears when the round is fully picked, and after
+- All sizes default to round buttons (Round of 64, Round of 32, Sweet 16, Elite 8, each with picks made) and only
+  that round's games. Phones use full-width cards with 50px team targets; larger screens use two columns. Desktop
+  visitors can choose Show full bracket to see the original four-column layout. A "Next round" button appears when the round is fully picked, and after
   the Elite 8 it leads to the next bracket tab or the Final Four. The Final Four tab stacks both semifinals, the
-  championship and the champion banner. Wider screens keep the four-column bracket unchanged. This is rendering
+  championship and the champion banner. This is rendering
   only: picks still go through `applyPick` in `js/logic.js`.
 - Pass-around entries is collapsed to one line with an expand toggle on every screen size, because every visitor to
   the public site sees it. It stays open while a pass-around entry is in progress.
@@ -111,7 +120,8 @@ To share entries between visitors, swap `localBackend()` for a hosted database w
 `doc().get/set/delete/onSnapshot` and `collection().limit().onSnapshot` shape. Check that the service loads in
 mainland China without a VPN before choosing it.
 
-The draft bracket is kept separately in `localStorage` under `bs-draft`, and the explainer dismissal under `bs-intro`.
+The draft bracket is kept separately in `localStorage` under `bs-draft`. Journey completion uses `bs-onboarding`.
+The former `bs-intro` dismissal is no longer used.
 
 ## Open items
 

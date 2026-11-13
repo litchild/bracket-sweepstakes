@@ -10,7 +10,7 @@ const S = {
   real: [], sims: [], simEntries: [], winners: {},
   entered: false, savedSig: null, busy: false,
   guest: null, ownerSnap: null, resRound: null, tickerText: "",
-  round: 1, passOpen: false, introOff: false, introOpen: false, seedOpen: false
+  round: 1, passOpen: false, seedOpen: false, fullBracket: false
 };
 const MAX_SIMS = 5000;
 const $ = id => document.getElementById(id);
@@ -93,27 +93,7 @@ function renderLive() {
   renderTicker();
 }
 
-// ---------- explainer ----------
-// Dismissal is remembered in localStorage under bs-intro. Open or collapsed is per visit: open on wide screens, collapsed on phones.
-const WIDE = typeof matchMedia === "function" ? matchMedia("(min-width: 721px)") : { matches: true };
-const introSaved = load("bs-intro");
-S.introOff = !!(introSaved && introSaved.dismissed);
-S.introOpen = WIDE.matches;
-function renderIntro() {
-  $("intro").hidden = S.introOff; $("introOpen").hidden = !S.introOff;
-  $("introToggle").setAttribute("aria-expanded", String(S.introOpen));
-  $("introBody").hidden = !S.introOpen;
-}
-$("introToggle").addEventListener("click", () => { S.introOpen = !S.introOpen; renderIntro(); });
-$("introClose").addEventListener("click", () => { S.introOff = true; store("bs-intro", { dismissed: true }); renderIntro(); $("introOpen").focus(); });
-$("introOpen").addEventListener("click", () => {
-  S.introOff = false; S.introOpen = true; store("bs-intro", { dismissed: false }); renderIntro();
-  $("intro").scrollIntoView({ block: "center" }); $("introToggle").focus({ preventScroll: true });
-});
-$("introHelper").addEventListener("click", () => {
-  if (!locked()) { S.helpOpen = true; renderHelper(); }
-  $("helperBar").scrollIntoView({ block: "start" }); $("helperBar").focus({ preventScroll: true });
-});
+// ---------- seed definition ----------
 function renderSeedTip() { $("seedBtn").setAttribute("aria-expanded", String(S.seedOpen)); $("seedTip").hidden = !S.seedOpen; }
 $("seedBtn").addEventListener("click", () => { S.seedOpen = !S.seedOpen; renderSeedTip(); });
 document.addEventListener("keydown", e => { if (e.key === "Escape" && S.seedOpen) { S.seedOpen = false; renderSeedTip(); $("seedBtn").focus(); } });
@@ -181,15 +161,25 @@ function teamBtn(g, tid, elim) {
   if (elim.has(tid)) b.classList.add("lost");
   b.setAttribute("aria-pressed", String(S.picks[g.id] === tid));
   b.title = `${t.name}, ${ROOTS[t.home].name} school${CN_PLAYERS[tid] ? `, Chinese player: ${CN_PLAYERS[tid]}` : ""}`;
-  b.append(el("span", "seed", String(t.seed)), el("span", "tn", t.name));
+  b.append(el("span", "seed", String(t.seed)), teamLogo(tid), el("span", "tn", t.name));
   if (CN_PLAYERS[tid]) b.append(cnBadge());
   b.append(el("span", "dot"));
   b.disabled = locked();
-  b.addEventListener("click", () => { S.picks = applyPick(S.picks, g.id, tid); if (!S.root) S.mode = "manual"; saveDraft(); renderAllLocal(); });
-  return b;
+  b.setAttribute("aria-label", `Pick ${t.name}, seed ${t.seed}`);
+  b.addEventListener("click", () => {
+    hideTeamPeek(); S.picks = applyPick(S.picks, g.id, tid); if (!S.root) S.mode = "manual";
+    saveDraft(); renderAllLocal();
+    document.querySelector(`[data-game="${g.id}"] [data-pick="${tid}"]`)?.focus({ preventScroll: true });
+  });
+  b.dataset.pick = tid;
+  const row = el("div", "team-row");
+  const info = el("button", "team-info", "ⓘ"); info.type = "button";
+  info.setAttribute("aria-label", `About ${t.name}`); info.addEventListener("click", () => showTeamProfile(tid));
+  row.append(b, info); attachTeamPeek(row, tid);
+  return row;
 }
 function gameCard(g, elim) {
-  const c = cands(g, S.picks); const d = el("div", "game"); const w = S.winners[g.id];
+  const c = cands(g, S.picks); const d = el("div", "game"); d.dataset.game = g.id; const w = S.winners[g.id];
   if (w && S.picks[g.id]) d.classList.add(S.picks[g.id] === w ? "ok" : "miss");
   c.forEach(t => d.append(teamBtn(g, t, elim)));
   return d;
@@ -216,7 +206,7 @@ const PHONE = typeof matchMedia === "function" ? matchMedia("(max-width: 600px)"
 function roundGames(X, r) { return GAMES.filter(g => g.br === X && g.round === r); }
 function roundDone(X, r) { return roundGames(X, r).every(g => S.picks[g.id]); }
 function openRound(X) { if (X === "F") return 1; for (let r = 1; r <= 4; r++) if (!roundDone(X, r)) return r; return 1; }
-function goTo(X, r) { S.br = X; S.round = r; renderBTabs(); renderBracket(); $(X === "F" ? "btabs" : "rndTabs").scrollIntoView({ block: "start" }); }
+function goTo(X, r) { S.br = X; S.round = r; renderBTabs(); renderBracket(); const target = $(X === "F" ? "btabs" : "rndTabs"); target.scrollIntoView({ block: "start" }); target.querySelector('[aria-selected="true"]')?.focus({ preventScroll: true }); }
 function renderPhoneBracket(view, elim) {
   const tabs = $("rndTabs"); const X = S.br;
   if (X === "F") {
@@ -231,7 +221,7 @@ function renderPhoneBracket(view, elim) {
     const games = roundGames(X, r);
     const b = el("button", "rnd"); b.type = "button"; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", String(S.round === r));
     b.append(el("span", null, ROUND_NAME[r]), el("span", "c", `${games.filter(g => S.picks[g.id]).length}/${games.length}`));
-    b.addEventListener("click", () => { S.round = r; renderBracket(); });
+    b.addEventListener("click", () => { S.round = r; renderBracket(); $("rndTabs").querySelector('[aria-selected="true"]')?.focus({ preventScroll: true }); });
     tabs.append(b);
   }
   const games = roundGames(X, S.round); const list = el("div", "rlist");
@@ -247,10 +237,18 @@ function renderPhoneBracket(view, elim) {
 }
 if (PHONE.addEventListener) PHONE.addEventListener("change", () => { renderBTabs(); renderBracket(); });
 function renderBracket() {
+  hideTeamPeek();
   const view = $("bracketView"); view.textContent = ""; const elim = eliminated(S.winners);
   $("rndTabs").textContent = ""; $("rndTabs").hidden = true;
-  view.classList.toggle("phone", PHONE.matches);
-  if (PHONE.matches) { renderPhoneBracket(view, elim); return; }
+  const guided = PHONE.matches || !S.fullBracket;
+  view.classList.toggle("phone", guided);
+  $("viewToggle").hidden = PHONE.matches;
+  $("viewToggle").textContent = S.fullBracket ? "Pick one round at a time" : "Show full bracket";
+  $("viewToggle").setAttribute("aria-pressed", String(S.fullBracket));
+  const done = S.br === "F" ? countPicks(S.picks, "F") : roundGames(S.br, S.round).filter(g => S.picks[g.id]).length;
+  const total = S.br === "F" ? 3 : roundGames(S.br, S.round).length;
+  $("roundCoach").textContent = countPicks(S.picks) === 63 ? "Bracket complete! Review your champion in Final Four, then enter free below." : S.br === "F" ? `The final stage: pick two semifinal winners and your champion. ${done} of 3 picked.` : `${BR[S.br].name} · ${ROUND_NAME[S.round]}: ${done === total ? "Round complete! Continue when you're ready." : `Choose ${total - done} more winner${total - done === 1 ? "" : "s"} to complete this round.`}`;
+  if (guided) { renderPhoneBracket(view, elim); return; }
   if (S.br !== "F") {
     const grid = el("div", "bracket");
     for (let r = 1; r <= 4; r++) {
@@ -267,6 +265,7 @@ function renderBracket() {
     view.append(grid, champBanner());
   }
 }
+$("viewToggle").addEventListener("click", () => { S.fullBracket = !S.fullBracket; renderBracket(); });
 function renderLegend() {
   const lg = $("legend"); lg.textContent = "";
   lg.append(el("span", null, "School’s home region:"));
@@ -528,16 +527,12 @@ async function renderStandings() {
 // ---------- render ----------
 function renderAllLocal() {
   renderPass(); renderHelper(); renderBTabs(); renderBracket(); renderBar();
+  updateJourney();
   if (S.tab === "crowd") renderCrowd();
   if (S.tab === "standings") renderStandings();
 }
 function renderAll() { renderLive(); renderAllLocal(); }
-document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => {
-  S.tab = t.dataset.tab;
-  document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-selected", String(x === t)));
-  $("v-bracket").hidden = S.tab !== "bracket"; $("v-crowd").hidden = S.tab !== "crowd"; $("v-standings").hidden = S.tab !== "standings";
-  renderAllLocal();
-}));
+document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => navigateTo(t.dataset.tab)));
 
 // ---------- demo controls ----------
 async function demo(fn, okMsg) {
@@ -593,7 +588,7 @@ function localBackend() {
 }
 
 // ---------- boot ----------
-renderIntro();
+initGuide();
 renderLegend();
 renderAll();
 (async () => {
