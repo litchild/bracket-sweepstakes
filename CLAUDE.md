@@ -107,8 +107,8 @@ knows nothing about March Madness or brackets). Put new source material from the
 - Teams & regions separates school home regions from NCAA tournament groups. The map supports hover, focus,
   Enter/Space and touch; the buttons provide the same selection. Every roster row opens a school profile.
   Keep the explicit Purdue example and illustrative-map label so the two kinds of region cannot be confused.
-- The East map outline is simplified, with its label outside the narrow region and a leader line. Keep both
-  text labels inside the SVG viewBox and readable in light and dark modes.
+- The East map outline is simplified, with both labels inside the region and no leader line. Keep the labels
+  white and readable in light and dark modes.
 - Every bracket school has a local logo and a separate information button. Hover shows school name, seed, home
   region and Chinese-player context only. Season record snapshots belong in the opened profile, never hover text;
   the information button opens a keyboard-accessible native dialog with archived recent history and form, Chinese

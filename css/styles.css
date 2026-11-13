@@ -381,8 +381,6 @@ a:focus-visible, summary:focus-visible, [tabindex]:focus-visible { outline: 3px 
 .region-map text { fill: #fff; font-family: var(--cjk); font-weight: 700; font-size: 28px; text-anchor: middle; pointer-events: none; }
 .region-map .map-en { font-family: var(--body); font-size: 12px; letter-spacing: 1px; }
 .region-map .map-note { fill:var(--ink); font-family: var(--body); font-size: 12px; text-anchor: start; font-weight: 400; }
-.region-map g[data-region="east"] text { fill:var(--ink); pointer-events:auto; }
-.region-map g .map-label-line, .region-map g[aria-pressed="true"] .map-label-line, .region-map g:hover .map-label-line { fill:none; stroke:var(--region-accent); stroke-width:2; pointer-events:none; }
 .map-caption { font-size: 12px; }
 .map-card .pill[aria-pressed="true"] { border-color: var(--region-accent); background: var(--region-accent); color: #fff; }
 .map-card .pill { min-height: 44px; }
