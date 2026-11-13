@@ -86,7 +86,7 @@ function renderTicker() {
 function renderLive() {
   const N = allEntries().length;
   $("liveWord").textContent = locked() ? "Live" : "Open";
-  $("eyeTxt").textContent = locked() ? "March Madness 2026 · Tournament in progress" : "March Madness 2026 · Men’s college basketball";
+  $("eyeTxt").textContent = "March Madness 2026";
   if (S.dbState === "connecting") { $("liveN").textContent = "–"; $("liveL").textContent = "Connecting…"; }
   else if (S.dbState === "off") { $("liveN").textContent = "–"; $("liveL").textContent = "Shared entries unavailable here"; }
   else { $("liveN").textContent = fmt(N); $("liveL").textContent = `bracket${N === 1 ? "" : "s"} entered${S.simEntries.length ? ` · ${fmt(S.simEntries.length)} simulated` : ""}`; }
@@ -100,10 +100,10 @@ document.addEventListener("keydown", e => { if (e.key === "Escape" && S.seedOpen
 
 // ---------- helper (auto-fill) ----------
 function helperSummary() {
-  if (S.root === "cn" && S.cnTeam) { const t = TEAMS[S.cnTeam]; return { title: `Rooting for Chinese players: ${t.name} wins it all`, sub: `${t.name} (${CN_PLAYERS[S.cnTeam]}) wins every game, and the other teams with Chinese players beat everyone else. Tap any game to change it.` }; }
-  if (S.root && ROOTS[S.root]) { const r = ROOTS[S.root]; return { title: `Rooting for ${r.zh} ${r.name}`, sub: `${r.name} teams beat every team from another region. Tap any game to change it.` }; }
-  if (S.mode === "seed") return { title: "Filled randomly by seed", sub: "Higher seeds win more often. Tap any game to change it." };
-  return { title: "Not sure who to pick?", sub: "Root for a region or for Chinese players and we’ll fill in your bracket." };
+  if (S.root === "cn" && S.cnTeam) { const t = TEAMS[S.cnTeam]; return { title: `${t.name} is your champion`, sub: `${CN_PLAYERS[S.cnTeam]} · Edit any pick below.` }; }
+  if (S.root && ROOTS[S.root]) { const r = ROOTS[S.root]; return { title: `Rooting for ${r.zh} ${r.name}`, sub: "Bracket filled. Edit any pick below." }; }
+  if (S.mode === "seed") return { title: "Auto-filled by seed", sub: "Edit any pick below." };
+  return { title: "Help me choose", sub: "Auto-fill by region or player." };
 }
 function fillWith(root, cnTeam) {
   if (locked()) return;
@@ -130,7 +130,7 @@ function renderHelper() {
   ROOT_ORDER.forEach(k => {
     const r = ROOTS[k]; const b = el("button", "opt"); b.type = "button";
     b.style.setProperty("--c", `var(${r.color})`); b.setAttribute("aria-pressed", String(S.root === k));
-    b.append(el("span", "opt-zh", r.zh), el("span", "opt-nm", r.name), el("span", "opt-meta", `${homeCount(k)} teams · ${r.see}`), el("span", "opt-meta", `Ambassadors: ${r.guides}`), el("span", "opt-go", `Fill my bracket for ${r.name}`));
+    b.append(el("span", "opt-zh", r.zh), el("span", "opt-nm", r.name), el("span", "opt-meta", `${homeCount(k)} schools`), el("span", "opt-go", "Auto-fill →"));
     b.addEventListener("click", () => fillWith(k, null));
     ro.append(b);
   });
@@ -141,14 +141,14 @@ function renderHelper() {
     const top = el("span", "opt-top"); top.append(cnBadge(), document.createTextNode(`${t.seed} seed · ${BR[t.br].name} bracket`));
     b.append(top, el("span", "opt-nm", t.name), el("span", "opt-meta", `Player: ${CN_PLAYERS[id]}`), el("span", "opt-go", `Pick ${t.name} to win it all`));
     b.addEventListener("click", () => fillWith("cn", id));
-    co.append(b);
+    const item=el('div','helper-player'); const info=el('button','link','Player profile');info.type='button';info.addEventListener('click',()=>showPlayerProfile(id));item.append(b,info);co.append(item);
   });
 }
 $("helperBar").addEventListener("click", () => { if (locked()) return; S.helpOpen = !S.helpOpen; renderHelper(); });
 document.querySelectorAll("#helperSeg button").forEach(b => b.addEventListener("click", () => { S.helpTab = b.dataset.h; renderHelper(); }));
 $("btnSeed").addEventListener("click", () => fillWith(null, null));
 $("btnShuffle").addEventListener("click", () => { if (locked()) return; S.picks = randomBracket(helperFor(S.root, S.cnTeam)); saveDraft(); renderAllLocal(); });
-$("btnClear").addEventListener("click", () => { if (locked()) return; S.picks = {}; S.root = null; S.cnTeam = null; S.mode = "manual"; S.round = 1; saveDraft(); renderAllLocal(); });
+$("btnClear").addEventListener("click", () => { if (locked()) return; S.picks = {}; S.root = null; S.cnTeam = null; S.mode = "manual"; S.br = "E"; S.round = 1; saveDraft(); renderAllLocal(); });
 
 // ---------- bracket ----------
 function teamBtn(g, tid, elim) {
@@ -163,7 +163,7 @@ function teamBtn(g, tid, elim) {
   b.title = `${t.name}, ${ROOTS[t.home].name} school${CN_PLAYERS[tid] ? `, Chinese player: ${CN_PLAYERS[tid]}` : ""}`;
   b.append(el("span", "seed", String(t.seed)), teamLogo(tid), el("span", "tn", t.name));
   if (CN_PLAYERS[tid]) b.append(cnBadge());
-  b.append(el("span", "dot"));
+  b.append(el("span", "dot")); const check=el('span','pick-check','✓');check.setAttribute('aria-hidden','true');b.append(check);
   b.disabled = locked();
   b.setAttribute("aria-label", `Pick ${t.name}, seed ${t.seed}`);
   b.addEventListener("click", () => {
@@ -220,7 +220,8 @@ function renderPhoneBracket(view, elim) {
   for (let r = 1; r <= 4; r++) {
     const games = roundGames(X, r);
     const b = el("button", "rnd"); b.type = "button"; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", String(S.round === r));
-    b.append(el("span", null, ROUND_NAME[r]), el("span", "c", `${games.filter(g => S.picks[g.id]).length}/${games.length}`));
+    b.setAttribute('aria-label', ROUND_NAME[r]);
+    b.append(el("span", null, PHONE.matches ? {1:'64 teams',2:'32 teams',3:'Sweet 16',4:'Elite 8'}[r] : ROUND_NAME[r]), el("span", "c", `${games.filter(g => S.picks[g.id]).length}/${games.length}`));
     b.addEventListener("click", () => { S.round = r; renderBracket(); $("rndTabs").querySelector('[aria-selected="true"]')?.focus({ preventScroll: true }); });
     tabs.append(b);
   }
@@ -247,7 +248,7 @@ function renderBracket() {
   $("viewToggle").setAttribute("aria-pressed", String(S.fullBracket));
   const done = S.br === "F" ? countPicks(S.picks, "F") : roundGames(S.br, S.round).filter(g => S.picks[g.id]).length;
   const total = S.br === "F" ? 3 : roundGames(S.br, S.round).length;
-  $("roundCoach").textContent = countPicks(S.picks) === 63 ? "Bracket complete! Review your champion in Final Four, then enter free below." : S.br === "F" ? `The final stage: pick two semifinal winners and your champion. ${done} of 3 picked.` : `${BR[S.br].name} · ${ROUND_NAME[S.round]}: ${done === total ? "Round complete! Continue when you're ready." : `Choose ${total - done} more winner${total - done === 1 ? "" : "s"} to complete this round.`}`;
+  $("roundCoach").textContent = countPicks(S.picks) === 63 ? "All 63 picked. Your bracket is ready." : S.br === "F" ? `${done} of 3 picked · Choose your champion.` : done === total ? "Round complete. Next round below ↓" : `Pick ${total - done} winner${total - done === 1 ? "" : "s"}.`;
   if (guided) { renderPhoneBracket(view, elim); return; }
   if (S.br !== "F") {
     const grid = el("div", "bracket");
@@ -300,6 +301,7 @@ function startGuest() {
   S.picks = {}; S.root = null; S.cnTeam = null; S.mode = "manual"; S.br = "E"; S.round = 1; S.helpOpen = false;
   $("passName").value = ""; $("passMsg").textContent = ""; $("sMsg").textContent = "";
   renderAllLocal();
+  $("v-bracket").querySelector('h2').scrollIntoView({block:'start'}); $("helperBar").focus({preventScroll:true});
 }
 function exitGuest(msg) {
   if (S.ownerSnap) { S.picks = S.ownerSnap.picks; S.root = S.ownerSnap.root; S.cnTeam = S.ownerSnap.cnTeam; S.mode = S.ownerSnap.mode; }
@@ -339,7 +341,7 @@ async function submit() {
       await S.db.doc("entries/" + g.id).set(Object.assign(doc, { name: g.name, guest: true }));
       S.busy = false;
       exitGuest(`${g.name} is in. Type the next person’s name to start their entry.`);
-      window.scrollTo({ top: 0, behavior: "smooth" }); $("passName").focus({ preventScroll: true });
+      $("pass").scrollIntoView({ block: "start" }); $("passName").focus({ preventScroll: true });
     } catch (e) {
       S.busy = false;
       $("sMsg").textContent = e && e.code === "quota_exceeded" ? "The entry list is full. Remove some entries first." : "Couldn’t save this entry. Try again in a moment.";

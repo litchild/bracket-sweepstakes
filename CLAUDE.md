@@ -25,7 +25,9 @@ knows nothing about March Madness or brackets). Put new source material from the
 - `js/app.js`: UI, rendering and storage. Depends on globals from `logic.js`.
 - `js/guide.js`: first-visit journey, practice pick, interactive home-region map and team profile dialogs.
 - `js/profiles.js`: archived team identities and two season-record snapshots; see `docs/team-sources.md`.
+- `js/players.js`: four featured Chinese-player profiles, with official roster sources and dated competition stats.
 - `images/teams/`: self-hosted school logos for every team in the prototype field.
+- `images/players/`: locally served official player portraits, resized for mobile loading.
 - `fonts/`: Barlow and Barlow Condensed woff2 files (SIL OFL, see `fonts/OFL.txt`).
 - `tests/logic.test.js`: rule and data checks.
 - `docs/`: project background, not part of the website.
@@ -87,11 +89,20 @@ knows nothing about March Madness or brackets). Put new source material from the
   player context where applicable, and an external team information link. Profile access remains available when
   predictions are locked.
 - The bracket key and home-region color legend appear above the picks.
+- At 600px and below, the primary navigation is a fixed five-item bottom bar. The entry controls sit above it only
+  on My picks. The header is smaller while picking, and pass-around controls follow the bracket. Keep both bars
+  clear of content and honor safe-area insets. The three-step journey appears only in Learn and Explore.
+- Keep first-visit copy brief: one definition, a visual tournament path, and a practice matchup. Extra rules,
+  region explanations, and auto-fill mechanics belong in expandable details.
+- Explore defaults to Players, with a separate Regions & schools tab. Four verified player profiles connect to
+  their school profiles through School/Player tabs in the same dialog. On phones this dialog is a bottom sheet
+  with a persistent close control. Stat labels must name the season and competition; never imply the snapshots
+  are current NCAA performance. Player champion buttons use the existing Chinese-player auto-fill rule.
 - Plain-language definitions: a "What is a seed?" button above the first game toggles a one-sentence definition
   (tap, click or keyboard; Esc closes). The "Root for a region" panel starts with one line saying home regions
   (东 南 西 北) are different from the NCAA's four bracket tabs.
 - All sizes default to round buttons (Round of 64, Round of 32, Sweet 16, Elite 8, each with picks made) and only
-  that round's games. Phones use full-width cards with 50px team targets; larger screens use two columns. Desktop
+  that round's games. Phones use full-width cards with 68px team targets and a visible selection check; larger screens use two columns. Desktop
   visitors can choose Show full bracket to see the original four-column layout. A "Next round" button appears when the round is fully picked, and after
   the Elite 8 it leads to the next bracket tab or the Final Four. The Final Four tab stacks both semifinals, the
   championship and the champion banner. This is rendering

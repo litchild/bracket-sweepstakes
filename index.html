@@ -11,7 +11,7 @@
 <header class="hero">
   <div class="wrap hero-in">
     <div>
-      <div class="eyebrow"><span class="live" id="liveBadge"><i></i><span id="liveWord">Open</span></span><span id="eyeTxt">March Madness 2026</span></div>
+      <div class="eyebrow"><span class="live" id="liveBadge"><i></i><span id="liveWord">Open</span></span><span id="eyeTxt">March Madness 2026</span><span class="mobile-concept">Student concept</span></div>
       <h1 class="title">Bracket Sweepstakes</h1>
       <div class="prize-row">
         <span class="prize"><span>Win 50,000 RMB</span></span>
@@ -41,40 +41,35 @@
 <main>
   <div class="wrap">
     <nav class="journey" aria-label="Your bracket journey">
-      <button type="button" data-step="learn"><span>01</span> Learn the game</button>
-      <button type="button" data-step="explore"><span>02</span> Find your team</button>
-      <button type="button" data-step="bracket"><span>03</span> Make your picks</button>
+      <button type="button" data-step="learn"><span>1</span> Learn</button>
+      <button type="button" data-step="explore"><span>2</span> Explore</button>
+      <button type="button" data-step="bracket"><span>3</span> Pick</button>
     </nav>
 
     <section class="view" id="v-learn" hidden aria-label="How it works">
       <div class="welcome card">
         <div class="welcome-copy">
-          <p class="kicker">Your first March Madness · A two-minute warm-up</p>
-          <h2>Know basketball?<br>You're ready for this.</h2>
-          <p>Meet America's college basketball knockout tournament. One loss ends a team's run. One big upset can make a new fan.</p>
-          <p>A <b>bracket</b> is your prediction of who wins each game, all the way to the champion. Pick with your head, your hometown spirit, or a player you want to follow.</p>
-          <div class="welcome-actions"><button class="btn red" type="button" data-go="explore">Find a team to root for →</button><button class="link" type="button" data-go="bracket">I know the game. Start picking.</button></div>
+          <p class="kicker">College basketball's knockout tournament</p>
+          <h2>64 teams.<br>One champion.</h2>
+          <p>Pick who wins each game. One loss sends a team home. Your predictions make a <b>bracket</b>.</p>
+          <div class="welcome-actions"><button class="btn red" type="button" data-go="explore">Meet the players →</button><button class="link" type="button" data-go="bracket">Start my bracket</button></div>
         </div>
         <div class="tournament-path" aria-label="The tournament narrows from 64 teams to one champion">
-          <span class="kicker">Six rounds. Your story.</span>
-          <div><b>64</b><span>teams in this bracket</span></div><i>↓</i>
-          <div><b>16</b><span>Sweet 16: sixteen remain</span></div><i>↓</i>
-          <div><b>4</b><span>Final Four: four region winners</span></div><i>↓</i>
-          <div class="path-champ"><b>1</b><span>national champion</span></div>
+          <div><b>64</b><span>Teams</span></div><i>→</i>
+          <div><b>16</b><span>Sweet 16</span></div><i>→</i>
+          <div><b>4</b><span>Final Four</span></div><i>→</i>
+          <div class="path-champ"><b>1</b><span>Champion</span></div>
         </div>
       </div>
       <div class="learn-grid">
         <div class="card lesson">
-          <p class="kicker">Try one pick · Practice only</p><h3 class="sec-h">Favorite or underdog?</h3>
-          <p class="sub">The number next to a team is its <b>seed</b>: its ranking from 1 to 16 within a tournament region. A smaller number means a higher-ranked team.</p>
-          <div class="practice-match"><button type="button" data-practice="favorite" aria-pressed="false"><b>5</b><span>Higher-ranked team<small>Back the favorite</small></span></button><span class="versus">VS</span><button type="button" data-practice="underdog" aria-pressed="false"><b>12</b><span>Lower-ranked team<small>Call an upset</small></span></button></div>
-          <p id="practiceFeedback" class="practice-feedback" aria-live="polite">Tap a team. You're predicting who advances, just like in the real bracket.</p>
-        </div>
-        <div class="card lesson"><p class="kicker">Your game plan</p><h3 class="sec-h">Pick. Follow. Celebrate.</h3>
-          <ol class="game-plan"><li><b>Find your connection</b><span>Explore a home region or follow a Chinese player.</span></li><li><b>Build your bracket</b><span>Choose 63 winners before games begin. Auto-fill can get you started; every pick is yours to edit.</span></li><li><b>Follow the tournament</b><span>Correct picks earn points. Later rounds are worth more. See how your bracket compares with the crowd.</span></li></ol>
+          <p class="kicker">A practice game</p><h3 class="sec-h">Who advances?</h3>
+          <p class="sub">The seed is a team's rank. Smaller number, higher rank.</p>
+          <div class="practice-match"><button type="button" data-practice="favorite" aria-pressed="false"><img src="images/teams/E5.png" alt="" width="48" height="48"><span>St. John's<small>#5 · Favorite</small></span><span class="practice-check" aria-hidden="true">✓</span></button><span class="versus">VS</span><button type="button" data-practice="underdog" aria-pressed="false"><img src="images/teams/E12.png" alt="" width="48" height="48"><span>Northern Iowa<small>#12 · Underdog</small></span><span class="practice-check" aria-hidden="true">✓</span></button></div>
+          <p id="practiceFeedback" class="practice-feedback" aria-live="polite">Tap your winner.</p>
         </div>
       </div>
-      <details class="card rules"><summary>More to know: rounds, points, and this prototype</summary><div class="rules-body">
+      <details class="card rules"><summary>Rules &amp; scoring</summary><div class="rules-body">
         <p>This prototype begins with 64 teams after the opening games. Teams advance through the Round of 64, Round of 32, Sweet 16, Elite 8, Final Four, and championship.</p>
         <p>Correct picks earn 10, 20, 40, 80, 160, and 320 points in those rounds. A perfect bracket earns 1,920 points. Changing a winner clears later picks that depend on that team.</p>
         <p>Entry is free in the concept. The proposed prize is 50,000 RMB; the team is still choosing the prize rule. This demo uses the 2026 field and placeholder dates. Entries stay in your browser and results are simulated in Standings.</p>
@@ -82,9 +77,13 @@
     </section>
 
     <section class="view" id="v-explore" hidden aria-label="Teams and regions">
-      <div class="card explore-head"><p class="kicker">Find your connection</p><h2 class="sec-h">A whole country. A team for you.</h2><p class="sub">Explore the places, schools, and players behind the bracket. Hover, focus, or tap a region to meet its teams.</p>
+      <div class="explore-title"><p class="kicker">Find someone to root for</p><h2 class="sec-h">Players &amp; teams</h2><div class="discovery-tabs" role="tablist" aria-label="Explore"><button type="button" role="tab" data-discover="players" aria-selected="true">Players</button><button type="button" role="tab" data-discover="regions" aria-selected="false">Regions &amp; schools</button></div></div>
+      <div id="discoverPlayers"><p class="sub player-intro">Four players from China. Four teams to follow.</p><div id="playerCards" class="player-grid"></div><p class="sub roster-note">2026–27 rosters · This demo uses the 2026 bracket.</p><button class="btn red explore-pick" type="button" data-go="bracket">Make my picks →</button></div>
+      <div id="discoverRegions" class="view" hidden>
+      <div class="card explore-head">
         <div class="seg" role="tablist" aria-label="Region meaning"><button type="button" role="tab" data-map-mode="home" aria-selected="true">School home regions</button><button type="button" role="tab" data-map-mode="bracket" aria-selected="false">Tournament groups</button></div>
         <p class="region-explanation" id="regionExplanation"></p>
+        <details class="region-details"><summary>Why are there two kinds of region?</summary><p>Home regions show a school's location. The NCAA balances its four tournament groups by seed, location, and matchup rules. Purdue, for example, is a Midwest school in the West bracket.</p></details>
       </div>
       <div class="explore-grid">
         <div class="card map-card">
@@ -95,15 +94,16 @@
               <g data-region="south" tabindex="0" role="button" aria-label="South home region" style="--c:var(--south)"><path d="M231 166 275 172 327 191 373 195 410 167 458 166 496 187 486 213 463 232 441 259 431 287 451 323 443 340 429 326 413 291 386 277 356 278 336 267 309 270 285 302 263 281 252 252 220 257Z"/><text x="344" y="225">南</text><text x="344" y="254" class="map-en">SOUTH</text></g>
               <g data-region="east" tabindex="0" role="button" aria-label="East home region" style="--c:var(--east)"><path d="M410 167 414 120 446 108 477 98 497 72 517 66 528 37 547 31 555 59 540 88 552 106 524 111 513 137 496 151 496 187 458 166Z"/><text x="488" y="115">东</text><text x="488" y="141" class="map-en">EAST</text></g>
             </svg>
-            <p class="sub map-caption">Illustrative home-region map, with Hawaii inset. Groups follow the course pitch. 北 labels the Midwest here; 中西部 is its literal Chinese name.</p>
+            <p class="sub map-caption">Simplified map · Hawaii inset · 北 = Midwest (中西部)</p>
           </div>
           <div id="tournamentGroups" class="tournament-groups" hidden></div>
           <div class="pills" id="mapButtons" aria-label="Choose a region"></div>
           <div class="region-story" id="regionStory"></div>
         </div>
-        <div class="card region-roster"><div aria-live="polite" aria-atomic="true"><p class="kicker" id="regionCount"></p><h3 class="sec-h" id="regionTitle"></h3></div><p class="sub">Select a school for its profile. The information buttons in your bracket open the same profiles.</p><div id="regionTeams" class="school-list"></div></div>
+        <div class="card region-roster"><div aria-live="polite" aria-atomic="true"><p class="kicker" id="regionCount"></p><h3 class="sec-h" id="regionTitle"></h3></div><div id="regionTeams" class="school-list"></div></div>
       </div>
-      <div class="card explore-next"><div><h3 class="card-h">Ready to make it yours?</h3><p class="sub">Start with one round, or let your favorite region or Chinese player inspire your picks.</p></div><button type="button" class="btn red" data-go="bracket">Build my bracket →</button></div>
+      <button type="button" class="btn red explore-pick" data-go="bracket">Make my picks →</button>
+      </div>
     </section>
 
     <!-- ===== My bracket ===== -->
@@ -146,29 +146,30 @@
           <div class="helper-body" id="helperBody" hidden>
             <div class="seg" role="tablist" id="helperSeg" aria-label="Ways to fill your bracket">
               <button role="tab" data-h="region">Root for a region</button>
-              <button role="tab" data-h="cn"><span class="cnb">中</span>Root for Chinese players</button>
+              <button role="tab" data-h="cn"><span class="cnb">中</span>Chinese players</button>
             </div>
             <div id="hRegion" class="helper-body" style="padding:0">
-              <p class="rule">Home regions (东 南 西 北) show where a school is located. The four bracket tabs (East, West, South, Midwest) only set who plays whom.</p>
-              <p class="rule">Pick a region. Its teams beat every team from another region. When two teams from your region meet, or two teams from other regions, it’s a coin flip weighted by seed. Each region has Chinese ambassadors who show you around.</p>
+              <p class="rule">Choose a home region. Its schools advance against other regions.</p>
+              <details class="rule"><summary>How auto-fill works</summary><p>Home regions show school locations, not tournament groups. When both teams are from the same region, or neither is from yours, seed-weighted random picks decide the winner.</p></details>
               <div class="opts" id="regionOpts"></div>
             </div>
             <div id="hCn" class="helper-body" style="padding:0" hidden>
-              <p class="rule">Pick the team you want to win it all. That team wins every game. The other teams with Chinese players beat everyone else, and when two of them meet, it’s a coin flip weighted by seed.</p>
+              <p class="rule">Choose a player's team as your champion. Edit any pick afterward.</p>
+              <details class="rule"><summary>How auto-fill works</summary><p>Your chosen team wins every game. Other teams with Chinese players advance against teams without one. Other matchups use seed-weighted random picks.</p></details>
               <div class="opts" id="cnOpts"></div>
             </div>
             <p class="sub">Or <button class="link" id="btnSeed">fill it randomly by seed</button>.</p>
           </div>
         </div>
 
-        <div class="bracket-key"><b>Your bracket key</b><p class="sub">Tap a team to pick the winner. Tap ⓘ for its story. The number is its seed; a smaller number means a higher-ranked team.</p><div class="legend" id="legend"></div></div>
-        <div class="bhead"><p class="sub">Four tournament groups, 16 teams each. Each sends one winner to the Final Four.</p><button class="link" id="viewToggle" type="button" aria-pressed="false">Show full bracket</button></div>
+        <div class="bracket-key"><span>Tap a team to pick. <span class="key-profile">ⓘ opens profiles.</span></span><details><summary>Colors &amp; symbols</summary><div class="legend" id="legend"></div></details></div>
+        <div class="bhead bracket-overview"><p class="sub">16 teams per group. One reaches the Final Four.</p><button class="link" id="viewToggle" type="button" aria-pressed="false">Show full bracket</button></div>
         <div class="pills" role="tablist" id="btabs" aria-label="Bracket regions"></div>
         <p class="round-coach" id="roundCoach" aria-live="polite"></p>
         <div class="rounds" role="tablist" id="rndTabs" aria-label="Rounds" hidden></div>
         <div class="seedinfo">
           <button class="info-btn" id="seedBtn" type="button" aria-expanded="false" aria-controls="seedTip"><span class="info-ic" aria-hidden="true">i</span>What is a seed?</button>
-          <p class="tip" id="seedTip" hidden>Seed: a team’s rank within its bracket, from 1 (strongest) to 16. The number beside each team is its seed.</p>
+          <p class="tip" id="seedTip" hidden>The number beside each team is its seed: 1 is the highest rank, 16 the lowest.</p>
         </div>
         <div class="bracket-scroll" id="bracketView"></div>
       </div>
@@ -234,7 +235,7 @@
 
 <footer><div class="wrap"><p id="dbNotice">Demo: entries are saved in this browser only. Use Standings to simulate the tournament.</p>Student concept for NYU Experience Studio | ESPN China. Uses the 2026 tournament field. Chinese players from 2026-27 Division I rosters reported by Sina Sports. Not affiliated with or endorsed by ESPN, Bilibili or the NCAA. School marks belong to their respective owners. Prize rules are a concept, subject to legal review.</div></footer>
 
-<dialog id="teamDialog" class="team-dialog" aria-labelledby="teamDialogTitle"><button type="button" class="dialog-close" id="teamDialogClose" aria-label="Close team profile">×</button><div id="teamDialogBody"></div></dialog>
+<dialog id="teamDialog" class="team-dialog" aria-labelledby="teamDialogTitle"><div class="profile-topbar"><button type="button" class="dialog-close" id="teamDialogClose" aria-label="Close profile">×</button></div><div id="teamDialogBody"></div></dialog>
 <div id="teamPeek" class="team-peek" role="tooltip" hidden></div>
 
 <div class="bar">
@@ -244,8 +245,17 @@
   </div>
 </div>
 
+<nav class="mobile-nav" aria-label="Mobile sections">
+  <button type="button" data-go="learn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h6l2 2 2-2h6v15h-6l-2 2-2-2H4ZM12 6v15"/></svg><span>Learn</span></button>
+  <button type="button" data-go="explore"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m16 8-2 6-6 2 2-6Z"/></svg><span>Explore</span></button>
+  <button type="button" data-go="bracket"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4v5h5v6H3v5M21 4v5h-5v6h5v5M8 12h8"/></svg><span>My picks</span></button>
+  <button type="button" data-go="crowd"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3M16 5a3 3 0 0 1 0 6M18 15a5 5 0 0 1 3 5"/></svg><span>Crowd</span></button>
+  <button type="button" data-go="standings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V11h5v10M10 21V4h5v17M15 21V8h5v13"/></svg><span>Results</span></button>
+</nav>
+
 <script src="js/logic.js"></script>
 <script src="js/profiles.js"></script>
+<script src="js/players.js"></script>
 <script src="js/guide.js"></script>
 <script src="js/app.js"></script>
 </body>
