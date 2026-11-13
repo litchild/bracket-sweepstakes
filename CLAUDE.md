@@ -26,7 +26,7 @@ knows nothing about March Madness or brackets). Put new source material from the
 - `js/guide.js`: first-visit journey, interactive home-region map and team profile dialogs.
 - `js/home.js`: official highlight playback and links into practice, players, archives and standings.
 - `js/experience.js`: three historical practice games, archive views and leaderboard presentation helpers.
-- `js/history-data.js`: complete 2023–2025 men's brackets, with actual scores and game source links.
+- `js/history-data.js`: complete 2023–2026 men's brackets, with actual scores and game source links.
 - `js/profiles.js`: archived team identities and two season-record snapshots; see `docs/team-sources.md`.
 - `js/players.js`: four featured Chinese-player profiles, with official roster sources and dated competition stats.
 - `images/teams/`: self-hosted school logos for every team in the prototype field.
@@ -56,6 +56,9 @@ knows nothing about March Madness or brackets). Put new source material from the
   The look borrows the feel (black broadcast hero, red slashes, condensed italic headlines, a scrolling ticker,
   Bilibili-style gray canvas with white rounded cards). Keep the "Student concept" tag and the footer disclaimer.
 - **UI copy in English** (the audience is English-speaking), with Chinese characters for region names and the 中 badge.
+- **Bold colors, no pastels.** Use saturated electric blue, violet, orange and acid lime with white or dark ink
+  text. Keep neutral page surfaces. Apply the same palette to all original SVG drawings, practice, archives and
+  leaderboard accents. Region map fills are solid, with contrasting labels and a clear selection outline.
 - **Writing style for all copy:** no em dashes, no litotes, no irony.
 - Use `textContent` for anything a person types (pass-around names).
 
@@ -87,8 +90,9 @@ knows nothing about March Madness or brackets). Put new source material from the
 
 ## UI behavior worth preserving
 
-- First visits open Home, with three official NCAA moments, local photo previews, and paths into practice, players,
-  past brackets and standings. How it works has a three-step journey: learn, explore, pick. Three historical
+- First visits open Home, with seven unique official NCAA videos: one featured clip and two collections of three,
+  2026 and Classics. Each video appears once. Local previews load before explicit playback. The Your turn section
+  has its own phone-and-hand illustration, distinct from the court drawing in Learn. How it works has a three-step journey: learn, explore, pick. Three historical
   practice matchups teach seeds/upsets, single elimination, and the championship. Each reveals the actual result,
   an explanation and a takeaway without changing real picks. Visitors may skip ahead.
   Visiting My bracket stores `bs-onboarding: { started: true }`; returning visitors and saved drafts resume there.
@@ -102,7 +106,7 @@ knows nothing about March Madness or brackets). Put new source material from the
   predictions are locked.
 - The bracket key and home-region color legend appear above the picks.
 - At 600px and below, the primary navigation is a fixed five-item bottom bar: Home, Explore, My picks, Crowd,
-  Results. Learn remains available from Home and the bracket's How it works button. The entry controls sit above it only
+  Standings. Learn remains available from Home and the bracket's How it works button. The entry controls sit above it only
   on My picks. The header is smaller while picking, and pass-around controls follow the bracket. Keep both bars
   clear of content and honor safe-area insets. The three-step journey appears only in Learn and Explore.
 - Keep first-visit copy brief: one definition, a visual tournament path, and three short practice matchups. Extra rules,
@@ -122,15 +126,20 @@ knows nothing about March Madness or brackets). Put new source material from the
   only: picks still go through `applyPick` in `js/logic.js`.
 - Pass-around entries is collapsed to one line with an expand toggle on every screen size, because every visitor to
   the public site sees it. It stays open while a pass-around entry is in progress.
-- Crowd tab: Round of 64 percentages use all brackets. Later rounds use only brackets still live in that game
-  (they picked one of the two teams playing).
-- Past brackets lives in Explore. Years 2023, 2024 and 2025 each contain all 63 games after the First Four. Default
-  to the champion's six wins. Full bracket uses region and round tabs on mobile; larger screens show round
+- Crowd is for predictions: champion popularity, rooting preferences, and picks for upcoming matchups. It does
+  not repeat completed-game results or perfect-bracket counts. Round of 64 percentages use all brackets. Later
+  rounds use eligible brackets that picked one of the two teams playing. Standings owns scoring, rankings and
+  results; its survival trackers do not repeat fan-popularity counts. Keep the short purpose line on each page.
+- Past brackets lives in Explore. Years 2023 through 2026 each contain all 63 games after the First Four. Default
+  to 2026, whose actual champion is Michigan. These completed results remain separate from the playable demo.
+  Open on the champion's six wins. Full bracket uses region and round tabs on mobile; larger screens show round
   columns. Preserve adjacent-game ordering and source links. Historical results never populate current results.
 - Standings defaults to Leaderboard, with a separate Tournament tab for results, KPIs and trackers. Demo controls
   are collapsed. The leaderboard shows a friendly empty state until two real local entries exist. Simulated fans
   use a separate Demo fans tab and never count toward revealing the real-entry board. Ties share ranks. Show
-  podiums only after results exist and label demo results. Preserve the explicit browser-local scope.
+  podiums only after results exist and label demo results. Preserve the explicit browser-local scope. The
+  Game results tab owns tournament outcomes; the leaderboard table focuses on fan, champion pick, correct picks
+  and points, without repeating rooting preferences from Crowd.
 - Pass-around entries let several people enter on one device during class.
 
 ## Storage

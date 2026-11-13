@@ -4,7 +4,7 @@ const PRACTICE_GAMES = [
   {year:2023, team:'FDU', title:'What does one loss mean?', label:'Win or go home', clue:'Purdue was a No. 1 seed. FDU was No. 16. Choose who you think advanced.', why:'FDU held Purdue to 58 points and won by five. Purdue’s tournament ended after this single game.', lesson:'Every round is knockout basketball. Your winner moves forward; the other team goes home.', source:'https://purduesports.com/news/2023/03/17/purdue-season-ends-with-first-round-upset'},
   {year:2025, team:'Florida', title:'Two No. 1 seeds. One title.', label:'Pick a champion', clue:'Florida and Houston both won their regions. Each entered the tournament as a No. 1 seed.', why:'Florida rallied from 12 points down and forced turnovers on Houston’s final two possessions to win, 65–63.', lesson:'Seeds belong to regions, so two No. 1 seeds can meet. Six straight wins make a champion.', source:'https://floridagators.com/news/2025/4/8/mens-basketball-florida-houston-ncaa-championship-game-april-7-2025'}
 ];
-let practiceIndex=0, practiceAnswers={}, archiveYear=2025, archiveView='path', archiveRegion='East', archiveRound=1;
+let practiceIndex=0, practiceAnswers={}, archiveYear=2026, archiveView='path', archiveRegion='East', archiveRound=1;
 function archiveRoundGames(tournament,region,round) {
   const slot={}, order=[1,8,5,4,6,3,7,2];
   tournament.games.filter(g=>g.round===1&&g.region===region).forEach(g=>{
@@ -59,7 +59,7 @@ function archiveGameCard(game) {
 function renderArchive() {
   const tournament=ARCHIVE[archiveYear], final=tournament.games.find(g=>g.round===6), champion=final.teams.find(t=>t.won), runner=final.teams.find(t=>!t.won);
   const years=$('archiveYears');years.textContent='';
-  [2025,2024,2023].forEach(y=>{const b=el('button','pill',String(y));b.type='button';b.setAttribute('role','tab');b.setAttribute('aria-selected',String(y===archiveYear));b.addEventListener('click',()=>{archiveYear=y;renderArchive();$('archiveYears').querySelector('[aria-selected="true"]').focus();});years.append(b);});
+  Object.keys(ARCHIVE).map(Number).sort((a,b)=>b-a).forEach(y=>{const b=el('button','pill',String(y));b.type='button';b.setAttribute('role','tab');b.setAttribute('aria-selected',String(y===archiveYear));b.addEventListener('click',()=>{archiveYear=y;renderArchive();$('archiveYears').querySelector('[aria-selected="true"]').focus();});years.append(b);});
   const hero=$('archiveChampion');hero.textContent='';const art=el('img','archive-trophy');art.src='images/trophy.svg';art.alt='';art.width=100;art.height=90;
   const text=el('div');text.append(el('p','kicker',`${archiveYear} national champion`),el('h4','',champion.name),el('p','',`${champion.score}–${runner.score} over ${runner.name}`));hero.append(art,text,historyLogo(champion));
   document.querySelectorAll('[data-archive-view]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.archiveView===archiveView)));

@@ -5,6 +5,7 @@ const path=require('node:path');
 const archive=require('../js/history-data.js');
 const profiles=require('../js/profiles.js');
 const {archiveRoundGames,rankBrackets,PRACTICE_GAMES,practiceGame}=require('../js/experience.js');
+const {MOMENTS}=require('../js/home.js');
 
 test('archives contain complete, consistent 63-game knockout tournaments',()=>{
   for(const [year,t] of Object.entries(archive)){
@@ -17,8 +18,27 @@ test('archives contain complete, consistent 63-game knockout tournaments',()=>{
       assert.ok(winner.score>loser.score);
       if(g.round<6){const next=t.games.filter(n=>n.round===g.round+1&&n.teams.some(x=>x.id===winner.id));assert.equal(next.length,1,`${year}: ${winner.name} advances once`);}
     }
-    const final=t.games.find(g=>g.round===6);assert.equal(final.teams.find(t=>t.won).name,year==='2025'?'Florida':'UConn');
+    const final=t.games.find(g=>g.round===6);assert.equal(final.teams.find(t=>t.won).name,({2023:'UConn',2024:'UConn',2025:'Florida',2026:'Michigan'})[year]);
   }
+});
+test('2026 archive includes the complete field and six Michigan wins',()=>{
+  const games=archive[2026].games;
+  assert.equal(new Set(games.filter(g=>g.round===1).flatMap(g=>g.teams.map(t=>t.id))).size,64);
+  const run=games.filter(g=>g.teams.some(t=>t.id===archive[2026].champion));
+  assert.equal(run.length,6);assert.ok(run.every(g=>g.teams.find(t=>t.won).id===archive[2026].champion));
+  assert.deepEqual(Object.fromEntries(games.find(g=>g.round===6).teams.map(t=>[t.name,t.score])),{UConn:63,Michigan:69});
+});
+test('Home videos have unique clips, local previews and valid onward links',()=>{
+  const videos=Object.entries(MOMENTS);assert.equal(videos.length,7);
+  assert.equal(new Set(videos.map(([,m])=>m.video)).size,videos.length);
+  assert.equal(videos.filter(([,m])=>m.collection==='2026').length,3);
+  assert.equal(videos.filter(([,m])=>m.collection==='classics').length,3);
+  videos.forEach(([key,m])=>{
+    assert.match(m.video,/^[\w-]{11}$/);
+    if(key!=='title')assert.equal(fs.readFileSync(path.join(__dirname,'..','images/moments',key+'.jpg')).subarray(0,3).toString('hex'),'ffd8ff');
+    if(m.archive)assert.equal(archive[m.archive].games.filter(g=>g.round===m.round&&g.region===m.region&&g.teams.some(t=>t.name===m.team)).length,1);
+    else assert.ok(m.source||PRACTICE_GAMES[m.practice]?.source);
+  });
 });
 test('regional bracket columns preserve adjacent winners and all 15 games',()=>{
   for(const t of Object.values(archive))for(const region of ['East','West','South','Midwest']){

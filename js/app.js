@@ -370,7 +370,7 @@ function hbar(labelNodes, frac, cssColor) {
 }
 function renderCrowd() {
   const E = allEntries(); const N = E.length; const simN = S.simEntries.length;
-  $("crowdSub").textContent = N ? `${fmt(N)} bracket${N === 1 ? "" : "s"} entered${simN ? `, including ${fmt(simN)} simulated` : ""}. Updates live as people enter.` : "No brackets yet. Enter yours and the crowd’s picks fill in here.";
+  $("crowdSub").textContent = N ? `${fmt(N)} local bracket${N === 1 ? "" : "s"}${simN ? ` · ${fmt(simN)} simulated` : ""}` : "Enter a bracket to see the crowd’s choices.";
   const cb = $("champBars"); cb.textContent = "";
   if (!N) cb.append(el("p", "empty", "Waiting for the first entry."));
   else {
@@ -397,26 +397,24 @@ function renderCrowd() {
   });
   const ml = $("muList"); ml.textContent = "";
   const win = S.winners; const started = locked();
-  const perfect = E.filter(e => isPerfect(e.picks, win));
-  $("muTitle").textContent = started ? "Live matchups" : "First-round picks";
+  $("muTitle").textContent = started ? "Next matchup picks" : "First-round picks";
   $("muSub").textContent = started
-    ? `Round of 64 shows all ${fmt(N)} brackets. Later rounds show only the brackets still live in that game, meaning they picked one of the two teams playing. ${fmt(perfect.length)} of ${fmt(N)} brackets are still perfect.`
-    : "Share of all brackets picking each team. Once games start, later rounds show only the brackets still live in each game.";
+    ? "Share of eligible brackets picking each team. Later rounds count brackets that picked one of the teams playing."
+    : "The percentage of brackets picking each team to advance.";
   if (!N) { ml.append(el("p", "empty", "No picks to show yet.")); return; }
-  const live = GAMES.filter(g => g.br === S.cbr && cands(g, win).every(Boolean));
-  if (!live.length) { ml.append(el("p", "empty", "These matchups aren’t set yet. They fill in as games are played.")); return; }
+  const live = GAMES.filter(g => g.br === S.cbr && !win[g.id] && cands(g, win).every(Boolean));
+  if (!live.length) { ml.append(el("p", "empty", decidedIds(win).length===63 ? "All games are finished. See the final rankings in Standings." : "No upcoming matchups in this group. Choose another group or explore fan favorites above.")); return; }
   live.forEach(g => {
     const [a, b] = cands(g, win);
     const pool = g.round === 1 ? E : E.filter(e => e.picks[g.id] === a || e.picks[g.id] === b);
     const na = pool.filter(e => e.picks[g.id] === a).length, nb = pool.filter(e => e.picks[g.id] === b).length, tot = na + nb;
-    const w = win[g.id];
     const box = el("div", "mu"); const row = el("div", "row");
-    const la = el("span"); la.append(el("b", null, tot ? `${pct(na, tot)}%` : "–"), document.createTextNode(` ${TEAMS[a].seed} ${TEAMS[a].name}${CN_PLAYERS[a] ? " 中" : ""}${w === a ? " (won)" : ""}`));
-    const lb = el("span"); lb.append(document.createTextNode(`${TEAMS[b].seed} ${TEAMS[b].name}${CN_PLAYERS[b] ? " 中" : ""}${w === b ? " (won)" : ""} `), el("b", null, tot ? `${pct(nb, tot)}%` : "–"));
+    const la = el("span"); la.append(el("b", null, tot ? `${pct(na, tot)}%` : "–"), document.createTextNode(` ${TEAMS[a].seed} ${TEAMS[a].name}${CN_PLAYERS[a] ? " 中" : ""}`));
+    const lb = el("span"); lb.append(document.createTextNode(`${TEAMS[b].seed} ${TEAMS[b].name}${CN_PLAYERS[b] ? " 中" : ""} `), el("b", null, tot ? `${pct(nb, tot)}%` : "–"));
     row.append(la, lb);
     const sp = el("div", "split"); const ia = el("i", "a"), ib = el("i", "b");
     ia.style.width = tot ? `${na / tot * 100}%` : "0"; ib.style.width = tot ? `${nb / tot * 100}%` : "0"; sp.append(ia, ib);
-    const meta = el("div", "row"); meta.append(el("span", "empty", `${ROUND_NAME[g.round]} · ${g.round === 1 ? "all brackets" : `${fmt(tot)} live bracket${tot === 1 ? "" : "s"}`}`), el("span", "empty", w ? "Final" : (g.round > 1 && !tot ? "No brackets picked this matchup" : "Upcoming")));
+    const meta = el("div", "row"); meta.append(el("span", "empty", `${ROUND_NAME[g.round]} · ${g.round === 1 ? "all brackets" : `${fmt(tot)} eligible bracket${tot === 1 ? "" : "s"}`}`), el("span", "empty", g.round > 1 && !tot ? "No brackets picked this matchup" : "Upcoming"));
     box.append(row, sp, meta); ml.append(box);
   });
 }
@@ -484,7 +482,7 @@ async function renderStandings() {
   $("kGames").textContent = `${played} / 63`;
   const nr = GAMES.filter(g => !win[g.id] && cands(g, win).every(Boolean));
   $("kGamesL").textContent = played === 63 ? "Tournament complete" : `Next: ${nr.length ? ROUND_NAME[Math.min(...nr.map(g => g.round))] : "Round of 64"}`;
-  $("stSub").textContent = played ? "Scoring: 10 points per first-round win, doubling each round up to 320 for the champion." : "Games haven’t started. Scores and eliminations appear as rounds are played.";
+  $("stSub").textContent = played ? `${played} of 63 games scored · Demo results` : "Rankings begin when results are added.";
   // Chinese players tracker
   const ctk = $("cnTrack"); ctk.textContent = "";
   CN_IDS.forEach(id => {
@@ -492,18 +490,16 @@ async function renderStandings() {
     const c = el("div", "cnt");
     const top = el("span", "opt-top"); top.append(cnBadge(), document.createTextNode(`${t.seed} seed · ${BR[t.br].name} bracket`));
     const st = champ ? el("span", "status champ-s", "Champion") : out ? el("span", "status out", `Out in ${ROUND_NAME[out]}`) : el("span", "status alive-s", "Alive");
-    const fans = E.filter(e => e.picks["F6-0"] === id).length;
-    c.append(top, el("span", "nm", t.name), el("span", "sub", `Player: ${CN_PLAYERS[id]}`), st, el("span", "sub", `${fmt(fans)} picked them to win it all`));
+    c.append(top, el("span", "nm", t.name), el("span", "sub", CN_PLAYERS[id]), st);
     ctk.append(c);
   });
   // regions alive
   const elim = eliminated(win); const ac = $("aliveCards"); ac.textContent = "";
   ROOT_ORDER.forEach(k => {
     const teams = Object.values(TEAMS).filter(t => t.home === k); const alive = teams.filter(t => !elim.has(t.id)).length;
-    const fans = E.filter(e => e.root === k).length;
     const c = el("div", "card"); c.style.setProperty("--c", `var(${ROOTS[k].color})`);
     const hh = el("h3", "card-h"); hh.append(zhSpan(k, " "), document.createTextNode(ROOTS[k].name)); c.append(hh);
-    c.append(el("div", "big", `${alive} / ${teams.length}`), el("div", "empty", alive ? "teams still alive" : "eliminated"), el("div", "empty", `${fmt(fans)} fan${fans === 1 ? "" : "s"} rooting`));
+    c.append(el("div", "big", `${alive} / ${teams.length}`), el("div", "empty", alive ? "teams still alive" : "eliminated"));
     ac.append(c);
   });
   // leaderboard
@@ -529,9 +525,8 @@ async function renderStandings() {
     const rank = r.rank;
     const pn = (ps[r.e.id] && ps[r.e.id].name) || "";
     const name = r.e.sim ? `Simulated fan ${r.e.n}` : r.e.guest ? (r.e.name || "Guest") : r.e.id === S.uid ? (pn ? `${pn} (you)` : "You") : (pn || "Someone");
-    const rc = el("td",'lb-root'); rc.append(fanTag(r.e.root, r.e.cnTeam));
     const ch = r.e.picks["F6-0"] ? TEAMS[r.e.picks["F6-0"]] : null;
-    tr.append(el("td", "n", played?String(rank):'–'), el("td", null, name), rc, el("td", null, ch ? ch.name : "–"),el('td','n',`${r.correct}/${played}`), el("td", "n", String(r.pts)));
+    tr.append(el("td", "n", played?String(rank):'–'), el("td", null, name), el("td", null, ch ? ch.name : "–"),el('td','n',`${r.correct}/${played}`), el("td", "n", String(r.pts)));
     tb.append(tr);
     if(i<3&&played){const card=el('div','podium-place');card.append(el('span','podium-rank',`#${rank}`),el('b','',name),el('strong','',`${r.pts}`),el('small','','points'));podium.append(card);}
   });
