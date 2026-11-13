@@ -56,9 +56,11 @@ knows nothing about March Madness or brackets). Put new source material from the
   The look borrows the feel (black broadcast hero, red slashes, condensed italic headlines, a scrolling ticker,
   Bilibili-style gray canvas with white rounded cards). Keep the "Student concept" tag and the footer disclaimer.
 - **UI copy in English** (the audience is English-speaking), with Chinese characters for region names and the 中 badge.
-- **Bold colors, no pastels.** Use saturated electric blue, violet, orange and acid lime with white or dark ink
-  text. Keep neutral page surfaces. Apply the same palette to all original SVG drawings, practice, archives and
-  leaderboard accents. Region map fills are solid, with contrasting labels and a clear selection outline.
+- **Original color palette.** Preserve the original repository's red, black, gray and white surfaces, cyan pick
+  accents, and home-region colors in light and dark modes. New sections and illustrations should fit that palette.
+  Keep the interface sleek and clean; retain playful details in photos, drawings and interactions. Teams & regions
+  uses solid regional reds and blues, matching region-button swatches, and a selected-region accent on the school
+  list. Avoid faded map fills and extra gray panels around the map controls.
 - **Writing style for all copy:** no em dashes, no litotes, no irony.
 - Use `textContent` for anything a person types (pass-around names).
 
@@ -111,7 +113,8 @@ knows nothing about March Madness or brackets). Put new source material from the
   clear of content and honor safe-area insets. The three-step journey appears only in Learn and Explore.
 - Keep first-visit copy brief: one definition, a visual tournament path, and three short practice matchups. Extra rules,
   region explanations, and auto-fill mechanics belong in expandable details.
-- Explore defaults to Players, with a separate Regions & schools tab. Four verified player profiles connect to
+- Teams & regions opens on the original regional map and school list. Players and Past brackets remain separate
+  tabs. Four verified player profiles connect to
   their school profiles through School/Player tabs in the same dialog. On phones this dialog is a bottom sheet
   with a persistent close control. Stat labels must name the season and competition; never imply the snapshots
   are current NCAA performance. Player champion buttons use the existing Chinese-player auto-fill rule.

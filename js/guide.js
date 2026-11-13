@@ -1,5 +1,5 @@
 // Guided learning, region discovery and school profiles. All content and assets load locally.
-let mapMode = 'home', mapRegion = 'east', peekTimer, profileTrigger, discoverMode = 'players';
+let mapMode = 'home', mapRegion = 'east', peekTimer, profileTrigger, discoverMode = 'regions';
 function teamLogo(id) {
   const img = document.createElement('img'); img.className = 'team-logo';
   img.src = `images/teams/${id}.png`; img.alt = ''; img.width = 28; img.height = 28;
@@ -122,6 +122,7 @@ function renderRegion() {
   const home = mapMode === 'home', root = ROOTS[mapRegion];
   const bracketKey = {east:'E',west:'W',south:'S',midwest:'M'}[mapRegion];
   const teams = Object.values(TEAMS).filter(t => home ? t.home === mapRegion : t.br === bracketKey).sort((a,b)=>a.seed-b.seed || a.name.localeCompare(b.name));
+  $('regionTeams').closest('.region-roster').dataset.rosterRegion=mapRegion;
   $('regionTitle').textContent = `${root.zh} ${root.name}`;
   $('regionCount').textContent = `${teams.length} schools · ${home ? 'Home region' : 'Tournament group'}`;
   $('regionExplanation').textContent = home ? 'Where schools are based. Tap a region to explore.' : 'Who plays whom. Each group sends one team to the Final Four.';

@@ -1,12 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 360" fill="none">
-  <rect width="560" height="360" rx="24" fill="#b8ff00"/>
+  <rect width="560" height="360" rx="24" fill="#E3E5E7"/>
   <g stroke="#0b0c10" stroke-width="1" opacity=".13"><path d="M0 40h560M0 80h560M0 120h560M0 160h560M0 200h560M0 240h560M0 280h560M0 320h560M40 0v360M80 0v360M120 0v360M160 0v360M200 0v360M240 0v360M280 0v360M320 0v360M360 0v360M400 0v360M440 0v360M480 0v360M520 0v360"/></g>
   <g stroke="#0b0c10" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="m58 113 93-7 5 60 72-3M67 225l91-7-2-52M59 108l-2-34M67 222l-3 43M227 130l4 82 69-6"/><path d="M321 256c-18-92 58-142 112-100" stroke-dasharray="7 11"/><path d="m420 134 19 25-31 2"/></g>
-  <rect x="203" y="126" width="50" height="83" rx="12" fill="#6515fa" transform="rotate(-5 203 126)" stroke="#0b0c10" stroke-width="3"/>
+  <rect x="203" y="126" width="50" height="83" rx="12" fill="#00AEEC" transform="rotate(-5 203 126)" stroke="#0b0c10" stroke-width="3"/>
   <path d="m217 165 10 12 18-28" stroke="#0b0c10" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="310" cy="267" r="49" fill="#ff5a00" stroke="#0b0c10" stroke-width="4"/>
+  <circle cx="310" cy="267" r="49" fill="#E87534" stroke="#0b0c10" stroke-width="4"/>
   <g stroke="#0b0c10" stroke-width="3"><path d="M266 247c28 1 59 15 88 39M282 228c11 37 18 67 15 85M273 299c20-28 53-51 79-52M334 223c-22 31-43 37-70 35"/></g>
-  <g stroke="#0b0c10" stroke-width="4" stroke-linejoin="round"><path d="M403 60h97v99h-97z" fill="#ffffff" transform="rotate(6 403 60)"/><path d="m426 111 43 5-3 33-43-5z"/><ellipse cx="447" cy="158" rx="42" ry="10" fill="#ff5a00"/><path d="m411 163 12 43 43 5 17-42M424 167l12 42M442 169l9 41M462 168l-5 40M418 183l55 6"/></g>
+  <g stroke="#0b0c10" stroke-width="4" stroke-linejoin="round"><path d="M403 60h97v99h-97z" fill="#ffffff" transform="rotate(6 403 60)"/><path d="m426 111 43 5-3 33-43-5z"/><ellipse cx="447" cy="158" rx="42" ry="10" fill="#E87534"/><path d="m411 163 12 43 43 5 17-42M424 167l12 42M442 169l9 41M462 168l-5 40M418 183l55 6"/></g>
   <g fill="#ffffff" stroke="#0b0c10" stroke-width="3"><path d="m91 35 7 14 16 1-12 11 3 16-14-8-14 8 3-16-12-11 16-1z"/><path d="m473 270 5 11 12 1-9 8 2 12-10-6-11 6 3-12-9-8 12-1z"/></g>
   <g stroke="#0b0c10" stroke-width="4" stroke-linecap="round"><path d="m204 275-19 12M208 296l-22 7M367 41l4 18M385 47l-7 15M364 326l10-4M379 316l6-9"/></g>
   <text x="48" y="321" fill="#0b0c10" font-family="Arial,sans-serif" font-size="15" font-weight="700" transform="rotate(-5 48 321)">YOUR PICK GOES HERE.</text>
