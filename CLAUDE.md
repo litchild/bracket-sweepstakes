@@ -38,7 +38,8 @@ knows nothing about March Madness or brackets). Put new source material from the
   script in the browser (globals) and via `require()` in tests. Keep it free of DOM code.
 - `js/app.js`: UI, rendering and storage. Depends on globals from `logic.js`.
 - `js/guide.js`: first-visit journey, interactive home-region map and team profile dialogs.
-- `js/home.js`: official highlight playback and links into practice, players, archives and standings.
+- `js/home.js`: retained official clip catalog for native WeChat development and its content sync. The website
+  does not load this file; it contains no browser playback or homepage behavior.
 - `js/experience.js`: six historical practice games, archive views and leaderboard presentation helpers.
 - `js/camp.js`: browser-local learning XP, badges, a four-team mini bracket and a rules quiz.
 - `js/history-data.js`: complete 2023–2026 men's brackets, with actual scores and game source links.
@@ -64,11 +65,10 @@ knows nothing about March Madness or brackets). Put new source material from the
 - **Local page assets.** Classmates in mainland China may open the site without a VPN. Google Fonts, Google
   services and most foreign CDNs are blocked or very slow there, and a blocked stylesheet can leave the page blank.
   Keep fonts, scripts and images in the repo. User-initiated profile links may open an external team page in a new
-  tab, but the experience must never depend on it. The user's requested video playback is the only runtime
-  exception: pressing Play may create an official youtube-nocookie.com iframe. Never preload external players,
-  fonts, scripts or image assets. Remove the iframe on close and offer external video and game-story links plus
-  a local practice path. Label the mainland-China playback limitation. Vercel is blocked in mainland China, so the
-  site stays on Netlify. See `docs/history-sources.md` for video and archive sources.
+  tab, but the experience must never depend on it. The website's video homepage and playback were removed at
+  the user's request on November 15, 2026. Do not load external players, fonts, scripts or image assets. The native
+  WeChat development project retains its separate clip catalog and media setup described below. Vercel is blocked
+  in mainland China, so the site stays on Netlify. See `docs/history-sources.md` for video and archive sources.
 - **No ESPN or Bilibili logos or wordmarks.** A working entry page with real logos could pass as an official contest.
   The look borrows the feel (black broadcast hero, red slashes, condensed italic headlines, a scrolling ticker,
   Bilibili-style gray canvas with white rounded cards). Keep the "Student concept" tag and the footer disclaimer.
@@ -109,17 +109,18 @@ knows nothing about March Madness or brackets). Put new source material from the
 
 ## UI behavior worth preserving
 
-- First visits open Home. Michigan's 2026 title game is the featured headline, photo and clip. Eleven unique
-  official videos are available: one featured clip and five each in 2026 and Classics. Each appears once in
-  Home's cards. Previous/Next controls browse all eleven in one dialog; preserve the original trigger for focus
-  restoration and replace the iframe on each change. Local previews load before explicit playback.
-- Home and the game intro use the phone-and-hand illustration. How it works has a three-step journey:
-  learn, explore, pick. Fan camp offers ten learning challenges in three tabs: six historical game picks,
-  a three-pick Final Four mini bracket, and three rules questions. Each activity stays separate from real picks.
+- First website visits open Learn. The video homepage and player dialog are removed. Returning visitors and saved
+  drafts resume My picks. The native WeChat development app keeps its existing Home and eleven-clip experience.
+- Learn explains March Madness and defines a bracket as predictions of every game's winner through the champion.
+  Three short steps explain tapping a winner, advancing that pick, and choosing a champion. Keep the illustrated
+  four-to-two-to-one practice path and clear phone-and-hand drawing, with readable team labels, a cyan selection and a check mark.
+  The three-step journey connects Learn, Explore and Pick. Fan camp opens on Mini bracket and offers ten learning
+  challenges across three tabs: a three-pick Final Four mini bracket, six historical game picks, and three rules
+  questions. XP and badges live in an expandable progress section. Each activity stays separate from real picks.
   Practice choices reveal scores, an explanation and a takeaway. Save the first choice, then make it read-only.
   Visitors may skip the warm-up and enter the real bracket at any time.
   Visiting My bracket stores `bs-onboarding: { started: true }`; returning visitors and saved drafts resume there.
-  The How it works tab and bracket-header link always reopen the guide. Auto-fill remains in the collapsed helper.
+  The Learn tab and bracket-header How it works link always reopen the guide. Auto-fill remains in the collapsed helper.
 - Teams & regions separates school home regions from NCAA tournament groups. The map supports hover, focus,
   Enter/Space and touch; the buttons provide the same selection. Every roster row opens a school profile.
   Keep the explicit Purdue example and illustrative-map label so the two kinds of region cannot be confused.
@@ -131,10 +132,10 @@ knows nothing about March Madness or brackets). Put new source material from the
   player context where applicable, and an external team information link. Profile access remains available when
   predictions are locked.
 - The bracket key and home-region color legend appear above the picks.
-- At 600px and below, the primary navigation is a fixed five-item bottom bar: Home, Explore, My picks, Crowd,
-  Standings. Learn remains available from Home and the bracket's How it works button. The entry controls sit above it only
+- At 600px and below, the primary navigation is a fixed five-item bottom bar: Learn, Explore, My picks, Crowd,
+  Standings. Learn also remains available from the bracket's How it works button. The entry controls sit above it only
   on My picks. The header is smaller while picking, and pass-around controls follow the bracket. Keep both bars
-  clear of content and honor safe-area insets. The three-step journey appears only in Learn and Explore.
+  clear of content and honor safe-area insets. The three-step journey appears only in Explore.
 - Keep first-visit copy brief: one definition, a visual tournament path, and short practice activities. Extra rules,
   region explanations, and auto-fill mechanics belong in expandable details.
 - Teams & regions opens on the original regional map and school list. Players and Past brackets remain separate
@@ -150,7 +151,9 @@ knows nothing about March Madness or brackets). Put new source material from the
   visitors can choose Show full bracket to see the original four-column layout. A "Next round" button appears when the round is fully picked, and after
   the Elite 8 it leads to the next bracket tab or the Final Four. The Final Four tab stacks both semifinals, the
   championship and the champion banner. This is rendering
-  only: picks still go through `applyPick` in `js/logic.js`.
+  only: picks still go through `applyPick` in `js/logic.js`. On phones, all five tournament tabs remain visible
+  without horizontal scrolling. Number games within each round. When a future round has no available teams yet,
+  offer a clear route back to the earlier round that needs picks.
 - Pass-around entries is collapsed to one line with an expand toggle on every screen size, because every visitor to
   the public site sees it. It stays open while a pass-around entry is in progress.
 - Crowd is for predictions: champion popularity, rooting preferences, and picks for upcoming matchups. It does

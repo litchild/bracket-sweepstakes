@@ -90,7 +90,6 @@ function renderBoardEmpty(count,isDemo) {
 function initExperience() {
   const saved=load('bs-practice');if(saved&&typeof saved==='object'){PRACTICE_GAMES.forEach((d,i)=>{if(practiceGame(d).teams.some(t=>t.id===saved[i]))practiceAnswers[i]=saved[i];});}
   practiceIndex=Math.max(0,PRACTICE_GAMES.findIndex((_,i)=>!practiceAnswers[i]));
-  $('tryPractice').addEventListener('click',resumeCamp);
   document.querySelectorAll('[data-archive-view]').forEach(b=>b.addEventListener('click',()=>{archiveView=b.dataset.archiveView;renderArchive();}));
   document.querySelectorAll('[data-board]').forEach(b=>b.addEventListener('click',()=>{S.boardMode=b.dataset.board;renderStandings();}));
   document.querySelectorAll('[data-standings]').forEach(b=>b.addEventListener('click',()=>{S.standingsPanel=b.dataset.standings;renderStandings();}));

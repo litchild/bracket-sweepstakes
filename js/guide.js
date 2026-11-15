@@ -18,12 +18,12 @@ function navigateTo(tab, focus = true) {
 }
 function updateJourney() {
   document.body.dataset.page = S.tab;
-  ['home','learn','explore','bracket','crowd','standings'].forEach(tab => { $(`v-${tab}`).hidden = S.tab !== tab; });
+  ['learn','explore','bracket','crowd','standings'].forEach(tab => { $(`v-${tab}`).hidden = S.tab !== tab; });
   document.querySelectorAll('.tab').forEach(b => b.setAttribute('aria-selected', String(b.dataset.tab === S.tab)));
   document.querySelectorAll('[data-step]').forEach(b => {
     if (b.dataset.step === S.tab) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
   });
-  document.querySelector('.journey').hidden = !['learn','explore'].includes(S.tab);
+  document.querySelector('.journey').hidden = S.tab !== 'explore';
   document.querySelector('.bar').hidden = S.tab !== 'bracket';
   document.querySelectorAll('.mobile-nav button').forEach(b=>{
     if (b.dataset.go === S.tab) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current');
@@ -146,7 +146,7 @@ function renderRegion() {
   });
 }
 function initGuide() {
-  const onboard=load('bs-onboarding'); S.tab = countPicks(S.picks) || onboard?.started ? 'bracket' : 'home';
+  const onboard=load('bs-onboarding'); S.tab = countPicks(S.picks) || onboard?.started ? 'bracket' : 'learn';
   // Class-demo controls follow the main bracket rather than preceding a fan's first game.
   $('v-bracket').append($('pass'));
   document.querySelectorAll('[data-go],[data-step]').forEach(b=>b.addEventListener('click',()=>navigateTo(b.dataset.go || b.dataset.step)));
@@ -177,5 +177,5 @@ function initGuide() {
   $('teamPeek').addEventListener('mouseenter',()=>clearTimeout(peekTimer)); $('teamPeek').addEventListener('mouseleave',hideTeamPeek);
   document.addEventListener('keydown',e=>{if(e.key==='Escape')hideTeamPeek();});
   window.addEventListener('scroll',hideTeamPeek,true); window.addEventListener('resize',hideTeamPeek);
-  renderPlayers(); renderDiscovery(); renderRegion(); updateJourney(); initExperience(); initHome();
+  renderPlayers(); renderDiscovery(); renderRegion(); updateJourney(); initExperience();
 }
