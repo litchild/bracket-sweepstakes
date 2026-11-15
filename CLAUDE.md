@@ -25,9 +25,10 @@ knows nothing about March Madness or brackets). Put new source material from the
 - The November 13 manual review copy at https://timely-klepon-8e4d37.netlify.app/ is a separate, unlinked project.
   Keep it as an old review copy; use the original project for subsequent website updates. Exclude docs, tests,
   repository metadata and the WeChat development project from the public site.
-- GitHub's connected app currently rejects uploads with 403 despite the user's repository push permission.
-  Direct GitHub CLI sign-in is being configured for pushing the reviewed local commits. Until that succeeds,
-  local changes have not reached GitHub or the original Netlify project.
+- GitHub's connected app may still reject uploads with 403 despite the user's repository push permission.
+  Direct GitHub CLI sign-in was authorized on November 15, 2026. Use the authenticated CLI for pushes and PRs
+  when the connector cannot write. The CLI is installed in the user's local bin, and this checkout has a
+  repository-specific `gh auth git-credential` helper. Reuse that sign-in; keep credentials outside the repo.
 
 ## Files
 
