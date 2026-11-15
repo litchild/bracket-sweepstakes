@@ -85,15 +85,8 @@ function showPlayerProfile(id) {
   const source=el('a','link profile-link','Official player bio ↗');source.href=p.source;source.target='_blank';source.rel='noopener noreferrer';
   body.append(source,el('p','sub roster-note',`2026–27 roster · Photo: ${p.credit}`));finishProfile();
 }
-function renderPlayers() {
-  const box=$('playerCards');box.textContent='';
-  CN_IDS.forEach(id=>{const p=PLAYER_PROFILES[id],t=TEAMS[id],b=el('button','player-card');b.type='button';b.setAttribute('aria-label',`View ${p.name} player profile`);
-    const art=el('span','player-card-art');art.append(playerPhoto(id),teamLogo(id));
-    const copy=el('span','player-card-copy');copy.append(el('b','',p.name),el('span','',t.name),el('small','',`${p.position} · ${p.year}`));b.append(art,copy);b.addEventListener('click',()=>showPlayerProfile(id));box.append(b);
-  });
-}
 function renderDiscovery() {
-  $('discoverPlayers').hidden=discoverMode!=='players';$('discoverRegions').hidden=discoverMode!=='regions';
+  $('discoverRegions').hidden=discoverMode!=='regions';
   $('discoverArchive').hidden=discoverMode!=='archive';if(discoverMode==='archive')renderArchive();
   document.querySelectorAll('[data-discover]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.discover===discoverMode)));
 }
@@ -177,5 +170,5 @@ function initGuide() {
   $('teamPeek').addEventListener('mouseenter',()=>clearTimeout(peekTimer)); $('teamPeek').addEventListener('mouseleave',hideTeamPeek);
   document.addEventListener('keydown',e=>{if(e.key==='Escape')hideTeamPeek();});
   window.addEventListener('scroll',hideTeamPeek,true); window.addEventListener('resize',hideTeamPeek);
-  renderPlayers(); renderDiscovery(); renderRegion(); updateJourney(); initExperience();
+  renderDiscovery(); renderRegion(); updateJourney(); initExperience();
 }

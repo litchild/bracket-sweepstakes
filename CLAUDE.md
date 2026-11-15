@@ -140,8 +140,9 @@ knows nothing about March Madness or brackets). Put new source material from the
   the fixed navigation or entry controls on phones.
 - Keep first-visit copy brief: one definition, a visual tournament path, and short practice activities. Extra rules,
   region explanations, and auto-fill mechanics belong in expandable details.
-- Teams & regions opens on the original regional map and school list. Players and Past brackets remain separate
-  tabs. Four verified player profiles connect to
+- Teams & regions opens on the original regional map and school list, with Regions and Past brackets tabs.
+  The standalone Players tab, cards and introduction were removed at the user's request on November 15, 2026.
+  Four verified player profiles remain connected to
   their school profiles through School/Player tabs in the same dialog. On phones this dialog is a bottom sheet
   with a persistent close control. Stat labels must name the season and competition; never imply the snapshots
   are current NCAA performance. Player champion buttons use the existing Chinese-player auto-fill rule.
