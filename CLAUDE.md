@@ -17,14 +17,17 @@ knows nothing about March Madness or brackets). Put new source material from the
   The user requested a development version first, without a registered AppID. See `wechat/README.md` for the
   import guide, native verification limit, preview and media setup. `wechat/miniprogram/` is the native app root.
   Run `node --test wechat/tests/native.test.js` and `python3 wechat/scripts/preview.py --check` after changes.
-- Current public review site: https://timely-klepon-8e4d37.netlify.app/ (Netlify project
-  `timely-klepon-8e4d37`, Derrick Li's team). Published November 13, 2026 by manually uploading the static site
-  files. This project is not connected to GitHub; update it with another static upload until that connection is
-  configured. Exclude docs, tests, repository metadata and other non-site files from manual uploads.
-- The original repository deployment configuration publishes the repository root on pushes to `main`
-  (`netlify.toml`, no build step), with pull-request previews. Do not assume those pushes update the current review
-  site. The GitHub integration can read this repo but its upload endpoint currently returns 403, so the reviewed
-  changes are committed locally on `feat/guided-onboarding` and have not been pushed or merged.
+- Preferred public website: https://bracket-sweepstakes.netlify.app/ (existing Netlify project
+  `bracket-sweepstakes`, connected to `litchild/bracket-sweepstakes`). The user explicitly requested on November 15,
+  2026 that future changes update this existing GitHub-connected project and preserve its URL. Work on a branch,
+  open a PR, and merge the approved update to `main` so Netlify deploys the repository root automatically
+  (`netlify.toml`, no build step). Verify the resulting deployment. Do not create another Netlify project.
+- The November 13 manual review copy at https://timely-klepon-8e4d37.netlify.app/ is a separate, unlinked project.
+  Keep it as an old review copy; use the original project for subsequent website updates. Exclude docs, tests,
+  repository metadata and the WeChat development project from the public site.
+- GitHub's connected app currently rejects uploads with 403 despite the user's repository push permission.
+  Direct GitHub CLI sign-in is being configured for pushing the reviewed local commits. Until that succeeds,
+  local changes have not reached GitHub or the original Netlify project.
 
 ## Files
 
