@@ -825,6 +825,8 @@ details.demo { display:block; padding:18px 24px; }details.demo > summary { curso
 @media(prefers-reduced-motion:reduce) { .camp-meter i { transition:none; } }
 
 /* A short, mobile-first introduction before the full bracket. */
+/* Keep the hosting attribution visible in page flow, clear of the fixed pick/navigation bars. */
+#nl-badge-frame { position: relative !important; bottom: auto !important; right: auto !important; display: block; margin: 0 16px 16px auto !important; z-index: 1 !important; }
 .welcome { grid-template-columns: minmax(0,1.2fr) minmax(0,1fr); gap: 24px 44px; padding: 36px; }
 .welcome-copy { gap: 18px; }
 .welcome .court-art { grid-column: 2; grid-row: 1 / 3; width: 100%; max-width: 460px; justify-self: center; }

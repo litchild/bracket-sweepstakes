@@ -136,6 +136,8 @@ knows nothing about March Madness or brackets). Put new source material from the
   Standings. Learn also remains available from the bracket's How it works button. The entry controls sit above it only
   on My picks. The header is smaller while picking, and pass-around controls follow the bracket. Keep both bars
   clear of content and honor safe-area insets. The three-step journey appears only in Explore.
+  Netlify's injected attribution badge stays visible in normal page flow after the content so it cannot cover
+  the fixed navigation or entry controls on phones.
 - Keep first-visit copy brief: one definition, a visual tournament path, and short practice activities. Extra rules,
   region explanations, and auto-fill mechanics belong in expandable details.
 - Teams & regions opens on the original regional map and school list. Players and Past brackets remain separate
