@@ -45,9 +45,6 @@ function refreshCamp(before=null) {
   const badges=$('campBadges');badges.textContent='';
   stats.badges.forEach(b=>{const item=el('div','camp-badge'+(b.earned?' earned':''));item.setAttribute('aria-label',`${b.name}: ${b.earned?'earned':b.hint}`);const icon=el('span','camp-badge-icon',b.earned?'✓':b.icon);icon.setAttribute('aria-hidden','true');item.append(icon,el('b','',b.name),el('small','',b.earned?'Earned':b.hint));badges.append(item);});
   $('practiceFinish').hidden=stats.completed!==10;
-  $('homeCampProgress').textContent=stats.completed===10?'Warm-up complete · 120 practice XP':stats.completed?`Warm-up: ${stats.completed} / 10 challenges · ${stats.xp} XP`:'Warm up with 10 short challenges.';
-  $('homeWarmup').textContent=stats.completed===10?'View my badges →':stats.completed?'Continue the warm-up →':'Start the warm-up →';
-  $('tryPractice').textContent=$('homeWarmup').textContent;
   $('campNotice').textContent=before!==null&&stats.xp>before?`+${stats.xp-before} practice XP · ${stats.level}`:'';
 }
 function setCampMode(mode,focus=false) {
@@ -79,7 +76,7 @@ function renderMini() {
   }
   const feedback=$('miniFeedback');feedback.textContent='';
   if(campState.mini.final){const team=campTeam(campState.mini.final),win=el('div','mini-champion');win.append(historyLogo(team),el('div','','Your mini champion'),el('strong','',team.name),el('span','camp-reward','Bracket builder · 30 XP'));feedback.append(win);}
-  if(campState.miniDone){const row=el('div','mini-actions'),next=el('button','btn','Next: quick quiz →'),replay=el('button','link','Try another bracket');next.type=replay.type='button';next.addEventListener('click',()=>setCampMode('quiz',true));replay.addEventListener('click',()=>{campState.mini={};persistCamp();renderMini();refreshCamp();$('miniTitle').focus();});row.append(next,replay);feedback.append(row,el('p','sub camp-scope','Badge earned. Replays keep your XP.'));}
+  if(campState.miniDone){const row=el('div','mini-actions'),next=el('button','btn red','Make my full bracket →'),quiz=el('button','link','Try the quick quiz →'),replay=el('button','link','Try another bracket');next.type=quiz.type=replay.type='button';next.addEventListener('click',()=>navigateTo('bracket'));quiz.addEventListener('click',()=>setCampMode('quiz',true));replay.addEventListener('click',()=>{campState.mini={};persistCamp();renderMini();refreshCamp();$('miniTitle').focus();});row.append(next,quiz,replay);feedback.append(row,el('p','sub camp-scope','Badge earned. Replays keep your XP.'));}
 }
 function renderQuiz() {
   const q=QUIZ_ITEMS[quizIndex],done=campState.quiz[q.id]===q.answer,attempt=done?q.answer:quizAttempts[q.id];
@@ -93,7 +90,7 @@ function renderQuiz() {
 function initCamp() {
   campState=cleanCampState(load('bs-camp'));campReady=true;
   document.querySelectorAll('[data-camp]').forEach(b=>b.addEventListener('click',()=>setCampMode(b.dataset.camp)));
-  $('homeWarmup').addEventListener('click',resumeCamp);
-  refreshCamp();renderMini();renderQuiz();setCampMode('games');
+  $('tryMini').addEventListener('click',()=>setCampMode('mini',true));
+  refreshCamp();renderMini();renderQuiz();setCampMode('mini');
 }
 if(typeof module!=='undefined'&&module.exports)module.exports={MINI_SIDES,QUIZ_ITEMS,applyMiniPick,cleanCampState,campStats};

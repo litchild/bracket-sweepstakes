@@ -29,8 +29,7 @@
 
 <nav class="tabbar" aria-label="Sections">
   <div class="wrap" role="tablist">
-    <button class="tab" role="tab" aria-selected="false" data-tab="home">Home</button>
-    <button class="tab" role="tab" aria-selected="false" data-tab="learn">How it works</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="learn">Learn</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="explore">Teams &amp; regions</button>
     <button class="tab" role="tab" aria-selected="true" data-tab="bracket">My bracket</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="crowd">Crowd</button>
@@ -47,50 +46,34 @@
       <button type="button" data-step="bracket"><span>3</span> Pick</button>
     </nav>
 
-    <section class="view home-view" id="v-home" hidden aria-label="Home">
-      <div class="home-intro"><div><p class="kicker">NCAA basketball · One loss. All the drama.</p><h2 class="sec-h">This is March.</h2></div></div>
-      <article class="moment-feature">
-        <img class="moment-photo" src="images/moments/michigan-champions.jpg" alt="Michigan celebrating its 2026 national championship" width="1280" height="720" fetchpriority="high">
-        <div class="moment-shade"></div><span class="moment-tag">2026 national championship</span>
-        <div class="moment-feature-copy"><span class="moment-doodle" aria-hidden="true">✦</span><h3>Michigan takes<br>the title.</h3><p>Michigan 69. UConn 63. Relive the final.</p><button class="btn play-feature" type="button" data-video="michigan"><span aria-hidden="true">▶</span> Play highlights</button></div>
-        <span class="moment-credit">Photo: Michigan Photography · Video: NCAA</span>
-      </article>
-      <section class="moments-section" aria-labelledby="momentsTitle"><div class="home-section-head"><div><p class="kicker" id="videoLibraryCount">11 videos &amp; clips</p><h3 class="sec-h" id="momentsTitle">Big shots. Bigger surprises.</h3></div><a class="link" href="https://www.ncaa.com/march-madness-live/watch" target="_blank" rel="noopener noreferrer">More on NCAA ↗</a></div>
-        <div class="discovery-tabs video-filters" role="tablist" aria-label="Highlight collection"><button type="button" role="tab" data-moments="2026" aria-selected="true">2026</button><button type="button" role="tab" data-moments="classics" aria-selected="false">Classics</button></div>
-        <div class="moment-grid" id="momentGrid" role="tabpanel" aria-label="2026 highlights"></div><p class="sub media-note">Official NCAA videos · Press Play to watch. YouTube may be unavailable in mainland China.</p>
-      </section>
-      <div class="home-next"><div><span class="kicker">Your turn</span><h3>Who’s your champion?</h3><p>Your picks. Your team. Your shot.</p><p class="home-camp-progress" id="homeCampProgress">Warm up with 10 short challenges.</p><div class="welcome-actions"><button class="btn red" type="button" data-go="bracket">Make my bracket →</button><button class="link" type="button" id="homeWarmup">Start the warm-up →</button></div></div><img src="images/your-turn.svg" alt="Illustration of a fan choosing a champion on a phone" width="560" height="400" loading="lazy"></div>
-      <div class="home-shortcuts"><button type="button" data-home-archive><span class="shortcut-icon" aria-hidden="true">↗</span><span><b>Every champion has a path.</b><small>Explore the 2023–26 brackets</small></span><span aria-hidden="true">→</span></button><button type="button" data-go="standings"><img src="images/trophy.svg" alt="" width="70" height="60"><span><b>Bring a little competition.</b><small>See the leaderboard</small></span><span aria-hidden="true">→</span></button></div>
-    </section>
-
     <section class="view" id="v-learn" hidden aria-label="How it works">
       <div class="welcome card">
         <div class="welcome-copy">
-          <p class="kicker">College basketball's knockout tournament</p>
-          <h2>64 teams.<br>One champion.</h2>
-          <p>Pick who wins each game. One loss sends a team home. Your predictions make a <b>bracket</b>.</p>
-          <div class="welcome-actions"><button class="btn red" type="button" id="tryPractice">Start the warm-up →</button><button class="link" type="button" data-go="bracket">Start my bracket</button></div>
+          <p class="kicker">New to March Madness? Start here.</p>
+          <h2>Your picks.<br>One champion.</h2>
+          <p>March Madness is the US college basketball tournament. Win and advance. Lose and go home.</p>
         </div>
-        <div class="court-art"><img src="images/your-turn.svg" alt="A hand choosing a champion on a phone" width="560" height="400"><span class="art-sticker">Make your call.</span></div>
-        <div class="tournament-path" aria-label="The tournament narrows from 64 teams to one champion">
-          <div><b>64</b><span>Teams</span></div><i>→</i>
-          <div><b>16</b><span>Sweet 16</span></div><i>→</i>
-          <div><b>4</b><span>Final Four</span></div><i>→</i>
-          <div class="path-champ"><b>1</b><span>Champion</span></div>
+        <div class="court-art"><img src="images/your-turn.svg" alt="An index finger tapping Team B on a phone. A check marks the selected winner." width="560" height="400" fetchpriority="high"></div>
+        <div class="bracket-explainer">
+          <h3>What is a bracket?</h3>
+          <p>A bracket is your prediction of every game's winner, from the first round to the champion.</p>
+          <ol class="pick-steps"><li><span>1</span><div><b>Tap your winner</b><small>Choose one team in each pair.</small></div></li><li><span>2</span><div><b>Move them forward</b><small>Your winners meet in the next round.</small></div></li><li><span>3</span><div><b>Pick your champion</b><small>Keep choosing until one team remains.</small></div></li></ol>
+          <div class="welcome-actions"><button class="btn red" type="button" id="tryMini">Try a 3-pick bracket →</button><button class="link" type="button" data-go="bracket">Ready? Make my picks →</button></div>
+          <p class="sub beginner-note">No team knowledge needed. Try it below.</p>
         </div>
       </div>
       <section class="practice-lab" id="practiceLab" aria-labelledby="practiceTitle">
-        <div class="practice-lab-head"><div><p class="kicker">Your warm-up</p><h3 class="sec-h" id="practiceTitle" tabindex="-1">Fan camp</h3></div></div>
-        <div class="camp-progress-card" id="campStatus"></div>
-        <div class="camp-badges" id="campBadges" aria-label="Practice badges"></div>
+        <div class="practice-lab-head"><div><p class="kicker">Learn by playing</p><h3 class="sec-h" id="practiceTitle" tabindex="-1">Try a little March.</h3></div></div>
+        <details class="camp-rewards"><summary>Your practice XP &amp; badges</summary><div class="camp-progress-card" id="campStatus"></div><div class="camp-badges" id="campBadges" aria-label="Practice badges"></div></details>
         <p class="camp-notice" id="campNotice" role="status" aria-live="polite"></p>
-        <div class="discovery-tabs camp-tabs" role="tablist" aria-label="Warm-up activities"><button type="button" role="tab" data-camp="games" aria-selected="true">Pick games</button><button type="button" role="tab" data-camp="mini" aria-selected="false">Mini bracket</button><button type="button" role="tab" data-camp="quiz" aria-selected="false">Quick quiz</button></div>
+        <div class="discovery-tabs camp-tabs" role="tablist" aria-label="Warm-up activities"><button type="button" role="tab" data-camp="mini" aria-selected="true">Mini bracket</button><button type="button" role="tab" data-camp="games" aria-selected="false">Pick games</button><button type="button" role="tab" data-camp="quiz" aria-selected="false">Quick quiz</button></div>
         <section id="camp-games" class="camp-activity" aria-label="Historical practice games"><div class="practice-game-header"><h4>Make a pick. See the story.</h4><span class="practice-count" id="practiceCount">0 / 6 tried</span></div><div class="practice-steps" id="practiceSteps" role="tablist" aria-label="Practice games"></div><div class="card lesson" id="practiceGame"></div></section>
-        <section id="camp-mini" class="camp-activity" hidden aria-label="Mini bracket"><div class="camp-activity-head"><p class="kicker">2026 Final Four teams · Practice picks</p><h4 id="miniTitle" tabindex="-1">Four teams. Three calls.</h4><p class="sub">Pick both semifinal winners, then your champion.</p></div><div id="miniBracket" class="mini-bracket"></div><div id="miniFeedback" class="mini-feedback" role="status" aria-live="polite"></div></section>
+        <section id="camp-mini" class="camp-activity" hidden aria-label="Mini bracket"><div class="camp-activity-head"><p class="kicker">4 teams → 2 finalists → 1 champion</p><h4 id="miniTitle" tabindex="-1">Build your first bracket.</h4><p class="sub">Tap one team in each game. Then choose between your two winners.</p></div><div id="miniBracket" class="mini-bracket"></div><div id="miniFeedback" class="mini-feedback" role="status" aria-live="polite"></div><p class="sub">Practice with the 2026 Final Four teams. Your main picks stay separate.</p></section>
         <section id="camp-quiz" class="camp-activity" hidden aria-label="Rules quiz"><div class="camp-activity-head"><p class="kicker">Three quick questions · 10 XP each</p><h4 id="quizTitle" tabindex="-1">Know the game.</h4></div><div class="quiz-steps" id="quizSteps" role="tablist" aria-label="Quiz questions"></div><div id="campQuiz" class="card camp-quiz"></div></section>
         <div class="practice-finish" id="practiceFinish" hidden><span class="finish-star" aria-hidden="true">★</span><div><b>March ready.</b><p>All 10 challenges complete. Your bracket is next.</p></div><button type="button" class="btn" data-go="bracket">Make my picks →</button></div>
         <p class="sub camp-scope">Practice XP is separate from bracket points. Progress saves in this browser.</p>
       </section>
+      <div class="learn-next"><div><h3>Got the idea?</h3><p>The full bracket starts with 64 teams. We'll guide you one round at a time.</p></div><button class="btn red" type="button" data-go="bracket">Make my picks →</button><button class="link" type="button" data-go="explore">Meet the teams first →</button></div>
       <details class="card rules"><summary>Rules &amp; scoring</summary><div class="rules-body">
         <p>This prototype begins with 64 teams after the opening games. Teams advance through the Round of 64, Round of 32, Sweet 16, Elite 8, Final Four, and championship.</p>
         <p>Correct picks earn 10, 20, 40, 80, 160, and 320 points in those rounds. A perfect bracket earns 1,920 points. Changing a winner clears later picks that depend on that team.</p>
@@ -273,7 +256,6 @@
 
 <dialog id="teamDialog" class="team-dialog" aria-labelledby="teamDialogTitle"><div class="profile-topbar"><button type="button" class="dialog-close" id="teamDialogClose" aria-label="Close profile">×</button></div><div id="teamDialogBody"></div></dialog>
 <div id="teamPeek" class="team-peek" role="tooltip" hidden></div>
-<dialog id="videoDialog" class="video-dialog" aria-labelledby="videoTitle"><div class="video-top"><h2 id="videoTitle"></h2><button type="button" id="videoClose" aria-label="Close video">×</button></div><div id="videoPlayer" class="video-player"></div><div class="video-navigation"><button type="button" class="btn ghost" id="videoPrev">← Previous clip</button><span id="videoPosition" aria-live="polite"></span><button type="button" class="btn ghost" id="videoNext">Next clip →</button></div><p class="sub">Official NCAA March Madness video on YouTube. Playback depends on your location and connection.</p><div class="video-actions"><a id="videoExternal" class="link" target="_blank" rel="noopener noreferrer">Open on YouTube ↗</a><a id="videoStory" class="link" target="_blank" rel="noopener noreferrer">Read the game story ↗</a><button type="button" class="btn" id="videoPractice">Try this game →</button></div></dialog>
 
 <div class="bar">
   <div class="wrap">
@@ -283,7 +265,7 @@
 </div>
 
 <nav class="mobile-nav" aria-label="Mobile sections">
-  <button type="button" data-go="home"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7M5 9v12h5v-7h4v7h5V9"/></svg><span>Home</span></button>
+  <button type="button" data-go="learn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v16M12 6C8 3 5 3 2 4v15c4-1 7-1 10 2 3-3 6-3 10-2V4c-3-1-6-1-10 2Z"/></svg><span>Learn</span></button>
   <button type="button" data-go="explore"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m16 8-2 6-6 2 2-6Z"/></svg><span>Explore</span></button>
   <button type="button" data-go="bracket"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4v5h5v6H3v5M21 4v5h-5v6h5v5M8 12h8"/></svg><span>My picks</span></button>
   <button type="button" data-go="crowd"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3M16 5a3 3 0 0 1 0 6M18 15a5 5 0 0 1 3 5"/></svg><span>Crowd</span></button>
@@ -296,7 +278,6 @@
 <script src="js/history-data.js"></script>
 <script src="js/camp.js"></script>
 <script src="js/experience.js"></script>
-<script src="js/home.js"></script>
 <script src="js/guide.js"></script>
 <script src="js/app.js"></script>
 </body>

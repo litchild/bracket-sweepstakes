@@ -226,8 +226,13 @@ function renderPhoneBracket(view, elim) {
     tabs.append(b);
   }
   const games = roundGames(X, S.round); const list = el("div", "rlist");
-  if (games.some(g => !cands(g, S.picks).every(Boolean))) list.append(el("p", "sub", `Teams show up here as you pick the ${ROUND_NAME[S.round - 1]} winners.`));
-  games.forEach(g => list.append(gameCard(g, elim)));
+  if (games.some(g => !cands(g, S.picks).every(Boolean))) {
+    const help = el('div', 'round-recovery');
+    const back = el('button', 'btn ghost', 'Finish the previous round →'); back.type = 'button';
+    back.addEventListener('click', () => goTo(X, openRound(X)));
+    help.append(el('p', 'sub', 'Your earlier winners become the teams here.'), back); list.append(help);
+  }
+  games.forEach((g, i) => { const card = gameCard(g, elim); card.prepend(el('span', 'game-step', `Game ${i + 1} of ${games.length}`)); list.append(card); });
   if (roundDone(X, S.round)) {
     const nx = RX[RX.indexOf(X) + 1] || "F";
     const b = el("button", "btn next", S.round < 4 ? `Next round: ${ROUND_NAME[S.round + 1]}` : nx === "F" ? "Next: Final Four" : `Next: ${BR[nx].name} bracket`); b.type = "button";

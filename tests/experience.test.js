@@ -28,7 +28,7 @@ test('2026 archive includes the complete field and six Michigan wins',()=>{
   assert.equal(run.length,6);assert.ok(run.every(g=>g.teams.find(t=>t.won).id===archive[2026].champion));
   assert.deepEqual(Object.fromEntries(games.find(g=>g.round===6).teams.map(t=>[t.name,t.score])),{UConn:63,Michigan:69});
 });
-test('Home videos have unique clips, local previews and valid onward links',()=>{
+test('retained native clip catalog has unique clips, local previews and valid onward links',()=>{
   const videos=Object.entries(MOMENTS);assert.ok(videos.length>=10);
   assert.equal(new Set(videos.map(([,m])=>m.video)).size,videos.length);
   assert.equal(FEATURED_MOMENT,'michigan');assert.equal(MOMENTS[FEATURED_MOMENT].year,2026);
