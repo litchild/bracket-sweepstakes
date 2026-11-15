@@ -1,0 +1,15 @@
+<view class="home-header"><view class="row between"><text class="home-wordmark">BRACKET SWEEPSTAKES</text><text class="concept">Student concept</text></view><text class="home-prize">Win 50,000 RMB</text><text class="small">Free bracket challenge · NCAA 2026 concept</text></view>
+<view class="page">
+  <text class="kicker">One loss. All the drama.</text><text class="title">This is March.</text>
+  <button class="hero" bindtap="clip" data-id="michigan" aria-label="View Michigan's 2026 title game">
+    <image class="hero-image" src="{{hero}}" mode="aspectFill"/>
+    <view class="hero-shade"></view><view class="hero-copy"><text class="hero-tag">2026 NATIONAL CHAMPIONSHIP</text><text class="hero-title">MICHIGAN TAKES
+THE TITLE.</text><text class="hero-score">Michigan 69 · UConn 63</text><text class="hero-link">Explore the final →</text><text class="photo-credit">Photo: Michigan Photography</text></view>
+  </button>
+  <view class="home-section"><text class="kicker">11 NCAA moments</text><text class="section-title">Big shots. Bigger surprises.</text>
+    <view class="tabs"><button class="pill {{collection === '2026' ? 'active' : ''}}" data-value="2026" bindtap="collection">2026</button><button class="pill {{collection === 'classics' ? 'active' : ''}}" data-value="classics" bindtap="collection">Classics</button></view>
+    <scroll-view scroll-x="{{true}}" class="clip-scroll"><view class="clip-card" wx:for="{{clips}}" wx:key="id"><button class="clip-image-button" bindtap="clip" data-id="{{item.id}}" aria-label="{{item.title}}"><image src="{{item.poster}}" class="clip-image" mode="aspectFill"/><text class="clip-tag">{{item.year}} · {{item.tag}}</text></button><text class="clip-title">{{item.headline}}</text><text class="muted">{{item.caption}}</text></view></scroll-view>
+  </view>
+  <view class="your-turn card"><text class="kicker">Your turn</text><text class="section-title">Who’s your champion?</text><image src="/assets/your-turn.png" mode="aspectFit" class="hand"/><text class="body">Your picks. Your team. Your shot.</text><button class="red" bindtap="bracket">Make my bracket →</button><button class="link" bindtap="warmup">{{progress.completed ? 'Continue Fan camp' : 'Start the warm-up'}} →</button><text class="muted">{{progress.completed}} / 10 challenges · {{progress.xp}} practice XP</text></view>
+  <view class="stack"><button class="home-tile" bindtap="archive"><text class="bold">Every champion has a path.</text><text class="muted">Explore the 2023–26 brackets →</text></button><button class="home-tile" bindtap="standings"><text class="bold">Bring a little competition.</text><text class="muted">See the local leaderboard →</text></button><button class="outline" open-type="share">Share the challenge ↗</button></view>
+</view><include src="../../templates/footer.wxml"/>

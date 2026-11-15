@@ -1,0 +1,35 @@
+{
+  "pages": [
+    "pages/home/index",
+    "pages/explore/index",
+    "pages/bracket/index",
+    "pages/crowd/index",
+    "pages/standings/index",
+    "pages/learn/index",
+    "pages/profile/index",
+    "pages/archive/index",
+    "pages/clip/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "Bracket Sweepstakes",
+    "navigationBarBackgroundColor": "#101114",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#F0F1F4",
+    "backgroundTextStyle": "dark"
+  },
+  "tabBar": {
+    "color": "#60636B",
+    "selectedColor": "#CF2632",
+    "backgroundColor": "#FFFFFF",
+    "list": [
+      {"pagePath":"pages/home/index","text":"Home","iconPath":"assets/nav/home.png","selectedIconPath":"assets/nav/home-active.png"},
+      {"pagePath":"pages/explore/index","text":"Explore","iconPath":"assets/nav/explore.png","selectedIconPath":"assets/nav/explore-active.png"},
+      {"pagePath":"pages/bracket/index","text":"My picks","iconPath":"assets/nav/bracket.png","selectedIconPath":"assets/nav/bracket-active.png"},
+      {"pagePath":"pages/crowd/index","text":"Crowd","iconPath":"assets/nav/crowd.png","selectedIconPath":"assets/nav/crowd-active.png"},
+      {"pagePath":"pages/standings/index","text":"Standings","iconPath":"assets/nav/standings.png","selectedIconPath":"assets/nav/standings-active.png"}
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

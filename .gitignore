@@ -1,2 +1,4 @@
 node_modules/
 .DS_Store
+wechat/project.private.config.json
+wechat/.preview-cache/

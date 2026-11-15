@@ -1,0 +1,1 @@
+.leader-row{display:flex;align-items:center;gap:20rpx;padding:26rpx;background:#fff;border:1rpx solid #E0E4EB;border-radius:18rpx;margin-bottom:14rpx}.rank{font-size:36rpx;font-weight:900;width:50rpx;color:#C92332}.leader-logo{height:36rpx;width:36rpx;flex:none}.leader-row .row{gap:10rpx;margin-top:8rpx}.points{text-align:right}

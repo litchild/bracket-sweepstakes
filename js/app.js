@@ -10,7 +10,7 @@ const S = {
   real: [], sims: [], simEntries: [], winners: {},
   entered: false, savedSig: null, busy: false,
   guest: null, ownerSnap: null, resRound: null, tickerText: "",
-  round: 1, passOpen: false, introOff: false, introOpen: false, seedOpen: false
+  round: 1, passOpen: false, seedOpen: false, fullBracket: false
 };
 const MAX_SIMS = 5000;
 const $ = id => document.getElementById(id);
@@ -86,44 +86,24 @@ function renderTicker() {
 function renderLive() {
   const N = allEntries().length;
   $("liveWord").textContent = locked() ? "Live" : "Open";
-  $("eyeTxt").textContent = locked() ? "March Madness 2026 · Tournament in progress" : "March Madness 2026 · Men’s college basketball";
+  $("eyeTxt").textContent = "March Madness 2026";
   if (S.dbState === "connecting") { $("liveN").textContent = "–"; $("liveL").textContent = "Connecting…"; }
   else if (S.dbState === "off") { $("liveN").textContent = "–"; $("liveL").textContent = "Shared entries unavailable here"; }
   else { $("liveN").textContent = fmt(N); $("liveL").textContent = `bracket${N === 1 ? "" : "s"} entered${S.simEntries.length ? ` · ${fmt(S.simEntries.length)} simulated` : ""}`; }
   renderTicker();
 }
 
-// ---------- explainer ----------
-// Dismissal is remembered in localStorage under bs-intro. Open or collapsed is per visit: open on wide screens, collapsed on phones.
-const WIDE = typeof matchMedia === "function" ? matchMedia("(min-width: 721px)") : { matches: true };
-const introSaved = load("bs-intro");
-S.introOff = !!(introSaved && introSaved.dismissed);
-S.introOpen = WIDE.matches;
-function renderIntro() {
-  $("intro").hidden = S.introOff; $("introOpen").hidden = !S.introOff;
-  $("introToggle").setAttribute("aria-expanded", String(S.introOpen));
-  $("introBody").hidden = !S.introOpen;
-}
-$("introToggle").addEventListener("click", () => { S.introOpen = !S.introOpen; renderIntro(); });
-$("introClose").addEventListener("click", () => { S.introOff = true; store("bs-intro", { dismissed: true }); renderIntro(); $("introOpen").focus(); });
-$("introOpen").addEventListener("click", () => {
-  S.introOff = false; S.introOpen = true; store("bs-intro", { dismissed: false }); renderIntro();
-  $("intro").scrollIntoView({ block: "center" }); $("introToggle").focus({ preventScroll: true });
-});
-$("introHelper").addEventListener("click", () => {
-  if (!locked()) { S.helpOpen = true; renderHelper(); }
-  $("helperBar").scrollIntoView({ block: "start" }); $("helperBar").focus({ preventScroll: true });
-});
+// ---------- seed definition ----------
 function renderSeedTip() { $("seedBtn").setAttribute("aria-expanded", String(S.seedOpen)); $("seedTip").hidden = !S.seedOpen; }
 $("seedBtn").addEventListener("click", () => { S.seedOpen = !S.seedOpen; renderSeedTip(); });
 document.addEventListener("keydown", e => { if (e.key === "Escape" && S.seedOpen) { S.seedOpen = false; renderSeedTip(); $("seedBtn").focus(); } });
 
 // ---------- helper (auto-fill) ----------
 function helperSummary() {
-  if (S.root === "cn" && S.cnTeam) { const t = TEAMS[S.cnTeam]; return { title: `Rooting for Chinese players: ${t.name} wins it all`, sub: `${t.name} (${CN_PLAYERS[S.cnTeam]}) wins every game, and the other teams with Chinese players beat everyone else. Tap any game to change it.` }; }
-  if (S.root && ROOTS[S.root]) { const r = ROOTS[S.root]; return { title: `Rooting for ${r.zh} ${r.name}`, sub: `${r.name} teams beat every team from another region. Tap any game to change it.` }; }
-  if (S.mode === "seed") return { title: "Filled randomly by seed", sub: "Higher seeds win more often. Tap any game to change it." };
-  return { title: "Not sure who to pick?", sub: "Root for a region or for Chinese players and we’ll fill in your bracket." };
+  if (S.root === "cn" && S.cnTeam) { const t = TEAMS[S.cnTeam]; return { title: `${t.name} is your champion`, sub: `${CN_PLAYERS[S.cnTeam]} · Edit any pick below.` }; }
+  if (S.root && ROOTS[S.root]) { const r = ROOTS[S.root]; return { title: `Rooting for ${r.zh} ${r.name}`, sub: "Bracket filled. Edit any pick below." }; }
+  if (S.mode === "seed") return { title: "Auto-filled by seed", sub: "Edit any pick below." };
+  return { title: "Help me choose", sub: "Auto-fill by region or player." };
 }
 function fillWith(root, cnTeam) {
   if (locked()) return;
@@ -150,7 +130,7 @@ function renderHelper() {
   ROOT_ORDER.forEach(k => {
     const r = ROOTS[k]; const b = el("button", "opt"); b.type = "button";
     b.style.setProperty("--c", `var(${r.color})`); b.setAttribute("aria-pressed", String(S.root === k));
-    b.append(el("span", "opt-zh", r.zh), el("span", "opt-nm", r.name), el("span", "opt-meta", `${homeCount(k)} teams · ${r.see}`), el("span", "opt-meta", `Ambassadors: ${r.guides}`), el("span", "opt-go", `Fill my bracket for ${r.name}`));
+    b.append(el("span", "opt-zh", r.zh), el("span", "opt-nm", r.name), el("span", "opt-meta", `${homeCount(k)} schools`), el("span", "opt-go", "Auto-fill →"));
     b.addEventListener("click", () => fillWith(k, null));
     ro.append(b);
   });
@@ -161,14 +141,14 @@ function renderHelper() {
     const top = el("span", "opt-top"); top.append(cnBadge(), document.createTextNode(`${t.seed} seed · ${BR[t.br].name} bracket`));
     b.append(top, el("span", "opt-nm", t.name), el("span", "opt-meta", `Player: ${CN_PLAYERS[id]}`), el("span", "opt-go", `Pick ${t.name} to win it all`));
     b.addEventListener("click", () => fillWith("cn", id));
-    co.append(b);
+    const item=el('div','helper-player'); const info=el('button','link','Player profile');info.type='button';info.addEventListener('click',()=>showPlayerProfile(id));item.append(b,info);co.append(item);
   });
 }
 $("helperBar").addEventListener("click", () => { if (locked()) return; S.helpOpen = !S.helpOpen; renderHelper(); });
 document.querySelectorAll("#helperSeg button").forEach(b => b.addEventListener("click", () => { S.helpTab = b.dataset.h; renderHelper(); }));
 $("btnSeed").addEventListener("click", () => fillWith(null, null));
 $("btnShuffle").addEventListener("click", () => { if (locked()) return; S.picks = randomBracket(helperFor(S.root, S.cnTeam)); saveDraft(); renderAllLocal(); });
-$("btnClear").addEventListener("click", () => { if (locked()) return; S.picks = {}; S.root = null; S.cnTeam = null; S.mode = "manual"; S.round = 1; saveDraft(); renderAllLocal(); });
+$("btnClear").addEventListener("click", () => { if (locked()) return; S.picks = {}; S.root = null; S.cnTeam = null; S.mode = "manual"; S.br = "E"; S.round = 1; saveDraft(); renderAllLocal(); });
 
 // ---------- bracket ----------
 function teamBtn(g, tid, elim) {
@@ -181,15 +161,25 @@ function teamBtn(g, tid, elim) {
   if (elim.has(tid)) b.classList.add("lost");
   b.setAttribute("aria-pressed", String(S.picks[g.id] === tid));
   b.title = `${t.name}, ${ROOTS[t.home].name} school${CN_PLAYERS[tid] ? `, Chinese player: ${CN_PLAYERS[tid]}` : ""}`;
-  b.append(el("span", "seed", String(t.seed)), el("span", "tn", t.name));
+  b.append(el("span", "seed", String(t.seed)), teamLogo(tid), el("span", "tn", t.name));
   if (CN_PLAYERS[tid]) b.append(cnBadge());
-  b.append(el("span", "dot"));
+  b.append(el("span", "dot")); const check=el('span','pick-check','✓');check.setAttribute('aria-hidden','true');b.append(check);
   b.disabled = locked();
-  b.addEventListener("click", () => { S.picks = applyPick(S.picks, g.id, tid); if (!S.root) S.mode = "manual"; saveDraft(); renderAllLocal(); });
-  return b;
+  b.setAttribute("aria-label", `Pick ${t.name}, seed ${t.seed}`);
+  b.addEventListener("click", () => {
+    hideTeamPeek(); S.picks = applyPick(S.picks, g.id, tid); if (!S.root) S.mode = "manual";
+    saveDraft(); renderAllLocal();
+    document.querySelector(`[data-game="${g.id}"] [data-pick="${tid}"]`)?.focus({ preventScroll: true });
+  });
+  b.dataset.pick = tid;
+  const row = el("div", "team-row");
+  const info = el("button", "team-info", "ⓘ"); info.type = "button";
+  info.setAttribute("aria-label", `About ${t.name}`); info.addEventListener("click", () => showTeamProfile(tid));
+  row.append(b, info); attachTeamPeek(row, tid);
+  return row;
 }
 function gameCard(g, elim) {
-  const c = cands(g, S.picks); const d = el("div", "game"); const w = S.winners[g.id];
+  const c = cands(g, S.picks); const d = el("div", "game"); d.dataset.game = g.id; const w = S.winners[g.id];
   if (w && S.picks[g.id]) d.classList.add(S.picks[g.id] === w ? "ok" : "miss");
   c.forEach(t => d.append(teamBtn(g, t, elim)));
   return d;
@@ -216,7 +206,7 @@ const PHONE = typeof matchMedia === "function" ? matchMedia("(max-width: 600px)"
 function roundGames(X, r) { return GAMES.filter(g => g.br === X && g.round === r); }
 function roundDone(X, r) { return roundGames(X, r).every(g => S.picks[g.id]); }
 function openRound(X) { if (X === "F") return 1; for (let r = 1; r <= 4; r++) if (!roundDone(X, r)) return r; return 1; }
-function goTo(X, r) { S.br = X; S.round = r; renderBTabs(); renderBracket(); $(X === "F" ? "btabs" : "rndTabs").scrollIntoView({ block: "start" }); }
+function goTo(X, r) { S.br = X; S.round = r; renderBTabs(); renderBracket(); const target = $(X === "F" ? "btabs" : "rndTabs"); target.scrollIntoView({ block: "start" }); target.querySelector('[aria-selected="true"]')?.focus({ preventScroll: true }); }
 function renderPhoneBracket(view, elim) {
   const tabs = $("rndTabs"); const X = S.br;
   if (X === "F") {
@@ -230,8 +220,9 @@ function renderPhoneBracket(view, elim) {
   for (let r = 1; r <= 4; r++) {
     const games = roundGames(X, r);
     const b = el("button", "rnd"); b.type = "button"; b.setAttribute("role", "tab"); b.setAttribute("aria-selected", String(S.round === r));
-    b.append(el("span", null, ROUND_NAME[r]), el("span", "c", `${games.filter(g => S.picks[g.id]).length}/${games.length}`));
-    b.addEventListener("click", () => { S.round = r; renderBracket(); });
+    b.setAttribute('aria-label', ROUND_NAME[r]);
+    b.append(el("span", null, PHONE.matches ? {1:'64 teams',2:'32 teams',3:'Sweet 16',4:'Elite 8'}[r] : ROUND_NAME[r]), el("span", "c", `${games.filter(g => S.picks[g.id]).length}/${games.length}`));
+    b.addEventListener("click", () => { S.round = r; renderBracket(); $("rndTabs").querySelector('[aria-selected="true"]')?.focus({ preventScroll: true }); });
     tabs.append(b);
   }
   const games = roundGames(X, S.round); const list = el("div", "rlist");
@@ -247,10 +238,18 @@ function renderPhoneBracket(view, elim) {
 }
 if (PHONE.addEventListener) PHONE.addEventListener("change", () => { renderBTabs(); renderBracket(); });
 function renderBracket() {
+  hideTeamPeek();
   const view = $("bracketView"); view.textContent = ""; const elim = eliminated(S.winners);
   $("rndTabs").textContent = ""; $("rndTabs").hidden = true;
-  view.classList.toggle("phone", PHONE.matches);
-  if (PHONE.matches) { renderPhoneBracket(view, elim); return; }
+  const guided = PHONE.matches || !S.fullBracket;
+  view.classList.toggle("phone", guided);
+  $("viewToggle").hidden = PHONE.matches;
+  $("viewToggle").textContent = S.fullBracket ? "Pick one round at a time" : "Show full bracket";
+  $("viewToggle").setAttribute("aria-pressed", String(S.fullBracket));
+  const done = S.br === "F" ? countPicks(S.picks, "F") : roundGames(S.br, S.round).filter(g => S.picks[g.id]).length;
+  const total = S.br === "F" ? 3 : roundGames(S.br, S.round).length;
+  $("roundCoach").textContent = countPicks(S.picks) === 63 ? "All 63 picked. Your bracket is ready." : S.br === "F" ? `${done} of 3 picked · Choose your champion.` : done === total ? "Round complete. Next round below ↓" : `Pick ${total - done} winner${total - done === 1 ? "" : "s"}.`;
+  if (guided) { renderPhoneBracket(view, elim); return; }
   if (S.br !== "F") {
     const grid = el("div", "bracket");
     for (let r = 1; r <= 4; r++) {
@@ -267,6 +266,7 @@ function renderBracket() {
     view.append(grid, champBanner());
   }
 }
+$("viewToggle").addEventListener("click", () => { S.fullBracket = !S.fullBracket; renderBracket(); });
 function renderLegend() {
   const lg = $("legend"); lg.textContent = "";
   lg.append(el("span", null, "School’s home region:"));
@@ -301,6 +301,7 @@ function startGuest() {
   S.picks = {}; S.root = null; S.cnTeam = null; S.mode = "manual"; S.br = "E"; S.round = 1; S.helpOpen = false;
   $("passName").value = ""; $("passMsg").textContent = ""; $("sMsg").textContent = "";
   renderAllLocal();
+  $("v-bracket").querySelector('h2').scrollIntoView({block:'start'}); $("helperBar").focus({preventScroll:true});
 }
 function exitGuest(msg) {
   if (S.ownerSnap) { S.picks = S.ownerSnap.picks; S.root = S.ownerSnap.root; S.cnTeam = S.ownerSnap.cnTeam; S.mode = S.ownerSnap.mode; }
@@ -340,7 +341,7 @@ async function submit() {
       await S.db.doc("entries/" + g.id).set(Object.assign(doc, { name: g.name, guest: true }));
       S.busy = false;
       exitGuest(`${g.name} is in. Type the next person’s name to start their entry.`);
-      window.scrollTo({ top: 0, behavior: "smooth" }); $("passName").focus({ preventScroll: true });
+      $("pass").scrollIntoView({ block: "start" }); $("passName").focus({ preventScroll: true });
     } catch (e) {
       S.busy = false;
       $("sMsg").textContent = e && e.code === "quota_exceeded" ? "The entry list is full. Remove some entries first." : "Couldn’t save this entry. Try again in a moment.";
@@ -369,7 +370,7 @@ function hbar(labelNodes, frac, cssColor) {
 }
 function renderCrowd() {
   const E = allEntries(); const N = E.length; const simN = S.simEntries.length;
-  $("crowdSub").textContent = N ? `${fmt(N)} bracket${N === 1 ? "" : "s"} entered${simN ? `, including ${fmt(simN)} simulated` : ""}. Updates live as people enter.` : "No brackets yet. Enter yours and the crowd’s picks fill in here.";
+  $("crowdSub").textContent = N ? `${fmt(N)} local bracket${N === 1 ? "" : "s"}${simN ? ` · ${fmt(simN)} simulated` : ""}` : "Enter a bracket to see the crowd’s choices.";
   const cb = $("champBars"); cb.textContent = "";
   if (!N) cb.append(el("p", "empty", "Waiting for the first entry."));
   else {
@@ -396,26 +397,24 @@ function renderCrowd() {
   });
   const ml = $("muList"); ml.textContent = "";
   const win = S.winners; const started = locked();
-  const perfect = E.filter(e => isPerfect(e.picks, win));
-  $("muTitle").textContent = started ? "Live matchups" : "First-round picks";
+  $("muTitle").textContent = started ? "Next matchup picks" : "First-round picks";
   $("muSub").textContent = started
-    ? `Round of 64 shows all ${fmt(N)} brackets. Later rounds show only the brackets still live in that game, meaning they picked one of the two teams playing. ${fmt(perfect.length)} of ${fmt(N)} brackets are still perfect.`
-    : "Share of all brackets picking each team. Once games start, later rounds show only the brackets still live in each game.";
+    ? "Share of eligible brackets picking each team. Later rounds count brackets that picked one of the teams playing."
+    : "The percentage of brackets picking each team to advance.";
   if (!N) { ml.append(el("p", "empty", "No picks to show yet.")); return; }
-  const live = GAMES.filter(g => g.br === S.cbr && cands(g, win).every(Boolean));
-  if (!live.length) { ml.append(el("p", "empty", "These matchups aren’t set yet. They fill in as games are played.")); return; }
+  const live = GAMES.filter(g => g.br === S.cbr && !win[g.id] && cands(g, win).every(Boolean));
+  if (!live.length) { ml.append(el("p", "empty", decidedIds(win).length===63 ? "All games are finished. See the final rankings in Standings." : "No upcoming matchups in this group. Choose another group or explore fan favorites above.")); return; }
   live.forEach(g => {
     const [a, b] = cands(g, win);
     const pool = g.round === 1 ? E : E.filter(e => e.picks[g.id] === a || e.picks[g.id] === b);
     const na = pool.filter(e => e.picks[g.id] === a).length, nb = pool.filter(e => e.picks[g.id] === b).length, tot = na + nb;
-    const w = win[g.id];
     const box = el("div", "mu"); const row = el("div", "row");
-    const la = el("span"); la.append(el("b", null, tot ? `${pct(na, tot)}%` : "–"), document.createTextNode(` ${TEAMS[a].seed} ${TEAMS[a].name}${CN_PLAYERS[a] ? " 中" : ""}${w === a ? " (won)" : ""}`));
-    const lb = el("span"); lb.append(document.createTextNode(`${TEAMS[b].seed} ${TEAMS[b].name}${CN_PLAYERS[b] ? " 中" : ""}${w === b ? " (won)" : ""} `), el("b", null, tot ? `${pct(nb, tot)}%` : "–"));
+    const la = el("span"); la.append(el("b", null, tot ? `${pct(na, tot)}%` : "–"), document.createTextNode(` ${TEAMS[a].seed} ${TEAMS[a].name}${CN_PLAYERS[a] ? " 中" : ""}`));
+    const lb = el("span"); lb.append(document.createTextNode(`${TEAMS[b].seed} ${TEAMS[b].name}${CN_PLAYERS[b] ? " 中" : ""} `), el("b", null, tot ? `${pct(nb, tot)}%` : "–"));
     row.append(la, lb);
     const sp = el("div", "split"); const ia = el("i", "a"), ib = el("i", "b");
     ia.style.width = tot ? `${na / tot * 100}%` : "0"; ib.style.width = tot ? `${nb / tot * 100}%` : "0"; sp.append(ia, ib);
-    const meta = el("div", "row"); meta.append(el("span", "empty", `${ROUND_NAME[g.round]} · ${g.round === 1 ? "all brackets" : `${fmt(tot)} live bracket${tot === 1 ? "" : "s"}`}`), el("span", "empty", w ? "Final" : (g.round > 1 && !tot ? "No brackets picked this matchup" : "Upcoming")));
+    const meta = el("div", "row"); meta.append(el("span", "empty", `${ROUND_NAME[g.round]} · ${g.round === 1 ? "all brackets" : `${fmt(tot)} eligible bracket${tot === 1 ? "" : "s"}`}`), el("span", "empty", g.round > 1 && !tot ? "No brackets picked this matchup" : "Upcoming"));
     box.append(row, sp, meta); ml.append(box);
   });
 }
@@ -468,16 +467,22 @@ function renderResults() {
 
 // ---------- standings ----------
 async function renderStandings() {
+  const boardRequest=S.boardRequest=(S.boardRequest||0)+1;
+  $('tournamentPanel').hidden=S.standingsPanel!=='tournament';
+  $('leaderboardCard').hidden=S.standingsPanel==='tournament';
+  document.querySelectorAll('[data-standings]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.standings===(S.standingsPanel||'board'))));
+  if(S.boardMode==='demo'&&!S.simEntries.length)S.boardMode='entries';
   renderResults();
-  const E = allEntries(); const N = E.length; const win = S.winners; const played = decidedIds(win).length;
+  const E = S.boardMode==='demo'?S.simEntries:S.real; const N = E.length; const win = S.winners; const played = decidedIds(win).length;
   const perfect = E.filter(e => isPerfect(e.picks, win));
   $("kEntries").textContent = fmt(N);
+  $("kEntries").nextElementSibling.textContent=S.boardMode==='demo'?'Demo brackets':'Brackets entered';
   $("kPerfect").textContent = fmt(perfect.length);
   $("kPerfectL").textContent = played ? `Perfect brackets left of ${fmt(N)}` : "Perfect brackets left (all of them, until games start)";
   $("kGames").textContent = `${played} / 63`;
   const nr = GAMES.filter(g => !win[g.id] && cands(g, win).every(Boolean));
   $("kGamesL").textContent = played === 63 ? "Tournament complete" : `Next: ${nr.length ? ROUND_NAME[Math.min(...nr.map(g => g.round))] : "Round of 64"}`;
-  $("stSub").textContent = played ? "Scoring: 10 points per first-round win, doubling each round up to 320 for the champion." : "Games haven’t started. Scores and eliminations appear as rounds are played.";
+  $("stSub").textContent = played ? `${played} of 63 games scored · Demo results` : "Rankings begin when results are added.";
   // Chinese players tracker
   const ctk = $("cnTrack"); ctk.textContent = "";
   CN_IDS.forEach(id => {
@@ -485,39 +490,45 @@ async function renderStandings() {
     const c = el("div", "cnt");
     const top = el("span", "opt-top"); top.append(cnBadge(), document.createTextNode(`${t.seed} seed · ${BR[t.br].name} bracket`));
     const st = champ ? el("span", "status champ-s", "Champion") : out ? el("span", "status out", `Out in ${ROUND_NAME[out]}`) : el("span", "status alive-s", "Alive");
-    const fans = E.filter(e => e.picks["F6-0"] === id).length;
-    c.append(top, el("span", "nm", t.name), el("span", "sub", `Player: ${CN_PLAYERS[id]}`), st, el("span", "sub", `${fmt(fans)} picked them to win it all`));
+    c.append(top, el("span", "nm", t.name), el("span", "sub", CN_PLAYERS[id]), st);
     ctk.append(c);
   });
   // regions alive
   const elim = eliminated(win); const ac = $("aliveCards"); ac.textContent = "";
   ROOT_ORDER.forEach(k => {
     const teams = Object.values(TEAMS).filter(t => t.home === k); const alive = teams.filter(t => !elim.has(t.id)).length;
-    const fans = E.filter(e => e.root === k).length;
     const c = el("div", "card"); c.style.setProperty("--c", `var(${ROOTS[k].color})`);
     const hh = el("h3", "card-h"); hh.append(zhSpan(k, " "), document.createTextNode(ROOTS[k].name)); c.append(hh);
-    c.append(el("div", "big", `${alive} / ${teams.length}`), el("div", "empty", alive ? "teams still alive" : "eliminated"), el("div", "empty", `${fmt(fans)} fan${fans === 1 ? "" : "s"} rooting`));
+    c.append(el("div", "big", `${alive} / ${teams.length}`), el("div", "empty", alive ? "teams still alive" : "eliminated"));
     ac.append(c);
   });
   // leaderboard
-  const rows = E.map(e => ({ e, pts: score(e.picks, win) })).sort((a, b) => b.pts - a.pts || (a.e.sim === b.e.sim ? 0 : a.e.sim ? 1 : -1));
+  const rows = rankBrackets(E,win,Object.fromEntries(GAMES.map(g=>[g.id,POINTS[g.round]])));
   const top = rows.slice(0, 10);
   const meRow = rows.find(r => r.e.id === S.uid);
   if (meRow && !top.includes(meRow)) top.push(meRow);
-  $("lbSub").textContent = N ? (played ? "Best bracket so far. Ties share a rank." : "Everyone starts at zero until games are played.") : "No entries yet.";
+  const canShow=N>=2;
+  $("boardEmpty").hidden=canShow;$("boardTable").hidden=!canShow;
+  $("boardModes").hidden=!S.simEntries.length;
+  document.querySelectorAll('[data-board]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.board===(S.boardMode||'entries'))));
+  $("lbSub").textContent = canShow ? `${fmt(N)} ${S.boardMode==='demo'?'simulated brackets':'entries'} · ${played?'Ties share a rank.':'Points begin when results are added.'}` : "A little friendly competition.";
+  $("boardScope").textContent=S.boardMode==='demo'?'Demo fans and results are simulated. They are separate from entered brackets.':'Local demo · Only entries saved in this browser appear here.';
+  if(!canShow)renderBoardEmpty(N,S.boardMode==='demo');
   const ids = top.filter(r => !r.e.sim && !r.e.guest).map(r => r.e.id);
   let ps = {};
   if (S.user && ids.length) { try { ps = await S.user.profiles(ids); } catch (e) { ps = {}; } }
+  if(boardRequest!==S.boardRequest)return;
   const tb = $("lb"); tb.textContent = "";
-  top.forEach(r => {
+  const podium=$("boardPodium");podium.textContent='';podium.hidden=!canShow||!played;
+  (canShow?top:[]).forEach((r,i) => {
     const tr = el("tr"); if (r.e.id === S.uid) tr.className = "me";
-    const rank = rows.findIndex(x => x.pts === r.pts) + 1;
+    const rank = r.rank;
     const pn = (ps[r.e.id] && ps[r.e.id].name) || "";
     const name = r.e.sim ? `Simulated fan ${r.e.n}` : r.e.guest ? (r.e.name || "Guest") : r.e.id === S.uid ? (pn ? `${pn} (you)` : "You") : (pn || "Someone");
-    const rc = el("td"); rc.append(fanTag(r.e.root, r.e.cnTeam));
     const ch = r.e.picks["F6-0"] ? TEAMS[r.e.picks["F6-0"]] : null;
-    tr.append(el("td", "n", String(rank)), el("td", null, name), rc, el("td", null, ch ? `${ch.seed} ${ch.name}${elim.has(ch.id) ? " (out)" : ""}` : "–"), el("td", "n", String(r.pts)));
+    tr.append(el("td", "n", played?String(rank):'–'), el("td", null, name), el("td", null, ch ? ch.name : "–"),el('td','n',`${r.correct}/${played}`), el("td", "n", String(r.pts)));
     tb.append(tr);
+    if(i<3&&played){const card=el('div','podium-place');card.append(el('span','podium-rank',`#${rank}`),el('b','',name),el('strong','',`${r.pts}`),el('small','','points'));podium.append(card);}
   });
   $("demo").hidden = !S.canEdit || !S.db;
   $("dSim").disabled = S.busy || played === 63; $("dReset").disabled = S.busy || !played;
@@ -528,16 +539,12 @@ async function renderStandings() {
 // ---------- render ----------
 function renderAllLocal() {
   renderPass(); renderHelper(); renderBTabs(); renderBracket(); renderBar();
+  updateJourney();
   if (S.tab === "crowd") renderCrowd();
   if (S.tab === "standings") renderStandings();
 }
 function renderAll() { renderLive(); renderAllLocal(); }
-document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => {
-  S.tab = t.dataset.tab;
-  document.querySelectorAll(".tab").forEach(x => x.setAttribute("aria-selected", String(x === t)));
-  $("v-bracket").hidden = S.tab !== "bracket"; $("v-crowd").hidden = S.tab !== "crowd"; $("v-standings").hidden = S.tab !== "standings";
-  renderAllLocal();
-}));
+document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => navigateTo(t.dataset.tab)));
 
 // ---------- demo controls ----------
 async function demo(fn, okMsg) {
@@ -593,7 +600,7 @@ function localBackend() {
 }
 
 // ---------- boot ----------
-renderIntro();
+initGuide();
 renderLegend();
 renderAll();
 (async () => {

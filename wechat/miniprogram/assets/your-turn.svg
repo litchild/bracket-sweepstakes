@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 400" fill="none">
+  <path d="M65 80c70-74 242-75 346-21 110 57 124 186 46 268-72 76-276 81-368-11C26 254 20 128 65 80Z" fill="#B5BAC2"/>
+  <g stroke="#0b0c10" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m90 140-31-11m31 33-35 5m51-52-17-23"/>
+    <path d="m409 55 5 13 14 1-10 10 2 14-12-7-12 7 3-14-10-10 14-1Z" fill="#ffffff"/>
+    <path d="m89 315 5 10 11 2-8 8 1 11-10-5-10 5 2-12-8-8 12-1Z" fill="#00AEEC"/>
+    <path d="m455 137 17-11m-9 33 22-2m-24 166 19 12"/>
+  </g>
+  <g transform="rotate(-10 254 202)">
+    <rect x="147" y="33" width="216" height="338" rx="31" fill="#0b0c10"/>
+    <rect x="156" y="42" width="198" height="320" rx="24" fill="#ffffff"/>
+    <path d="M216 43h78v9a10 10 0 0 1-10 10h-58a10 10 0 0 1-10-10Z" fill="#0b0c10"/>
+    <text x="179" y="103" fill="#0b0c10" font-family="Arial,sans-serif" font-size="15" font-weight="700">MY CHAMPION</text>
+    <rect x="176" y="122" width="158" height="56" rx="10" fill="#ffffff" stroke="#0b0c10" stroke-width="2"/>
+    <circle cx="197" cy="150" r="10" fill="#B5BAC2" stroke="#0b0c10" stroke-width="2"/>
+    <path d="M220 144h76m-76 12h49" stroke="#61666D" stroke-width="4" stroke-linecap="round"/>
+    <rect x="176" y="192" width="158" height="56" rx="10" fill="#00AEEC" stroke="#0b0c10" stroke-width="3"/>
+    <circle cx="197" cy="220" r="10" fill="#0b0c10"/>
+    <path d="m192 220 4 4 7-9" stroke="#00AEEC" stroke-width="2" stroke-linecap="round"/>
+    <path d="M220 214h76m-76 12h49" stroke="#0b0c10" stroke-width="4" stroke-linecap="round"/>
+    <path d="m204 282 49 24 49-24" stroke="#B5BAC2" stroke-width="3" stroke-linecap="round"/>
+    <path d="M253 306v19m-22 14h44" stroke="#0b0c10" stroke-width="4" stroke-linecap="round"/>
+  </g>
+  <g stroke="#0b0c10" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m551 389-74-32-26-56c-7-15-19-27-37-35l-86-42c-19-9-30 10-15 21l43 30-26-5c-17-4-23 13-14 24l45 57c11 14 28 23 46 25l25 3 12 21" fill="#D9956E"/>
+    <path d="m357 275 32 24m-53-27 22 28m10 27 29 4"/>
+    <path d="m432 379 23-42 62 30 33 33H442Z" fill="#18191C"/>
+    <path d="m277 193-10-18m28 13 4-19m11 25 17-13"/>
+  </g>
+</svg>

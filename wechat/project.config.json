@@ -1,0 +1,18 @@
+{
+  "description": "NCAA Bracket Sweepstakes development prototype",
+  "miniprogramRoot": "miniprogram/",
+  "compileType": "miniprogram",
+  "appid": "touristappid",
+  "projectname": "ncaa-bracket-sweepstakes",
+  "setting": {
+    "urlCheck": true,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true,
+    "minifyWXSS": true,
+    "minifyWXML": true
+  },
+  "packOptions": { "ignore": [], "include": [] },
+  "condition": {}
+}
