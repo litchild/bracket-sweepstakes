@@ -109,10 +109,17 @@ knows nothing about March Madness or brackets). Put new source material from the
 
 ## UI behavior worth preserving
 
+- The prize leads the page. The hero headline is a giant "Win 50,000 RMB" (number in the display face, "Win" in a red
+  slashed tag, "RMB" in red), with "Bracket Sweepstakes" as a smaller line above it and a red "Make your picks"
+  button that opens My bracket. On phones "Win" sits on its own row so the number fills the width; while picking,
+  the header shrinks to one "Win 50,000 RMB" line. The fixed entry bar carries a red "Win 50,000 RMB" tag on every
+  screen size, the ticker leads with "Win 50,000 RMB", and the browser tab title starts with it. Learn's
+  "What is a bracket?" steps end with a red step 4, "Win 50,000 RMB". Never state which
+  prize rule applies or mention the odds (see `docs/pitch-context.md`).
 - First website visits open Learn. The video homepage and player dialog are removed. Returning visitors and saved
   drafts resume My picks. The native WeChat development app keeps its existing Home and eleven-clip experience.
 - Learn explains March Madness and defines a bracket as predictions of every game's winner through the champion.
-  Three short steps explain tapping a winner, advancing that pick, and choosing a champion. Keep the illustrated
+  Three short steps explain tapping a winner, advancing that pick, and choosing a champion, then step 4 is the prize. Keep the illustrated
   four-to-two-to-one practice path and clear phone-and-hand drawing, with readable team labels, a cyan selection and a check mark.
   The three-step journey connects Learn, Explore and Pick. Fan camp opens on Mini bracket and offers ten learning
   challenges across three tabs: a three-pick Final Four mini bracket, six historical game picks, and three rules
