@@ -65,7 +65,8 @@ function tickerItems() {
     const cnFans = E.filter(e => e.root === "cn").length;
     if (cnFans) items.push(`${fmt(cnFans)} fans rooting for Chinese players`);
   }
-  items.push("Win 50,000 RMB", "Free to enter", "Picks lock March 18");
+  items.push("Free to enter", "Picks lock March 18");
+  items.unshift("Win 50,000 RMB");
   if (!last) items.push(`Chinese players to follow: ${CN_IDS.map(id => `${CN_PLAYERS[id]} (${TEAMS[id].name})`).join(", ")}`);
   return items;
 }

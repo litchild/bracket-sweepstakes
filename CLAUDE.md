@@ -109,6 +109,12 @@ knows nothing about March Madness or brackets). Put new source material from the
 
 ## UI behavior worth preserving
 
+- The prize leads the page. The hero headline is a giant "Win 50,000 RMB" (number in the display face, "Win" in a red
+  slashed tag, "RMB" in red), with "Bracket Sweepstakes" as a smaller line above it and a red "Make your picks"
+  button that opens My bracket. On phones "Win" sits on its own row so the number fills the width; while picking,
+  the header shrinks to one "Win 50,000 RMB" line. The fixed entry bar carries a red "Win 50,000 RMB" tag on every
+  screen size, the ticker leads with "Win 50,000 RMB", and the browser tab title starts with it. Never state which
+  prize rule applies or mention the odds (see `docs/pitch-context.md`).
 - First website visits open Learn. The video homepage and player dialog are removed. Returning visitors and saved
   drafts resume My picks. The native WeChat development app keeps its existing Home and eleven-clip experience.
 - Learn explains March Madness and defines a bracket as predictions of every game's winner through the champion.

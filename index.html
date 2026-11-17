@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Bracket Sweepstakes Prototype</title>
-<meta name="description" content="Student concept prototype: a free March Madness bracket sweepstakes for Chinese basketball fans.">
+<title>Win 50,000 RMB · Bracket Sweepstakes Prototype</title>
+<meta name="description" content="Win 50,000 RMB. Student concept prototype: a free March Madness bracket sweepstakes for Chinese basketball fans.">
 <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -12,9 +12,9 @@
   <div class="wrap hero-in">
     <div>
       <div class="eyebrow"><span class="live" id="liveBadge"><i></i><span id="liveWord">Open</span></span><span id="eyeTxt">March Madness 2026</span><span class="mobile-concept">Student concept</span></div>
-      <h1 class="title">Bracket Sweepstakes</h1>
+      <h1 class="title"><span class="t-name">Bracket Sweepstakes</span><span class="jackpot"><span class="j-win">Win</span><span class="j-num">50,000</span><span class="j-cur">RMB</span></span></h1>
       <div class="prize-row">
-        <span class="prize"><span>Win 50,000 RMB</span></span>
+        <button class="hero-cta" type="button" data-go="bracket">Make your picks</button>
         <span class="chip">Free to enter</span>
         <span class="chip">Picks lock March 18</span>
       </div>
@@ -258,7 +258,7 @@
 
 <div class="bar">
   <div class="wrap">
-    <div class="prog"><div class="t"><span id="pT">0 of 63 picked</span><span class="msg" id="sMsg" aria-live="polite"></span></div><div class="meter"><i id="pM"></i></div><div class="s" id="pS"></div></div>
+    <div class="prog"><div class="t"><span class="bar-prize">Win 50,000 RMB</span><span id="pT">0 of 63 picked</span><span class="msg" id="sMsg" aria-live="polite"></span></div><div class="meter"><i id="pM"></i></div><div class="s" id="pS"></div></div>
     <button class="enter" id="btnEnter" disabled>Enter free</button>
   </div>
 </div>
