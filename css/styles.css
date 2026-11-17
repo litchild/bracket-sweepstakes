@@ -856,6 +856,8 @@ details.demo { display:block; padding:18px 24px; }details.demo > summary { curso
 .pick-steps b, .pick-steps small { display: block; }
 .pick-steps b { font-size: 16px; }
 .pick-steps small { font-size: 14px; color: var(--muted); margin-top: 3px; }
+.pick-steps .step-prize > span { background: var(--red); color: var(--red-ink); }
+.pick-steps .step-prize b { font-family: var(--display); font-style: italic; font-weight: 800; text-transform: uppercase; font-size: 24px; line-height: 1; letter-spacing: .01em; color: var(--red); }
 .bracket-explainer .beginner-note { font-size: 13px; color: var(--muted); }
 .camp-rewards { border-block: 1px solid var(--line); padding-block: 4px; }
 .camp-rewards summary { cursor: pointer; min-height: 44px; align-content: center; color: var(--muted); }
