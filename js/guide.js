@@ -1,5 +1,5 @@
 // Guided learning, region discovery and school profiles. All content and assets load locally.
-let mapMode = 'home', mapRegion = 'east', peekTimer, profileTrigger, discoverMode = 'regions';
+let mapMode = 'home', mapRegion = 'east', peekTimer, profileTrigger, discoverMode = 'nba';
 function teamLogo(id) {
   const img = document.createElement('img'); img.className = 'team-logo';
   img.src = `images/teams/${id}.png`; img.alt = ''; img.width = 28; img.height = 28;
@@ -47,7 +47,7 @@ function showTeamProfile(id) {
     b.append(playerPhoto(id),words,el('span','','→')); b.addEventListener('click',()=>showPlayerProfile(id)); body.append(b);
   }
   const link = el('a','link profile-link','Team & roster ↗'); link.href = p.url; link.target = '_blank'; link.rel = 'noopener noreferrer';
-  body.append(link); finishProfile();
+  body.append(link); appendSchoolConnections(body,id); finishProfile();
 }
 function playerPhoto(id) {
   const p=PLAYER_PROFILES[id], wrap=el('span','player-photo'); wrap.style.setProperty('--player-color',p.color);
@@ -87,6 +87,8 @@ function showPlayerProfile(id) {
 }
 function renderDiscovery() {
   $('discoverRegions').hidden=discoverMode!=='regions';
+  $('discoverNba').hidden=discoverMode!=='nba';$('discoverMoments').hidden=discoverMode!=='moments';
+  if(discoverMode==='nba')renderNbaDiscovery();
   $('discoverArchive').hidden=discoverMode!=='archive';if(discoverMode==='archive')renderArchive();
   document.querySelectorAll('[data-discover]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.discover===discoverMode)));
 }
@@ -114,7 +116,7 @@ function selectRegion(key) {
 function renderRegion() {
   const home = mapMode === 'home', root = ROOTS[mapRegion];
   const bracketKey = {east:'E',west:'W',south:'S',midwest:'M'}[mapRegion];
-  const teams = Object.values(TEAMS).filter(t => home ? t.home === mapRegion : t.br === bracketKey).sort((a,b)=>a.seed-b.seed || a.name.localeCompare(b.name));
+  const teams = Object.values(TEAMS).filter(t => (home ? t.home === mapRegion : t.br === bracketKey)&&(!$('chineseRosterFilter').checked||CN_PLAYERS[t.id])).sort((a,b)=>a.seed-b.seed || a.name.localeCompare(b.name));
   $('regionTeams').closest('.region-roster').dataset.rosterRegion=mapRegion;
   $('regionTitle').textContent = `${root.zh} ${root.name}`;
   $('regionCount').textContent = `${teams.length} schools · ${home ? 'Home region' : 'Tournament group'}`;
@@ -131,6 +133,7 @@ function renderRegion() {
     story.append(el('p','sub','Auto-fills 63 picks for this region. Edit any game.'));
   } else story.append(el('p','sub',`${root.name}: 16 teams → 1 Final Four place`));
   const list=$('regionTeams'); list.textContent='';
+  if(!teams.length)list.append(el('p','sub','No Chinese-player teams in this group in the roster snapshot. Try another region or clear the filter.'));
   teams.forEach(t=>{
     const b=el('button','school-item'); b.type='button';
     const words=el('span'); words.append(el('b','',t.name),el('small','',home ? `${BR[t.br].name} tournament group · #${t.seed} seed` : `${ROOTS[t.home].name} school · #${t.seed} seed`));
@@ -139,9 +142,11 @@ function renderRegion() {
   });
 }
 function initGuide() {
-  const onboard=load('bs-onboarding'); S.tab = countPicks(S.picks) || onboard?.started ? 'bracket' : 'learn';
+  S.tab = 'bracket';
   // Class-demo controls follow the main bracket rather than preceding a fan's first game.
   $('v-bracket').append($('pass'));
+  $('bracketView').after(document.querySelector('.entry-paths-wrap'));
+  const hints=el('div','bracket-hints');hints.append(document.querySelector('.bracket-key'),document.querySelector('.seedinfo'));$('bracketView').before(hints);
   document.querySelectorAll('[data-go],[data-step]').forEach(b=>b.addEventListener('click',()=>navigateTo(b.dataset.go || b.dataset.step)));
   document.addEventListener('keydown',e=>{
     const list=e.target.closest('[role="tablist"]'); if(!list)return;
@@ -170,5 +175,5 @@ function initGuide() {
   $('teamPeek').addEventListener('mouseenter',()=>clearTimeout(peekTimer)); $('teamPeek').addEventListener('mouseleave',hideTeamPeek);
   document.addEventListener('keydown',e=>{if(e.key==='Escape')hideTeamPeek();});
   window.addEventListener('scroll',hideTeamPeek,true); window.addEventListener('resize',hideTeamPeek);
-  renderDiscovery(); renderRegion(); updateJourney(); initExperience();
+  initDiscovery();renderDiscovery(); renderRegion(); updateJourney(); initExperience();
 }
