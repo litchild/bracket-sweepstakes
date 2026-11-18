@@ -109,6 +109,11 @@ knows nothing about March Madness or brackets). Put new source material from the
 
 ## UI behavior worth preserving
 
+- The three homepage review concepts have a separate URL, requested on November 18, 2026:
+  https://bracket-sweepstakes.netlify.app/concepts/. The `concepts/` directory contains the mobile mockups,
+  local storyboards, practice interactions, research and journey maps. This review page is separate from the
+  main prototype. Its practice does not save or alter entries; share cards are mockups. Publish only its HTML,
+  CSS, JS and local assets; keep review notes, screenshots and ZIP files outside the public checkout.
 - The prize leads the page. The hero headline is a giant "Win 50,000 RMB" (number in the display face, "Win" in a red
   slashed tag, "RMB" in red), with "Bracket Sweepstakes" as a smaller line above it and a red "Make your picks"
   button that opens My bracket. On phones "Win" sits on its own row so the number fills the width; while picking,
