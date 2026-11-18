@@ -38,6 +38,8 @@ knows nothing about March Madness or brackets). Put new source material from the
   script in the browser (globals) and via `require()` in tests. Keep it free of DOM code.
 - `js/app.js`: UI, rendering and storage. Depends on globals from `logic.js`.
 - `js/guide.js`: first-visit journey, interactive home-region map and team profile dialogs.
+- `js/discovery-data.js` and `js/discovery.js`: dated NBA alumni/draft connections, the alumni Starting 5,
+  per-school discovery and school-to-bracket navigation. Sources are in `docs/discovery-sources.md`.
 - `js/home.js`: retained official clip catalog for native WeChat development and its content sync. The website
   does not load this file; it contains no browser playback or homepage behavior.
 - `js/experience.js`: six historical practice games, archive views and leaderboard presentation helpers.
@@ -66,7 +68,9 @@ knows nothing about March Madness or brackets). Put new source material from the
   services and most foreign CDNs are blocked or very slow there, and a blocked stylesheet can leave the page blank.
   Keep fonts, scripts and images in the repo. User-initiated profile links may open an external team page in a new
   tab, but the experience must never depend on it. The website's video homepage and playback were removed at
-  the user's request on November 15, 2026. Do not load external players, fonts, scripts or image assets. The native
+  the user's request on November 15, 2026. On November 18 the user requested highlights as secondary content:
+  Discover's Watch tab links to official NCAA videos after a user click, with local previews and practice paths.
+  Do not load external players, fonts, scripts or image assets. The native
   WeChat development project retains its separate clip catalog and media setup described below. Vercel is blocked
   in mainland China, so the site stays on Netlify. See `docs/history-sources.md` for video and archive sources.
 - **No ESPN or Bilibili logos or wordmarks.** A working entry page with real logos could pass as an official contest.
@@ -132,8 +136,10 @@ knows nothing about March Madness or brackets). Put new source material from the
   screen size, the ticker leads with "Win 50,000 RMB", and the browser tab title starts with it. Learn's
   "What is a bracket?" steps end with a red step 4, "Win 50,000 RMB". Never state which
   prize rule applies or mention the odds (see `docs/pitch-context.md`).
-- First website visits open Learn. The video homepage and player dialog are removed. Returning visitors and saved
-  drafts resume My picks. The native WeChat development app keeps its existing Home and eleven-clip experience.
+- All website visits open My bracket, per the November 18 feedback. The compact mobile prize headline and bracket
+  are immediately visible; the hook reads "One bracket. One shot to win." Learn is optional through navigation
+  and How it works. Keep existing drafts intact. Highlights belong in Discover > Watch, never the landing page.
+  The native WeChat development app keeps its existing Home and eleven-clip experience.
 - Learn explains March Madness and defines a bracket as predictions of every game's winner through the champion.
   Three short steps explain tapping a winner, advancing that pick, and choosing a champion, then step 4 is the prize. Keep the illustrated
   four-to-two-to-one practice path and clear phone-and-hand drawing, with readable team labels, a cyan selection and a check mark.
@@ -163,7 +169,18 @@ knows nothing about March Madness or brackets). Put new source material from the
   the fixed navigation or entry controls on phones.
 - Keep first-visit copy brief: one definition, a visual tournament path, and short practice activities. Extra rules,
   region explanations, and auto-fill mechanics belong in expandable details.
-- Teams & regions opens on the original regional map and school list, with Regions and Past brackets tabs.
+- Discover opens on NBA roots, with Regions, Past brackets and Watch as alternatives. NBA alumni routes lead to
+  the school's actual bracket group without auto-picking or treating NBA alumni as current college players.
+  School profiles include alumni/prospect summaries and a filtered discovery link for every field team. This is a
+  curated collection, not a complete all-time alumni database; empty schools say no featured data, never no alumni.
+  Past selections show actual draft years/picks. 2027 watch shows dated board ranks, not pick numbers, based on
+  the November 5, 2026 source snapshot. Keep that date and the 2026 field distinction visible.
+  The expandable Duke vs. Kentucky Starting 5 is a school-association graphic with ten locally hosted NBA portraits;
+  label them as former players, not current college lineups or a real 2026 matchup. On phones use two readable columns.
+  Regions retains the original map and roster, plus a Chinese-player roster filter with its snapshot date.
+  Region/Chinese-player auto-fill retains its existing rules. The Lucky draw button fills all 63 by seed weighting,
+  and is a free demo, with no purchase or guarantee. Extra entry paths follow the picks, keeping the first game close
+  to the top on phones.
   The standalone Players tab, cards and introduction were removed at the user's request on November 15, 2026.
   Four verified player profiles remain connected to
   their school profiles through School/Player tabs in the same dialog. On phones this dialog is a bottom sheet

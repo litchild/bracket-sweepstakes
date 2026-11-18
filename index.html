@@ -13,6 +13,7 @@
     <div>
       <div class="eyebrow"><span class="live" id="liveBadge"><i></i><span id="liveWord">Open</span></span><span id="eyeTxt">March Madness 2026</span><span class="mobile-concept">Student concept</span></div>
       <h1 class="title"><span class="t-name">Bracket Sweepstakes</span><span class="jackpot"><span class="j-win">Win</span><span class="j-num">50,000</span><span class="j-cur">RMB</span></span></h1>
+      <p class="money-hook">One bracket. One shot to win.</p>
       <div class="prize-row">
         <button class="hero-cta" type="button" data-go="bracket">Make your picks</button>
         <span class="chip">Free to enter</span>
@@ -30,7 +31,7 @@
 <nav class="tabbar" aria-label="Sections">
   <div class="wrap" role="tablist">
     <button class="tab" role="tab" aria-selected="false" data-tab="learn">Learn</button>
-    <button class="tab" role="tab" aria-selected="false" data-tab="explore">Teams &amp; regions</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="explore">Discover</button>
     <button class="tab" role="tab" aria-selected="true" data-tab="bracket">My bracket</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="crowd">Crowd</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="standings">Standings</button>
@@ -82,7 +83,14 @@
     </section>
 
     <section class="view" id="v-explore" hidden aria-label="Teams and regions">
-      <div class="explore-title"><p class="kicker">Find your team</p><h2 class="sec-h">Teams &amp; regions</h2><div class="discovery-tabs" role="tablist" aria-label="Explore"><button type="button" role="tab" data-discover="regions" aria-selected="true">Regions</button><button type="button" role="tab" data-discover="archive" aria-selected="false">Past brackets</button></div></div>
+      <div class="explore-title"><p class="kicker">Find your connection</p><h2 class="sec-h">Discover your team</h2><div class="discovery-tabs" role="tablist" aria-label="Explore"><button type="button" role="tab" data-discover="nba" aria-selected="true">NBA roots</button><button type="button" role="tab" data-discover="regions" aria-selected="false">Regions</button><button type="button" role="tab" data-discover="archive" aria-selected="false">Past brackets</button><button type="button" role="tab" data-discover="moments" aria-selected="false">Watch</button></div></div>
+      <section id="discoverNba" class="view" aria-label="NBA alumni and draft discovery">
+        <div class="nba-intro"><p class="kicker">The schools behind the stars</p><h3 class="sec-h">You know their names.<br>Meet their schools.</h3><p class="sub">Notable alumni connect you to a college team. Your bracket picks the college teams playing now.</p></div>
+        <div id="startingFive" class="starting-five"></div>
+        <div class="nba-controls"><label>Explore a school<select id="nbaSchool" aria-label="Explore a school"></select></label><div class="seg" role="tablist" aria-label="NBA discovery view"><button type="button" role="tab" data-nba-view="alumni" aria-selected="true">Notable alumni</button><button type="button" role="tab" data-nba-view="past" aria-selected="false">Past picks</button><button type="button" role="tab" data-nba-view="watch" aria-selected="false">2027 watch</button></div></div>
+        <p class="sub" id="nbaScope"></p><div id="nbaCards" class="nba-cards"></div>
+      </section>
+      <section id="discoverMoments" class="view" hidden aria-label="NCAA highlights"><div><p class="kicker">A little March drama</p><h3 class="sec-h">Watch the stakes.</h3><p class="sub">Official NCAA clips. YouTube may be unavailable in mainland China; every story has a local practice path.</p></div><div id="discoveryClips" class="discovery-clips"></div></section>
       <div id="discoverRegions" class="view">
       <div class="card explore-head">
         <div class="seg" role="tablist" aria-label="Region meaning"><button type="button" role="tab" data-map-mode="home" aria-selected="true">School home regions</button><button type="button" role="tab" data-map-mode="bracket" aria-selected="false">Tournament groups</button></div>
@@ -104,7 +112,7 @@
           <div class="pills" id="mapButtons" aria-label="Choose a region"></div>
           <div class="region-story" id="regionStory"></div>
         </div>
-        <div class="card region-roster"><div aria-live="polite" aria-atomic="true"><p class="kicker" id="regionCount"></p><h3 class="sec-h" id="regionTitle"></h3></div><div id="regionTeams" class="school-list"></div></div>
+        <div class="card region-roster"><div aria-live="polite" aria-atomic="true"><p class="kicker" id="regionCount"></p><h3 class="sec-h" id="regionTitle"></h3></div><label class="roster-filter"><input type="checkbox" id="chineseRosterFilter"> Chinese-player teams only <small>2026–27 roster snapshot</small></label><div id="regionTeams" class="school-list"></div></div>
       </div>
       <button type="button" class="btn red explore-pick" data-go="bracket">Make my picks →</button>
       </div>
@@ -149,6 +157,9 @@
           </div>
         </div>
 
+        <p class="sub bracket-definition">A bracket is your prediction of every winner. Tap one team in each game.</p>
+        <details class="entry-paths-wrap"><summary>Find your team: NBA stars or regions</summary><div class="entry-paths"><button type="button" data-discover-go="nba"><b>NBA fan?</b><span>Find your star’s school →</span></button><button type="button" data-discover-go="regions"><b>New to the teams?</b><span>Explore a region →</span></button></div><div class="bracket-discovery-links"><button type="button" class="link" id="bracketAlumni">Duke vs. Kentucky: alumni Starting 5 ↗</button><button type="button" class="link" data-go="learn">Practice three picks first →</button></div></details>
+
         <div class="helper">
           <button class="helper-bar" id="helperBar" aria-expanded="false" aria-controls="helperBody">
             <span class="hb-ic" aria-hidden="true">?</span>
@@ -170,7 +181,7 @@
               <details class="rule"><summary>How auto-fill works</summary><p>Your chosen team wins every game. Other teams with Chinese players advance against teams without one. Other matchups use seed-weighted random picks.</p></details>
               <div class="opts" id="cnOpts"></div>
             </div>
-            <p class="sub">Or <button class="link" id="btnSeed">fill it randomly by seed</button>.</p>
+            <button class="btn lottery-fill" id="btnSeed" type="button">Lucky draw: fill all 63 picks ↗</button><p class="sub">Random picks weighted by seed. Free demo; no ticket purchase.</p>
           </div>
         </div>
 
@@ -251,7 +262,7 @@
   </div>
 </main>
 
-<footer><div class="wrap"><p id="dbNotice">Demo: entries are saved in this browser only. Use Standings to simulate the tournament.</p>Student concept for NYU Experience Studio | ESPN China. Uses the 2026 tournament field. Chinese players from 2026-27 Division I rosters reported by Sina Sports. Not affiliated with or endorsed by ESPN, Bilibili or the NCAA. School marks belong to their respective owners. Prize rules are a concept, subject to legal review.</div></footer>
+<footer><div class="wrap"><p id="dbNotice">Demo: entries are saved in this browser only. Use Standings to simulate the tournament.</p>Student concept for NYU Experience Studio | ESPN China. Uses the 2026 tournament field. Chinese players from 2026-27 Division I rosters reported by Sina Sports. Not affiliated with or endorsed by ESPN, Bilibili, the NBA or NCAA. School marks and player photos belong to their respective owners. Prize rules are a concept, subject to legal review.</div></footer>
 
 <dialog id="teamDialog" class="team-dialog" aria-labelledby="teamDialogTitle"><div class="profile-topbar"><button type="button" class="dialog-close" id="teamDialogClose" aria-label="Close profile">×</button></div><div id="teamDialogBody"></div></dialog>
 <div id="teamPeek" class="team-peek" role="tooltip" hidden></div>
@@ -274,10 +285,12 @@
 <script src="js/logic.js"></script>
 <script src="js/profiles.js"></script>
 <script src="js/players.js"></script>
+<script src="js/discovery-data.js"></script>
 <script src="js/history-data.js"></script>
 <script src="js/camp.js"></script>
 <script src="js/experience.js"></script>
 <script src="js/guide.js"></script>
+<script src="js/discovery.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
