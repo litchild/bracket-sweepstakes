@@ -58,3 +58,64 @@ document.querySelectorAll('[data-practice]').forEach(b=>b.addEventListener('clic
 function filter(key){document.querySelectorAll('[data-concept]').forEach(c=>c.hidden=key!=='all'&&c.dataset.concept!==key);document.querySelector('.concepts').classList.toggle('single',key!=='all');document.querySelectorAll('[data-filter]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.filter===key)));}
 document.querySelectorAll('[data-filter]').forEach(b=>b.addEventListener('click',()=>filter(b.dataset.filter)));
 if(matchMedia('(max-width:760px)').matches)filter('a');
+
+// Concepts 04 to 06: feature ideas. Read-only data from ../js/logic.js (field, game tree, seed strength, points)
+// and ../js/history-data.js (verified 2026 results). Practice saves nothing and never touches the prototype.
+const real=(()=>{const A=ARCHIVE['2026'],ids={},out={};A.games.filter(g=>g.round===1).forEach(g=>g.teams.forEach(t=>{ids[t.id]=RX.find(X=>BR[X].name===g.region)+t.seed;}));A.games.forEach(g=>g.teams.forEach(t=>{const id=ids[t.id],o=out[id]=out[id]||{last:0,games:{}};o.last=Math.max(o.last,g.round);const w=g.teams.find(x=>x.won);o.games[g.round]={winner:ids[w.id],score:`${w.score}–${g.teams.find(x=>!x.won).score}`};if(!t.won){o.lostTo=ids[w.id];o.score=o.games[g.round].score;}}));return out;})();
+const teamNamed=n=>Object.values(TEAMS).find(t=>t.name===n);
+function runText(id){const o=real[id];if(!o.lostTo)return 'won the title';const w=TEAMS[o.lostTo];return `${o.last===6?'lost the championship game':`lost in the ${ROUND_NAME[o.last]}`} to No. ${w.seed} ${w.name}, ${o.score}`;}
+
+// 04 / Your NBA star's school. Colleges verified on Basketball Reference; see docs/concept-sources.md.
+const fans=[['durant','Kevin Durant','Texas'],['tatum','Jayson Tatum','Duke'],['booker','Devin Booker','Kentucky'],['westbrook','Russell Westbrook','UCLA'],['jordan','Michael Jordan','North Carolina'],['irving','Kyrie Irving','Duke'],['davis','Anthony Davis','Kentucky'],['sga','Shai Gilgeous-Alexander','Kentucky'],['embiid','Joel Embiid','Kansas'],['olajuwon','Hakeem Olajuwon','Houston'],['magic','Magic Johnson','Michigan State'],['brunson','Jalen Brunson','Villanova'],['edwards','Anthony Edwards','Georgia'],['mitchell','Donovan Mitchell','Louisville']];
+let fanKey='durant';
+function starPath(id){const sel={};GAMES.forEach(g=>{const [a,b]=cands(g,sel);sel[g.id]=a===id||b===id?id:Math.random()<strength(a)/(strength(a)+strength(b))?a:b;});return GAMES.filter(g=>cands(g,sel).includes(id)).map(g=>{const [a,b]=cands(g,sel);return {round:g.round,opp:TEAMS[a===id?b:a]};});}
+function renderStar(key){
+ $('#dialog-type').textContent='PRACTICE / YOUR STAR’S SCHOOL';content.replaceChildren();
+ if(!key){content.append(node('p','STEP 1 OF 2','story-count'),title('Who do you follow?'),node('p','Choose an NBA player. His college team wins every game in your practice bracket.','dialog-copy'));const list=node('div',undefined,'pick-list');fans.forEach(([k,n,s])=>{const t=teamNamed(s),b=button('',()=>renderStar(k),'two-line');b.append(node('span',n),node('small',`${t.name} · No. ${t.seed} seed, ${BR[t.br].name}`));list.append(b);});content.append(list,node('p','Colleges from Basketball Reference · 2026 field as a stand-in for 2027.','story-source'));dialog.scrollTop=0;return;}
+ const [,n,s]=fans.find(f=>f[0]===key),t=teamNamed(s),ol=node('ol',undefined,'path-list');
+ content.append(node('p','STEP 2 OF 2','story-count'),title(`${t.name} wins it all.`),node('p',`${n} played college basketball at ${t.name}. In this practice bracket, ${t.name} wins all six games. Every other game is a coin flip weighted by seed.`,'dialog-copy'));
+ starPath(t.id).forEach(p=>{const li=node('li');li.append(node('span',ROUND_NAME[p.round]),node('b',`Beat No. ${p.opp.seed} ${p.opp.name}`));ol.append(li);});
+ const actions=node('div',undefined,'story-actions');actions.append(button('Shuffle the other games',()=>renderStar(key),'cta dark'),button('Choose another player',()=>renderStar(),'text-link'),link('Open the full prototype ↗','https://bracket-sweepstakes.netlify.app/','text-link'));
+ content.append(ol,node('p',`In the real 2026 tournament, ${t.name} ${runText(t.id)}.`,'real-line'),actions,node('small','Practice only. Nothing is saved or sent to the prototype.','story-source'));dialog.scrollTop=0;
+}
+document.querySelectorAll('[data-fan]').forEach(b=>b.addEventListener('click',()=>{
+ fanKey=b.dataset.fan;const [,n,s]=fans.find(f=>f[0]===fanKey),t=teamNamed(s);document.querySelectorAll('[data-fan]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+ $('#pennant-school').textContent=t.name.toUpperCase();$('#pennant-seed').textContent=`NO. ${t.seed} SEED · ${BR[t.br].name.toUpperCase()} BRACKET`;$('#fan-kicker').textContent=`${n.toUpperCase()} / ${t.name.toUpperCase()}`;$('#fan-cta').textContent=`Fill my bracket for ${t.name} →`;
+}));
+const features={d:()=>renderStar(fanKey)};
+document.querySelectorAll('[data-feature]').forEach(b=>b.addEventListener('click',()=>{show('PRACTICE');features[b.dataset.feature]();}));
+
+// 05 / Draft watch. Top 10 picks of the June 2026 draft (Basketball Reference); all ten schools were in the 2026 field.
+const prospects=[[1,'AJ Dybantsa','BYU'],[2,'Darryn Peterson','Kansas'],[3,'Cameron Boozer','Duke'],[4,'Caleb Wilson','North Carolina'],[5,'Keaton Wagler','Illinois'],[6,'Mikel Brown Jr.','Louisville'],[7,'Darius Acuff Jr.','Arkansas'],[8,'Kingston Flemings','Houston'],[9,'Morez Johnson Jr.','Michigan'],[10,'Brayden Burries','Arizona']];
+const outcomes=['Lost in the Round of 64','Lost in the Round of 32','Lost in the Sweet 16','Lost in the Elite 8','Lost in the Final Four','Lost in the championship game','Won the title'],reached=['Round of 64','Round of 32','Sweet 16','Elite 8','Final Four','Runner-up','Champion'];
+const outcomeOf=id=>real[id].lostTo?real[id].last-1:6;
+function renderDraft(pick,call){
+ $('#dialog-type').textContent='PRACTICE / HOW FAR WILL HE GO?';content.replaceChildren();
+ if(!pick){content.append(node('p','STEP 1 OF 2','story-count'),title('Choose a prospect.'),node('p','These were the top 10 picks in the June 2026 NBA draft. Each one came from a 2026 tournament team.','dialog-copy'));const list=node('div',undefined,'pick-list');prospects.forEach(([p,n,s])=>{const t=teamNamed(s),b=button('',()=>renderDraft(p),'two-line');b.append(node('span',n),node('small',`No. ${p} pick · No. ${t.seed} seed ${t.name}, ${BR[t.br].name}`));list.append(b);});content.append(list,node('p','Draft order from Basketball Reference · 2026 results from the official bracket.','story-source'));dialog.scrollTop=0;return;}
+ const [,n,s]=prospects.find(x=>x[0]===pick),t=teamNamed(s);
+ if(call===undefined){content.append(node('p','STEP 2 OF 2','story-count'),title(`How far does ${t.name} go?`),node('p',`${n} played for No. ${t.seed} seed ${t.name}. Predict where its 2026 run ended.`,'dialog-copy'));const list=node('div',undefined,'pick-list compact');outcomes.forEach((o,i)=>list.append(button(o,()=>renderDraft(pick,i),'')));content.append(list);dialog.scrollTop=0;return;}
+ const actual=outcomeOf(t.id),off=Math.abs(actual-call),card=node('div',undefined,'result-card'),run=runText(t.id);
+ card.append(node('span',`YOUR CALL: ${outcomes[call]}`),node('strong',`${t.name}: ${reached[actual]}`),node('p',run[0].toUpperCase()+run.slice(1)+'.'));
+ const actions=node('div',undefined,'story-actions');actions.append(button('Try another prospect',()=>renderDraft(),'cta dark'),link('2026 draft: Basketball Reference ↗','https://www.basketball-reference.com/draft/NBA_2026.html'));
+ content.append(title(off?`${['One','Two','Three','Four','Five','Six'][off-1]} round${off>1?'s':''} off.`:'Exactly right.'),card,node('p',`${n} went No. ${pick} in the June 2026 NBA draft. A 2027 version would show projected picks during March.`,'dialog-copy'),actions,node('small','Practice only. Nothing is saved or sent to the prototype.','story-source'));dialog.scrollTop=0;
+}
+features.e=()=>renderDraft();
+
+// 06 / Beat the ambassador. Sample picks written for this mockup, labeled by region only: never a real person's choices.
+const ambGroups=[['east','东','East',['Michigan','UConn','UConn']],['south','南','South',['Arizona','Illinois','Arizona']],['west','西','West',['Arizona','UConn','Arizona']],['midwest','北','Midwest',['Michigan','Illinois','Michigan']]];
+const ffPairs=[['Michigan','Arizona'],['UConn','Illinois']];
+let ambGroup=null,ambPicks=[];
+function zhLabel(g,text){const s=node('span');const z=node('span',g[1]);z.lang='zh-Hans';s.append(z,document.createTextNode(` ${text}`));return s;}
+function ffActual(){const s1=real[teamNamed('Michigan').id].games[5],s2=real[teamNamed('UConn').id].games[5];return [s1,s2,real[s1.winner].games[6]];}
+function renderAmb(){
+ $('#dialog-type').textContent='PRACTICE / BEAT THE SAMPLE BRACKET';content.replaceChildren();
+ if(!ambGroup){content.append(node('p','STEP 1 OF 3','story-count'),title('Choose a bracket to beat.'),node('p','Each region’s ambassadors would publish their own bracket. These sample picks were written for this mockup; they are not anyone’s real choices.','dialog-copy'));const list=node('div',undefined,'pick-list');ambGroups.forEach(g=>{const b=button('',()=>{ambGroup=g;ambPicks=[];renderAmb();},`two-line region-pick ${g[0]}`);b.append(zhLabel(g,`${g[2]} ambassadors’ bracket`),node('small','Sample picks'));list.append(b);});content.append(list);dialog.scrollTop=0;return;}
+ if(ambPicks.length<3){const r=ambPicks.length,c=r<2?ffPairs[r]:ambPicks.slice(0,2),list=node('div',undefined,'pick-list compact'),vs=node('p',undefined,'story-source');content.append(node('p',`STEP 2 OF 3 · PICK ${r+1} OF 3`,'story-count'),title(r<2?`Who wins semifinal ${r+1}?`:'Now choose your champion.'),node('p',r<2?'Choose a winner. Your two winners meet in the final.':'These are your two semifinal winners.','dialog-copy'));c.forEach(n=>list.append(button(n,()=>{ambPicks.push(n);renderAmb();},'')));vs.append(document.createTextNode('Playing against: '),zhLabel(ambGroup,`${ambGroup[2]} ambassadors’ bracket (sample picks)`));content.append(list,vs,node('p','2026 Final Four teams · Practice predictions, separate from actual results.','story-source'));dialog.scrollTop=0;return;}
+ const act=ffActual(),pts=[POINTS[5],POINTS[5],POINTS[6]],sample=ambGroup[3],table=node('table',undefined,'h2h'),cap=node('caption'),thead=node('thead'),head=node('tr'),tbody=node('tbody');let you=0,them=0;
+ cap.append(document.createTextNode('You vs '),zhLabel(ambGroup,`${ambGroup[2]} ambassadors’ bracket (sample picks)`));['Game','You','Sample','Result'].forEach(h=>{const th=node('th',h);th.scope='col';head.append(th);});thead.append(head);
+ ['Semifinal 1','Semifinal 2','Final'].forEach((g,i)=>{const w=TEAMS[act[i].winner].name,yo=ambPicks[i]===w,so=sample[i]===w,tr=node('tr'),th=node('th',g);th.scope='row';if(yo)you+=pts[i];if(so)them+=pts[i];tr.append(th,node('td',`${ambPicks[i]} ${yo?'✓':'✗'}`,yo?'hit':'miss'),node('td',`${sample[i]} ${so?'✓':'✗'}`,so?'hit':'miss'),node('td',`${w} ${act[i].score}`));tbody.append(tr);});
+ table.append(cap,thead,tbody);const card=node('div',undefined,'result-card'),who=node('p');who.append(document.createTextNode('You · '),zhLabel(ambGroup,`${ambGroup[2]} (sample picks)`));card.append(node('span','HEAD TO HEAD / 2026 FINAL FOUR'),node('strong',`${you} – ${them}`),who);
+ const actions=node('div',undefined,'story-actions');actions.append(button('Try another region',()=>{ambGroup=null;renderAmb();},'cta dark'),button('Change my picks',()=>{ambPicks=[];renderAmb();},'text-link'),link('Open the full prototype ↗','https://bracket-sweepstakes.netlify.app/'));
+ content.append(node('p','STEP 3 OF 3','story-count'),title(you>them?`You beat the ${ambGroup[2]} sample bracket.`:them>you?`The ${ambGroup[2]} sample bracket wins this one.`:'Even score.'),card,table,node('p',`Points: ${POINTS[5]} for each correct semifinal and ${POINTS[6]} for the champion, the same values as the full prototype.`,'dialog-copy'),actions,node('small','Practice only. Sample picks are not the ambassadors’ real choices. Nothing is saved.','story-source'));dialog.scrollTop=0;
+}
+features.f=()=>{ambGroup=null;ambPicks=[];renderAmb();};

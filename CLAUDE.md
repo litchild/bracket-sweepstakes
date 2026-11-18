@@ -109,11 +109,22 @@ knows nothing about March Madness or brackets). Put new source material from the
 
 ## UI behavior worth preserving
 
-- The three homepage review concepts have a separate URL, requested on November 18, 2026:
-  https://bracket-sweepstakes.netlify.app/concepts/. The `concepts/` directory contains the mobile mockups,
-  local storyboards, practice interactions, research and journey maps. This review page is separate from the
-  main prototype. Its practice does not save or alter entries; share cards are mockups. Publish only its HTML,
-  CSS, JS and local assets; keep review notes, screenshots and ZIP files outside the public checkout.
+- The Concept Lab has a separate URL, requested on November 18, 2026: https://bracket-sweepstakes.netlify.app/concepts/.
+  The `concepts/` directory contains the mobile mockups, local storyboards, practice interactions, research and
+  journey maps. This review page is separate from the main prototype. Its practice does not save or alter entries;
+  share cards are mockups. Publish only its HTML, CSS, JS and local assets; keep review notes, screenshots and ZIP
+  files outside the public checkout.
+- The Concept Lab shows six concepts. 01 to 03 are homepage directions built by a teammate: keep his concepts,
+  journeys and recommendation as they are and add to them. 04 to 06 are feature ideas added on November 18, 2026:
+  04 Your NBA star’s school (pick a player, his college wins the practice bracket), 05 Draft watch (2026 first-round
+  picks on tournament teams, predict a prospect's run), 06 Beat the ambassador (three Final Four picks against a
+  regional sample bracket). Each has a nav button, mockup, explainer, practice, journey row and evidence card.
+  The page loads `../js/logic.js` and `../js/history-data.js` read-only for the field, game tree, seed strength,
+  points and real 2026 results; never modify them for the Concept Lab. New code is appended to `concepts/app.js`
+  in its compact style, and practice buttons for 04 to 06 use `data-feature`, because `data-practice` starts
+  concept 03's practice. Concepts 04 to 06 use no league, team or player logos and no player photos: type and CSS
+  art only. Ambassador brackets are always labeled as sample picks by region, never with names or as a real
+  person's choices. Data and evidence sources, with inference labels, are in `docs/concept-sources.md`.
 - The prize leads the page. The hero headline is a giant "Win 50,000 RMB" (number in the display face, "Win" in a red
   slashed tag, "RMB" in red), with "Bracket Sweepstakes" as a smaller line above it and a red "Make your picks"
   button that opens My bracket. On phones "Win" sits on its own row so the number fills the width; while picking,
