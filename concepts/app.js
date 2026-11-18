@@ -84,3 +84,19 @@ document.querySelectorAll('[data-fan]').forEach(b=>b.addEventListener('click',()
 }));
 const features={d:()=>renderStar(fanKey)};
 document.querySelectorAll('[data-feature]').forEach(b=>b.addEventListener('click',()=>{show('PRACTICE');features[b.dataset.feature]();}));
+
+// 05 / Draft watch. Top 10 picks of the June 2026 draft (Basketball Reference); all ten schools were in the 2026 field.
+const prospects=[[1,'AJ Dybantsa','BYU'],[2,'Darryn Peterson','Kansas'],[3,'Cameron Boozer','Duke'],[4,'Caleb Wilson','North Carolina'],[5,'Keaton Wagler','Illinois'],[6,'Mikel Brown Jr.','Louisville'],[7,'Darius Acuff Jr.','Arkansas'],[8,'Kingston Flemings','Houston'],[9,'Morez Johnson Jr.','Michigan'],[10,'Brayden Burries','Arizona']];
+const outcomes=['Lost in the Round of 64','Lost in the Round of 32','Lost in the Sweet 16','Lost in the Elite 8','Lost in the Final Four','Lost in the championship game','Won the title'],reached=['Round of 64','Round of 32','Sweet 16','Elite 8','Final Four','Runner-up','Champion'];
+const outcomeOf=id=>real[id].lostTo?real[id].last-1:6;
+function renderDraft(pick,call){
+ $('#dialog-type').textContent='PRACTICE / HOW FAR WILL HE GO?';content.replaceChildren();
+ if(!pick){content.append(node('p','STEP 1 OF 2','story-count'),title('Choose a prospect.'),node('p','These were the top 10 picks in the June 2026 NBA draft. Each one came from a 2026 tournament team.','dialog-copy'));const list=node('div',undefined,'pick-list');prospects.forEach(([p,n,s])=>{const t=teamNamed(s),b=button('',()=>renderDraft(p),'two-line');b.append(node('span',n),node('small',`No. ${p} pick · No. ${t.seed} seed ${t.name}, ${BR[t.br].name}`));list.append(b);});content.append(list,node('p','Draft order from Basketball Reference · 2026 results from the official bracket.','story-source'));dialog.scrollTop=0;return;}
+ const [,n,s]=prospects.find(x=>x[0]===pick),t=teamNamed(s);
+ if(call===undefined){content.append(node('p','STEP 2 OF 2','story-count'),title(`How far does ${t.name} go?`),node('p',`${n} played for No. ${t.seed} seed ${t.name}. Predict where its 2026 run ended.`,'dialog-copy'));const list=node('div',undefined,'pick-list compact');outcomes.forEach((o,i)=>list.append(button(o,()=>renderDraft(pick,i),'')));content.append(list);dialog.scrollTop=0;return;}
+ const actual=outcomeOf(t.id),off=Math.abs(actual-call),card=node('div',undefined,'result-card'),run=runText(t.id);
+ card.append(node('span',`YOUR CALL: ${outcomes[call]}`),node('strong',`${t.name}: ${reached[actual]}`),node('p',run[0].toUpperCase()+run.slice(1)+'.'));
+ const actions=node('div',undefined,'story-actions');actions.append(button('Try another prospect',()=>renderDraft(),'cta dark'),link('2026 draft: Basketball Reference ↗','https://www.basketball-reference.com/draft/NBA_2026.html'));
+ content.append(title(off?`${['One','Two','Three','Four','Five','Six'][off-1]} round${off>1?'s':''} off.`:'Exactly right.'),card,node('p',`${n} went No. ${pick} in the June 2026 NBA draft. A 2027 version would show projected picks during March.`,'dialog-copy'),actions,node('small','Practice only. Nothing is saved or sent to the prototype.','story-source'));dialog.scrollTop=0;
+}
+features.e=()=>renderDraft();
