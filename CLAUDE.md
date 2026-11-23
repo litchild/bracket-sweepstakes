@@ -83,6 +83,14 @@ knows nothing about March Madness or brackets). Put new source material from the
   uses solid regional reds and blues, matching region-button swatches, and a selected-region accent on the school
   list. Avoid faded map fills and extra gray panels around the map controls.
 - **Writing style for all copy:** no em dashes, no litotes, no irony.
+- **Basketball visual details (November 23).** Original local SVGs provide the basketball cursor and hoop artwork.
+  The ball cursor applies only to fine pointers with hover; clickable controls use its cyan-ring version. Keep
+  native text-entry and disabled cursors. Touch devices retain their normal behavior. The hero hoop stays
+  decorative and compact on phones, with the prize and first bracket game taking priority. The NBA introduction
+  includes three clickable alumni school cards, and player cards have school logos and bold red/cyan accents.
+  The bracket completion meter shows actual picks out of 63; its moving ball is decorative. A short manual-pick
+  confirmation animates only the selected team, never changes picks or scoring, and respects reduced motion.
+  Hover effects must have keyboard focus equivalents and must never be required to access information.
 - Use `textContent` for anything a person types (pass-around names).
 
 ## Data

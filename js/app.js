@@ -170,7 +170,8 @@ function teamBtn(g, tid, elim) {
   b.addEventListener("click", () => {
     hideTeamPeek(); S.picks = applyPick(S.picks, g.id, tid); if (!S.root) S.mode = "manual";
     saveDraft(); renderAllLocal();
-    document.querySelector(`[data-game="${g.id}"] [data-pick="${tid}"]`)?.focus({ preventScroll: true });
+    const selected = document.querySelector(`[data-game="${g.id}"] [data-pick="${tid}"]`);
+    selected?.classList.add('just-picked'); selected?.focus({ preventScroll: true });
   });
   b.dataset.pick = tid;
   const row = el("div", "team-row");
@@ -324,6 +325,9 @@ $("passExit").addEventListener("click", () => exitGuest(""));
 function renderBar() {
   const n = countPicks(S.picks);
   $("pT").textContent = `${n} of 63 picked`; $("progMini").textContent = `${n} / 63`;
+  $('shotMeter').setAttribute('aria-valuenow',String(n));
+  $('shotMeter').setAttribute('aria-valuetext',`${n} of 63 games picked`);
+  $('shotMeter').style.setProperty('--completion',`${n / 63 * 100}%`);
   $("pM").style.width = `${(n / 63) * 100}%`;
   const who = (S.guest ? `Entering for ${S.guest.name} · ` : "") + (S.root ? `Rooting for ${fanText(S.root, S.cnTeam)}` : "Picking on your own");
   const btn = $("btnEnter");

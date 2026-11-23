@@ -69,7 +69,8 @@ function renderNbaDiscovery(append=false){
     if(nbaSchool!=='all'){const b=el('button','link','Open school profile');b.type='button';b.addEventListener('click',()=>showTeamProfile(nbaSchool));empty.append(b);}box.append(empty);return;}
   for(const p of players.slice(start,shown)){const card=el('article','card nba-card');
     if(watch)card.append(teamLogo(p.team),el('p','kicker',`2027 watch · Board #${p.rank}`));else card.append(alumniPortrait(p),el('p','kicker',nbaView==='past'?`${p.year} NBA draft · Pick ${p.pick}`:p.position));
-    card.append(el('h4','',p.name),el('b','nba-school-name',TEAMS[p.team].name));
+    const schoolName=el('b','nba-school-name');schoolName.append(teamLogo(p.team),document.createTextNode(TEAMS[p.team].name));
+    card.append(el('h4','',p.name),schoolName);
     if(!watch)card.append(el('p','sub',`${p.year} draft · No. ${p.pick} pick`));
     const profile=el('button','btn','View player profile');profile.type='button';profile.setAttribute('aria-label',`View ${p.name} profile`);profile.addEventListener('click',()=>watch?showProspectProfile(p.name):showAlumniProfile(p.id));
     const school=el('button','link',`${TEAMS[p.team].name} school profile`);school.type='button';school.addEventListener('click',()=>showTeamProfile(p.team));card.append(profile,school);box.append(card);
@@ -85,6 +86,7 @@ function renderDiscoveryClips(){
     const tryIt=el('button','btn',c.title.includes('Curry')?'Try an underdog pick →':'Practice this game →');tryIt.type='button';tryIt.addEventListener('click',()=>{practiceIndex=c.game;renderPractice();navigateTo('learn',false);setCampMode('games');$('practiceLab').scrollIntoView({block:'start'});$('practiceTitle').focus({preventScroll:true});});card.append(tryIt);box.append(card);});
 }
 function initDiscovery(){
+  document.querySelectorAll('[data-alumni-profile]').forEach(b=>b.addEventListener('click',()=>showAlumniProfile(b.dataset.alumniProfile)));
   const select=$('nbaSchool');select.append(el('option','','All featured schools'));select.firstChild.value='all';
   Object.values(TEAMS).sort((a,b)=>a.name.localeCompare(b.name)).forEach(t=>{const o=el('option','',t.name);o.value=t.id;select.append(o);});
   select.addEventListener('change',()=>{nbaSchool=select.value;nbaLimit=12;renderNbaDiscovery();});
