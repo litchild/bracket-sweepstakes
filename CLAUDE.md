@@ -171,7 +171,15 @@ knows nothing about March Madness or brackets). Put new source material from the
   region explanations, and auto-fill mechanics belong in expandable details.
 - Discover opens on NBA roots, with Regions, Past brackets and Watch as alternatives. NBA alumni routes lead to
   the school's actual bracket group without auto-picking or treating NBA alumni as current college players.
-  School profiles include alumni/prospect summaries and a filtered discovery link for every field team. This is a
+  The November 23 expansion includes 62 NBA alumni across 19 schools and individual profiles for those alumni
+  and all nine watchlist prospects. Alumni profiles show local portraits, dated NBA position/height, actual draft
+  outcomes, related alumni and a school-to-bracket route. Prospect profiles keep projected board rank separate
+  from actual picks. Both reuse the accessible native profile dialog and return focus to the initiating control.
+  Search accepts player or school names, punctuation variations and UConn/Connecticut aliases. School controls
+  show curated counts; browse across schools with 12 cards at a time and append via Show more. School filters,
+  queries and view changes reset pagination. Keep all 64 school profiles available, including honest empty states.
+  School profiles preview four clickable alumni, link to every featured connection and show prospect profiles.
+  The Starting 5 still uses five per school; its faces now open individual profiles. This is a
   curated collection, not a complete all-time alumni database; empty schools say no featured data, never no alumni.
   Past selections show actual draft years/picks. 2027 watch shows dated board ranks, not pick numbers, based on
   the November 5, 2026 source snapshot. Keep that date and the 2026 field distinction visible.
