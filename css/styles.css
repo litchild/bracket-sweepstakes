@@ -1335,3 +1335,25 @@ details.simulation-tools { display:block; padding:18px 24px; }details.simulation
 .bar-logo { width:20px; height:20px; flex:none; }
 .swipe-hint { margin:0 0 8px; font-size:12.5px; font-weight:600; color:var(--muted); position:sticky; left:0; }
 @media (max-width: 600px) { .draft-head::before { background:linear-gradient(112deg, transparent 0 88%, var(--red) 88% 91%, transparent 91% 93%, rgba(224,37,43,.45) 93% 95%, transparent 95%); } }
+.lang-switch { position:absolute; z-index:3; top:10px; right:max(12px,calc((100% - 1150px)/2)); display:flex; padding:2px; border:1px solid #ffffff6b; border-radius:18px; background:#101116e8; }
+.lang-switch a { padding:6px 10px; color:white; font:600 13px/1.4 system-ui,sans-serif; border-radius:16px; text-decoration:none; }
+.lang-switch a[aria-current=true] { background:white; color:#121318; }
+html:lang(zh) { --display:"Barlow Condensed","PingFang SC","Microsoft YaHei",sans-serif; }
+html:lang(zh) .title,html:lang(zh) .sec-h { line-height:1.12; }
+html:lang(zh) .j-win { font-style:normal; }
+html:lang(zh) .tn-wrap { overflow-wrap:anywhere; }
+html:lang(zh) .j-num { line-height:.9; }
+.leader-rows { list-style:none; padding:0; margin:14px 0; }
+.leader-rows li { display:flex; align-items:center; gap:12px; padding:12px; border-bottom:1px solid var(--line); }
+.leader-rows b { overflow-wrap:anywhere; }
+.leader-rows strong { margin-left:auto; white-space:nowrap; }
+.leader-rows .is-mine { border-left:4px solid var(--blue); background:var(--surface-2); }
+.pilot-dialog form, .admin { padding:24px; }
+.pilot-dialog input,.admin input,.admin select { max-width:100%; padding:10px; border:1px solid var(--line); border-radius:8px; font:inherit; }
+.pilot-dialog label, .pilot-dialog input,.admin #games label { display:block; margin:12px 0; }
+.admin { max-width:840px; margin:auto; }
+.admin #metrics { display:flex; flex-wrap:wrap; gap:10px; }
+.admin #metrics p { background:var(--surface); border:1px solid var(--line); padding:12px; border-radius:8px; }
+.admin details { margin:10px 0; padding:12px; background:var(--surface); }
+.admin #games { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:0 14px; }
+.admin label select { display:block; width:100%; }

@@ -1,4 +1,4 @@
-// Page UI: rendering, auto-fill helper, pass-around entries, crowd, standings, simulation controls.
+// Browser-rendered bracket and crowd views for the shared friends pilot.
 // Depends on globals from js/logic.js.
 
 
@@ -6,25 +6,19 @@
 const S = {
   tab: "bracket", br: "E", cbr: "E",
   root: null, cnTeam: null, star: null, picks: {}, mode: "manual", helpOpen: false, helpTab: "nba",
-  db: null, user: null, uid: null, canEdit: false, dbState: "connecting",
-  real: [], sims: [], simEntries: [], winners: {},
-  entered: false, savedSig: null, busy: false,
-  guest: null, ownerSnap: null, resRound: null,
-  round: 1, passOpen: false, seedOpen: false, fullBracket: true
+  dbState: "connecting", busy:false, winners:{},
+  round: 1, seedOpen: false, fullBracket: true
 };
-const MAX_SIMS = 5000;
 const $ = id => document.getElementById(id);
 const fmt = n => Number(n).toLocaleString("en-US");
 const pct = (a, b) => b ? Math.round(a / b * 100) : 0;
-const sig = (p, r, c) => encode(p) + "|" + (r || "") + "|" + (c || "") + "|" + countPicks(p);
 function store(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 function load(k) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
 const draft = load("bs-draft");
 if (draft && draft.picks) { S.picks = draft.picks; S.root = draft.root || null; S.cnTeam = draft.cnTeam || null; S.star = draft.star || null; S.mode = draft.mode || "manual"; }
-function saveDraft() { if (S.guest) return; store("bs-draft", { picks: S.picks, root: S.root, cnTeam: S.cnTeam, star: S.star, mode: S.mode }); }
-function locked() { return decidedIds(S.winners).length > 0; }
-function allEntries() { return S.real.concat(S.simEntries); }
-function classEntries() { return S.real.filter(e => e.guest); }
+function saveDraft() { recordProgress(countPicks(S.picks)); store("bs-draft", { picks: S.picks, root: S.root, cnTeam: S.cnTeam, star: S.star, mode: S.mode }); }
+function locked() { return pilot.closed || Date.now() >= Date.parse(pilot.closesAt); }
+
 function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
 function teamColor(t) { return `var(${ROOTS[t.home].color})`; }
 function cnBadge() { const b = el("span", "cnb", "中"); b.title = "Chinese player on the roster"; return b; }
@@ -48,12 +42,12 @@ function fanTag(root, cnTeam) {
 
 // ---------- header ----------
 function renderLive() {
-  const N = allEntries().length;
-  $("liveWord").textContent = locked() ? "Live" : "Open";
+  const N = pilot.board.length;
+  $("liveWord").textContent = locked() ? "Closed" : "Open";
   $("eyeTxt").textContent = "March Madness 2026";
   if (S.dbState === "connecting") { $("liveN").textContent = "–"; $("liveL").textContent = "Connecting…"; }
   else if (S.dbState === "off") { $("liveN").textContent = "–"; $("liveL").textContent = "Shared entries unavailable here"; }
-  else { $("liveN").textContent = fmt(N); $("liveL").textContent = `bracket${N === 1 ? "" : "s"} entered${S.simEntries.length ? ` · ${fmt(S.simEntries.length)} simulated` : ""}`; }
+  else { $("liveN").textContent = fmt(N); $("liveL").textContent = `bracket${N === 1 ? "" : "s"} entered`; }
 }
 
 // ---------- seed definition ----------
@@ -84,7 +78,7 @@ function renderHelper() {
   $("hbTitle").textContent = sm.title; $("hbSub").textContent = sm.sub;
   const bar = $("helperBar");
   bar.setAttribute("aria-expanded", String(S.helpOpen && !locked())); bar.disabled = locked();
-  if (locked()) $("hbSub").textContent = "Brackets are locked because games have started.";
+  if (locked()) $("hbSub").textContent = "The entry deadline has passed.";
   $("helperBody").hidden = !S.helpOpen || locked();
   $("btnShuffle").hidden = !(S.root || S.mode === "seed") || locked();
   $("btnClear").disabled = locked(); $("btnClear").hidden = !countPicks(S.picks);
@@ -248,46 +242,6 @@ function renderBracket() {
 }
 document.querySelectorAll("[data-view]").forEach(b => b.addEventListener("click", () => { S.fullBracket = b.dataset.view === "full"; renderBracket(); }));
 
-// ---------- pass-around ----------
-function renderPass() {
-  const box = $("pass");
-  box.hidden = !(S.canEdit && S.db);
-  if (box.hidden) return;
-  box.classList.toggle("active", !!S.guest);
-  const open = S.passOpen || !!S.guest;
-  $("passBar").setAttribute("aria-expanded", String(open)); $("passBody").hidden = !open;
-  const n = classEntries().length;
-  if (locked()) {
-    $("passForm").hidden = true; $("passOn").hidden = true;
-    $("passSub").textContent = `Entries are closed because results are in. ${n} pass-around entr${n === 1 ? "y" : "ies"} collected. Reset results on Standings to collect more.`;
-    return;
-  }
-  $("passForm").hidden = !!S.guest; $("passOn").hidden = !S.guest;
-  if (S.guest) $("passWho").textContent = S.guest.name;
-  $("passSub").textContent = `Hand this device around. Each person types their name, fills a bracket and taps Enter. ${n} so far.`;
-}
-function startGuest() {
-  if (locked()) return;
-  const name = $("passName").value.trim().replace(/\s+/g, " ").slice(0, 40);
-  if (!name) { $("passMsg").textContent = "Type their name first."; $("passMsg").className = "msg bad"; $("passName").focus(); return; }
-  if (!S.guest) S.ownerSnap = { picks: S.picks, root: S.root, cnTeam: S.cnTeam, star: S.star, mode: S.mode };
-  S.guest = { id: "g-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7), name };
-  S.picks = {}; S.root = null; S.cnTeam = null; S.star = null; S.mode = "manual"; S.br = "E"; S.round = 1; S.helpOpen = false;
-  $("passName").value = ""; $("passMsg").textContent = ""; $("sMsg").textContent = "";
-  renderAllLocal();
-  $("v-bracket").querySelector('h2').scrollIntoView({block:'start'}); $("helperBar").focus({preventScroll:true});
-}
-function exitGuest(msg) {
-  if (S.ownerSnap) { S.picks = S.ownerSnap.picks; S.root = S.ownerSnap.root; S.cnTeam = S.ownerSnap.cnTeam; S.star = S.ownerSnap.star || null; S.mode = S.ownerSnap.mode; }
-  S.guest = null; S.ownerSnap = null; S.br = "E"; S.round = 1; S.helpOpen = false;
-  $("passMsg").textContent = msg || ""; $("passMsg").className = "msg good";
-  renderAllLocal();
-}
-$("passBar").addEventListener("click", () => { if (S.guest) return; S.passOpen = !S.passOpen; renderPass(); });
-$("passStart").addEventListener("click", startGuest);
-$("passName").addEventListener("keydown", e => { if (e.key === "Enter") startGuest(); });
-$("passExit").addEventListener("click", () => exitGuest(""));
-
 // ---------- entry bar ----------
 function renderBar() {
   const n = countPicks(S.picks);
@@ -296,47 +250,13 @@ function renderBar() {
   $('shotMeter').setAttribute('aria-valuetext',`${n} of 63 games picked`);
   $('shotMeter').style.setProperty('--completion',`${n / 63 * 100}%`);
   $("pM").style.width = `${(n / 63) * 100}%`;
-  const who = (S.guest ? `Entering for ${S.guest.name} · ` : "") + (S.root ? `Rooting for ${fanText(S.root, S.cnTeam)}` : "Picking on your own");
   const btn = $("btnEnter");
-  const dirty = sig(S.picks, S.root, S.cnTeam) !== S.savedSig;
-  if (locked()) { $("pS").textContent = `${who} · Brackets are locked: games have started.`; btn.disabled = true; btn.textContent = S.entered ? "Entered" : "Closed"; return; }
-  if (!S.db) { $("pS").textContent = `${who} · Shared entries aren’t available in this view.`; btn.disabled = true; btn.textContent = "Enter free"; return; }
-  if (!S.uid) { $("pS").textContent = `${who} · Sign in to claude.ai to enter.`; btn.disabled = true; btn.textContent = "Enter free"; return; }
-  $("pS").textContent = n < 63 ? `${who} · Fill all 63 games to enter.` : `${who} · Ready to enter.`;
-  if (S.guest) { btn.textContent = `Enter ${S.guest.name}`; btn.disabled = S.busy || n < 63; return; }
-  if (S.entered && !dirty && n === 63) $("pS").textContent = `${who} · You’re entered. Change any pick to update your entry.`;
-  btn.textContent = S.entered ? (dirty ? "Update entry" : "Entered") : "Enter free";
-  btn.disabled = S.busy || n < 63 || (S.entered && !dirty);
+  const same = pilot.mine && encode(pilot.mine.picks) === encode(S.picks) && n === 63;
+  $("pS").textContent = locked() ? "Entries closed" : same ? "Your entry is saved online." : "Complete all 63 picks to enter.";
+  btn.textContent = locked() ? "Closed" : same ? "Entered" : pilot.mine ? "Update entry" : "Enter free";
+  btn.disabled = locked() || S.busy || n < 63 || same;
 }
-async function submit() {
-  if (!S.db || !S.uid || locked() || countPicks(S.picks) < 63) return;
-  S.busy = true; renderBar(); $("sMsg").textContent = ""; $("sMsg").className = "msg";
-  const doc = { picks: Object.assign({}, S.picks), root: S.root || "", cnTeam: S.cnTeam || "", star: S.star || "", mode: S.mode, updatedAt: new Date().toISOString() };
-  if (S.guest) {
-    const g = S.guest;
-    try {
-      await S.db.doc("entries/" + g.id).set(Object.assign(doc, { name: g.name, guest: true }));
-      S.busy = false;
-      exitGuest(`${g.name} is in. Type the next person’s name to start their entry.`);
-      $("pass").scrollIntoView({ block: "start" }); $("passName").focus({ preventScroll: true });
-    } catch (e) {
-      S.busy = false;
-      $("sMsg").textContent = e && e.code === "quota_exceeded" ? "The entry list is full. Remove some entries first." : "Couldn’t save this entry. Try again in a moment.";
-      $("sMsg").className = "msg bad"; renderBar();
-    }
-    return;
-  }
-  try {
-    await S.db.doc("entries/" + S.uid).set(doc);
-    S.entered = true; S.savedSig = sig(S.picks, S.root, S.cnTeam);
-    $("sMsg").textContent = "You’re in. Good luck!"; $("sMsg").className = "msg good";
-  } catch (e) {
-    $("sMsg").textContent = e && e.code === "quota_exceeded" ? "The entry list is full. Ask the host to clear space." : "Couldn’t save your entry. Try again in a moment.";
-    $("sMsg").className = "msg bad";
-  }
-  S.busy = false; renderBar();
-}
-$("btnEnter").addEventListener("click", submit);
+$("btnEnter").addEventListener("click", openEntryDialog);
 
 // ---------- crowd ----------
 function hbar(labelNodes, frac, cssColor) {
@@ -346,12 +266,12 @@ function hbar(labelNodes, frac, cssColor) {
   return row;
 }
 function renderCrowd() {
-  const E = allEntries(); const N = E.length; const simN = S.simEntries.length;
-  $("crowdSub").textContent = N ? `${fmt(N)} local bracket${N === 1 ? "" : "s"}${simN ? ` · ${fmt(simN)} simulated` : ""}` : "Enter a bracket to see the crowd’s choices.";
+  const N = pilot.board.length; const crowd = pilot.crowd;
+  $("crowdSub").textContent = N ? String(N) : "Waiting for the first entry.";
   const cb = $("champBars"); cb.textContent = "";
   if (!N) cb.append(el("p", "empty", "Waiting for the first entry."));
   else {
-    const cnt = {}; E.forEach(e => { const c = e.picks["F6-0"]; if (c) cnt[c] = (cnt[c] || 0) + 1; });
+    const cnt = crowd.champions;
     Object.entries(cnt).sort((a, b) => b[1] - a[1]).slice(0, 8).forEach(([tid, n]) => {
       const t = TEAMS[tid]; const d = teamLogo(tid); d.classList.add("bar-logo");
       const nodes = [d, document.createTextNode(`${t.seed} ${t.name}`)]; if (CN_PLAYERS[tid]) nodes.push(cnBadge());
@@ -361,9 +281,9 @@ function renderCrowd() {
   const rb = $("rootBars"); rb.textContent = "";
   if (!N) rb.append(el("p", "empty", "Waiting for the first entry."));
   else {
-    rb.append(hbar([cnBadge(), document.createTextNode("Chinese players")], E.filter(e => e.root === "cn").length / N, "var(--cn)"));
-    rb.append(hbar([document.createTextNode("NBA star’s school")], E.filter(e => e.root === "star").length / N, "var(--blue)"));
-    const own = E.filter(e => !e.root || (e.root !== "cn" && e.root !== "star" && !ROOTS[e.root])).length;
+    rb.append(hbar([cnBadge(), document.createTextNode("Chinese players")], (crowd.roots.cn || 0) / N, "var(--cn)"));
+    rb.append(hbar([document.createTextNode("NBA star’s school")], (crowd.roots.star || 0) / N, "var(--blue)"));
+    const own = crowd.roots.manual || 0;
     rb.append(hbar([document.createTextNode("Own picks")], own / N, "var(--faint)"));
   }
   const ct = $("ctabs"); ct.textContent = "";
@@ -373,7 +293,7 @@ function renderCrowd() {
     ct.append(b);
   });
   const ml = $("muList"); ml.textContent = "";
-  const win = S.winners; const started = locked();
+  const win = S.winners; const started = false;
   $("muTitle").textContent = started ? "Next matchup picks" : "First-round picks";
   $("muSub").textContent = started
     ? "Share of eligible brackets picking each team. Later rounds count brackets that picked one of the teams playing."
@@ -383,8 +303,8 @@ function renderCrowd() {
   if (!live.length) { ml.append(el("p", "empty", decidedIds(win).length===63 ? "All games are finished. See the final rankings in Standings." : "No upcoming matchups in this group. Choose another group or explore fan favorites above.")); return; }
   live.forEach(g => {
     const [a, b] = cands(g, win);
-    const pool = g.round === 1 ? E : E.filter(e => e.picks[g.id] === a || e.picks[g.id] === b);
-    const na = pool.filter(e => e.picks[g.id] === a).length, nb = pool.filter(e => e.picks[g.id] === b).length, tot = na + nb;
+    const counts = crowd.games[g.id] || {};
+    const na = counts[a] || 0, nb = counts[b] || 0, tot = na + nb;
     const box = el("div", "mu"); const row = el("div", "row");
     const la = el("span"); la.append(el("b", null, tot ? `${pct(na, tot)}%` : "–"), document.createTextNode(` ${TEAMS[a].seed} ${TEAMS[a].name}${CN_PLAYERS[a] ? " 中" : ""}`));
     const lb = el("span"); lb.append(document.createTextNode(`${TEAMS[b].seed} ${TEAMS[b].name}${CN_PLAYERS[b] ? " 中" : ""} `), el("b", null, tot ? `${pct(nb, tot)}%` : "–"));
@@ -396,173 +316,17 @@ function renderCrowd() {
   });
 }
 
-// ---------- results ----------
-function resGame(g, label) {
-  const win = S.winners; const [a, b] = cands(g, win); const w = win[g.id]; const l = w === a ? b : a;
-  const wrap = el("div", "res-col"); if (label) wrap.append(el("div", "rg-lab", label));
-  const box = el("div", "rg");
-  [[w, true], [l, false]].forEach(([tid, isW]) => {
-    const t = TEAMS[tid]; const row = el("div", "rt " + (isW ? "w" : "l"));
-    row.style.setProperty("--c", teamColor(t));
-    row.append(el("span", "seed", String(t.seed)), el("span", "tn", t.name));
-    if (CN_PLAYERS[tid]) row.append(cnBadge());
-    if (isW && t.seed > TEAMS[l].seed) row.append(el("span", "up", "Upset"));
-    row.title = `${t.name}${isW ? " won" : " lost"}`;
-    box.append(row);
-  });
-  wrap.append(box); return wrap;
-}
-function renderResults() {
-  const win = S.winners; const last = latestRound(win);
-  const tabs = $("rtabs"); tabs.textContent = ""; const body = $("resBody"); body.textContent = "";
-  if (!last) { $("resSub").textContent = S.canEdit && S.db ? "No games played yet. Tap Simulate next round to play the Round of 64." : "Results appear here as games are played."; return; }
-  const r = S.resRound && S.resRound <= last ? S.resRound : last;
-  for (let k = 1; k <= last; k++) {
-    const t = el("button", "pill", ROUND_NAME[k]); t.type = "button"; t.setAttribute("role", "tab"); t.setAttribute("aria-selected", String(k === r));
-    t.addEventListener("click", () => { S.resRound = k; renderResults(); });
-    tabs.append(t);
-  }
-  const games = GAMES.filter(g => g.round === r && win[g.id]);
-  let ups = 0, big = null;
-  games.forEach(g => { const [a, b] = cands(g, win); const w = TEAMS[win[g.id]], l = TEAMS[win[g.id] === a ? b : a]; if (w.seed > l.seed) { ups++; if (!big || w.seed - l.seed > big.d) big = { d: w.seed - l.seed, w, l }; } });
-  $("resSub").textContent = `${ROUND_NAME[r]}${r === last ? " (latest)" : ""} · ${games.length} game${games.length === 1 ? "" : "s"} · ${ups} upset${ups === 1 ? "" : "s"}` + (big ? `. Biggest upset: ${big.w.seed} ${big.w.name} over ${big.l.seed} ${big.l.name}.` : ".");
-  if (r <= 4) {
-    const grid = el("div", "res-grid");
-    RX.forEach(X => { const col = el("div", "res-col"); col.append(el("h4", null, `${BR[X].name} bracket`)); games.filter(g => g.br === X).forEach(g => col.append(resGame(g))); grid.append(col); });
-    body.append(grid);
-  } else if (r === 5) {
-    const grid = el("div", "res-grid narrow"); grid.append(resGame(G["F5-0"], "East vs South"), resGame(G["F5-1"], "West vs Midwest")); body.append(grid);
-  } else {
-    const grid = el("div", "res-grid narrow"); grid.append(resGame(G["F6-0"], "Championship")); body.append(grid);
-    const c = TEAMS[win["F6-0"]]; const ch = el("div", "champ"); const left = el("div");
-    left.append(el("div", "k", "National champion"), el("div", "v", c.name)); ch.append(left);
-    ch.append(el("div", "k", `${c.seed} seed · ${BR[c.br].name} bracket${CN_PLAYERS[c.id] ? ` · ${CN_PLAYERS[c.id]}` : ""}`));
-    body.append(ch);
-  }
-}
-
-// ---------- standings ----------
-function renderStandings() {
-  renderResults();
-  const E = allEntries(); const N = E.length; const win = S.winners; const played = decidedIds(win).length;
-  const perfect = E.filter(e => isPerfect(e.picks, win));
-  $("kEntries").textContent = fmt(N);
-  $("kEntries").nextElementSibling.textContent=S.simEntries.length?`Brackets entered (${fmt(S.simEntries.length)} simulated)`:'Brackets entered';
-  $("kPerfect").textContent = fmt(perfect.length);
-  $("kPerfectL").textContent = played ? `Perfect brackets left of ${fmt(N)}` : "Perfect brackets left (all of them, until games start)";
-  $("kGames").textContent = `${played} / 63`;
-  const nr = GAMES.filter(g => !win[g.id] && cands(g, win).every(Boolean));
-  $("kGamesL").textContent = played === 63 ? "Tournament complete" : `Next: ${nr.length ? ROUND_NAME[Math.min(...nr.map(g => g.round))] : "Round of 64"}`;
-  $("stSub").textContent = played ? `${played} of 63 games complete · Simulated results` : "No games played yet. Results appear here as games are played.";
-  // Chinese players tracker
-  const ctk = $("cnTrack"); ctk.textContent = "";
-  CN_IDS.forEach(id => {
-    const t = TEAMS[id]; const out = lostIn(id, win); const champ = win["F6-0"] === id;
-    const c = el("div", "cnt");
-    const top = el("span", "opt-top"); top.append(cnBadge(), document.createTextNode(`${t.seed} seed · ${BR[t.br].name} bracket`));
-    const st = champ ? el("span", "status champ-s", "Champion") : out ? el("span", "status out", `Out in ${ROUND_NAME[out]}`) : el("span", "status alive-s", "Alive");
-    c.append(top, el("span", "nm", t.name), el("span", "sub", CN_PLAYERS[id]), st);
-    ctk.append(c);
-  });
-  $("simulationTools").hidden = !S.canEdit || !S.db;
-  $("dSim").disabled = S.busy || played === 63; $("dReset").disabled = S.busy || !played;
-  $("dFans").disabled = S.busy || S.sims.length >= MAX_SIMS; $("dNoFans").disabled = S.busy || !S.sims.length;
-  $("dNoClass").disabled = S.busy || !classEntries().length;
-}
-
 // ---------- render ----------
 function renderAllLocal() {
-  renderPass(); renderHelper(); renderBTabs(); renderBracket(); renderBar();
+  renderHelper(); renderBTabs(); renderBracket(); renderBar();
   updateJourney();
   if (S.tab === "crowd") renderCrowd();
-  if (S.tab === "standings") renderStandings();
+  if (S.tab === "standings") renderPilotBoard();
 }
 function renderAll() { renderLive(); renderAllLocal(); }
 document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => navigateTo(t.dataset.tab)));
 
-// ---------- simulation controls ----------
-async function runSimulationAction(fn, okMsg) {
-  S.busy = true; renderStandings(); $("dMsg").textContent = ""; $("dMsg").className = "msg";
-  try { await fn(); $("dMsg").textContent = okMsg; $("dMsg").className = "msg good"; }
-  catch (e) { $("dMsg").textContent = "That didn’t save. Try again in a moment."; $("dMsg").className = "msg bad"; }
-  S.busy = false; renderAll();
-}
-$("dSim").addEventListener("click", () => runSimulationAction(async () => {
-  S.resRound = null;
-  const nx = nextRound(S.winners); if (!nx) return;
-  await S.db.doc("state/results").set({ winners: nx.winners, updatedAt: new Date().toISOString() });
-}, "Round simulated. The winners are under Results."));
-$("dReset").addEventListener("click", () => runSimulationAction(() => S.db.doc("state/results").set({ winners: {}, updatedAt: new Date().toISOString() }), "Results cleared. Brackets are open again."));
-$("dFans").addEventListener("click", () => runSimulationAction(async () => {
-  const opts = ["cn", "cn", "", "", ""];
-  const list = S.sims.map(x => typeof x === "string" ? x : (() => { const u = unpackSim(x); return u ? packSim(u.root, u.picks) : null; })()).filter(Boolean);
-  const add = Math.min(1000, MAX_SIMS - list.length);
-  for (let i = 0; i < add; i++) {
-    const r = opts[Math.floor(Math.random() * opts.length)] || null;
-    const cn = r === "cn" ? CN_IDS[Math.floor(Math.random() * CN_IDS.length)] : null;
-    list.push(packSim(r, randomBracket(helperFor(r, cn))));
-  }
-  await S.db.doc("state/sims").set({ list, updatedAt: new Date().toISOString() });
-}, "Added 1,000 simulated fans."));
-$("dNoFans").addEventListener("click", () => runSimulationAction(() => S.db.doc("state/sims").set({ list: [], updatedAt: new Date().toISOString() }), "Simulated fans removed."));
-$("dNoClass").addEventListener("click", () => runSimulationAction(() => Promise.all(classEntries().map(e => S.db.doc("entries/" + e.id).delete())), "Pass-around entries removed."));
-
-// ---------- local storage backend ----------
-function localBackend() {
-  const KEY = "bs-local-db";
-  let data = {};
-  try { data = JSON.parse(localStorage.getItem(KEY) || "{}") || {}; } catch (e) { data = {}; }
-  const subs = new Set();
-  const persist = () => { try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {} };
-  const notify = () => setTimeout(() => subs.forEach(f => f()), 0);
-  const snapDoc = path => ({ id: path.split("/").pop(), exists: path in data, data: () => (path in data ? JSON.parse(JSON.stringify(data[path])) : undefined) });
-  const watch = f => { subs.add(f); setTimeout(f, 0); return () => subs.delete(f); };
-  const doc = path => ({
-    get: async () => snapDoc(path),
-    set: async v => { data[path] = JSON.parse(JSON.stringify(v)); persist(); notify(); },
-    delete: async () => { delete data[path]; persist(); notify(); },
-    onSnapshot: fn => watch(() => fn(snapDoc(path)))
-  });
-  const collection = path => {
-    const q = { limit: () => q, onSnapshot: fn => watch(() => fn({ docs: Object.keys(data).filter(k => k.startsWith(path + "/") && k.split("/").length === 2).map(snapDoc) })) };
-    return q;
-  };
-  return {
-    db: { doc, collection },
-    user: { id: async () => "local-you", canEdit: async () => true, profiles: async ids => Object.fromEntries([].concat(ids).map(i => [i, { id: i, name: "" }])) }
-  };
-}
-
-// ---------- boot ----------
 initGuide();
 renderAll();
-(async () => {
-  // Storage backend. localBackend() keeps everything in this browser.
-  // To share entries between visitors, replace it with an object that has the same
-  // doc(path).get/set/delete/onSnapshot and collection(path).limit(n).onSnapshot shape,
-  // backed by a hosted database.
-  const { db, user } = localBackend();
-  S.db = db; S.user = user; S.dbState = "on";
-  S.uid = user ? await user.id() : null;
-  S.canEdit = user ? await user.canEdit() : false;
-  if (S.uid) {
-    try {
-      const s = await db.doc("entries/" + S.uid).get();
-      if (s.exists) {
-        const d = s.data() || {}; S.entered = true; S.savedSig = sig(d.picks || {}, d.root || null, d.cnTeam || null);
-        if (!draft || !draft.picks || !countPicks(draft.picks)) { S.picks = Object.assign({}, d.picks); S.root = d.root || null; S.cnTeam = d.cnTeam || null; S.star = d.star || null; S.mode = d.mode || "manual"; }
-      }
-    } catch (e) {}
-  }
-  db.collection("entries").limit(1000).onSnapshot(snap => {
-    S.real = snap.docs.filter(d => d.exists).map(d => { const v = d.data() || {}; return { id: d.id, picks: v.picks || {}, root: v.root || null, cnTeam: v.cnTeam || null, guest: !!v.guest, name: typeof v.name === "string" ? v.name.slice(0, 40) : "" }; });
-    renderLive(); if (S.tab !== "bracket") renderAllLocal(); else renderPass();
-  }, () => { S.dbState = "off"; renderLive(); });
-  db.doc("state/results").onSnapshot(s => { const v = s.exists ? s.data() : null; S.winners = Object.assign({}, (v && v.winners) || {}); renderAll(); }, () => {});
-  db.doc("state/sims").onSnapshot(s => {
-    const v = s.exists ? s.data() : null; S.sims = v && Array.isArray(v.list) ? v.list : [];
-    S.simEntries = S.sims.map((x, i) => { const u = unpackSim(x); return u ? { id: "sim-" + i, sim: true, n: i + 1, root: u.root, cnTeam: u.cnTeam, picks: u.picks } : null; }).filter(Boolean);
-    renderLive(); if (S.tab !== "bracket") renderAllLocal();
-  }, () => {});
-  renderAll();
-})();
+initPilot();
+

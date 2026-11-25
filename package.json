@@ -6,5 +6,8 @@
   "scripts": {
     "test": "node --test",
     "start": "npx --yes serve ."
+  },
+  "dependencies": {
+    "@netlify/blobs": "11.1.11"
   }
 }

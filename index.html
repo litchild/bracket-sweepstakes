@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>One shot to win 50,000 RMB · Bracket Sweepstakes</title>
+<title>One shot to win 500 RMB · Bracket Sweepstakes</title>
 <meta name="description" content="Build your March Madness bracket, follow the schools behind your favorite NBA players, and pick your champion.">
-<link rel="stylesheet" href="css/styles.css?v=tournament-banner">
+<link rel="stylesheet" href="css/styles.css?v=friends">
 </head>
 <body>
 <header class="hero tournament-hero">
@@ -13,11 +13,12 @@
        srcset="images/hero/tournament-720.webp 720w, images/hero/tournament-1440.webp 1440w"
        sizes="(max-width: 600px) 62vw, (max-width: 1500px) 65vw, 975px"
        width="1440" height="809" alt="" fetchpriority="high">
+  <nav class="lang-switch" aria-label="Language"><a lang="zh-CN" href="?lang=zh">中文</a><a lang="en-US" href="?lang=en">EN</a></nav>
   <div class="wrap hero-in">
     <div>
-      <div class="eyebrow"><span class="live" id="liveBadge"><i></i><span id="liveWord">Open</span></span><a class="partner-logos" href="https://www.bilibili.com/" target="_blank" rel="noopener noreferrer" aria-label="ESPN and Bilibili logos. Opens bilibili.com in a new tab"><img src="images/brand/espn.svg" alt="" width="65" height="16"><span aria-hidden="true">×</span><img src="images/brand/bilibili.svg" alt="" width="71" height="18"></a><span id="eyeTxt">March Madness 2026</span></div>
-      <h1 class="title"><span class="t-name">Bracket Sweepstakes</span><span class="jackpot"><span class="j-win">One shot to win</span><span class="j-num">50,000</span><span class="j-cur">RMB</span></span></h1>
-      <p class="money-hook">Free to enter · Picks lock March 18</p>
+      <div class="eyebrow"><span class="live" id="liveBadge"><i></i><span id="liveWord">Open</span></span><span id="eyeTxt">March Madness 2026</span></div>
+      <h1 class="title"><span class="t-name">Bracket Sweepstakes</span><span class="jackpot"><span class="j-win">One shot to win</span><span class="j-num">500</span><span class="j-cur">RMB</span></span></h1>
+      <p class="money-hook">Free entry · December 2, 23:59 Beijing time</p>
       <div class="prize-row">
         <button class="hero-cta" type="button" data-go="bracket">Make your picks</button>
       </div>
@@ -32,7 +33,7 @@
     <button class="tab" role="tab" aria-selected="false" data-tab="explore">Discover</button>
     <button class="tab" role="tab" aria-selected="true" data-tab="bracket">My bracket</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="crowd">Crowd</button>
-    <button class="tab" role="tab" aria-selected="false" data-tab="standings">Results</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="standings">Leaderboard</button>
   </div>
 </nav>
 
@@ -50,7 +51,7 @@
         <div class="bracket-explainer">
           <h3>What is a bracket?</h3>
           <p>A bracket is your prediction of every game's winner, from the first round to the champion.</p>
-          <ol class="pick-steps"><li><span>1</span><div><b>Tap your winner</b><small>Choose one team in each pair.</small></div></li><li><span>2</span><div><b>Move them forward</b><small>Your winners meet in the next round.</small></div></li><li><span>3</span><div><b>Pick your champion</b><small>Keep choosing until one team remains.</small></div></li><li class="step-prize"><span>4</span><div><b>Win 50,000 RMB</b><small>Enter your bracket free and follow it all March.</small></div></li></ol>
+          <ol class="pick-steps"><li><span>1</span><div><b>Tap your winner</b><small>Choose one team in each pair.</small></div></li><li><span>2</span><div><b>Move them forward</b><small>Your winners meet in the next round.</small></div></li><li><span>3</span><div><b>Pick your champion</b><small>Keep choosing until one team remains.</small></div></li><li class="step-prize"><span>4</span><div><b>Win 500 RMB</b><small>Enter your bracket free and follow your score.</small></div></li></ol>
           <div class="welcome-actions"><button class="btn red" type="button" id="tryMini">Try a 3-pick bracket →</button><button class="link" type="button" data-go="bracket">Ready? Make my picks →</button></div>
           <p class="sub beginner-note">No team knowledge needed. Try it below.</p>
         </div>
@@ -70,7 +71,7 @@
       <details class="card rules"><summary>Rules</summary><div class="rules-body">
         <p>Your bracket begins with 64 teams after the opening games. Teams advance through the Round of 64, Round of 32, Sweet 16, Elite 8, Final Four, and championship.</p>
         <p>Pick a winner for every game. Changing a winner clears later picks that depend on that team.</p>
-        <p>This bracket uses the 2026 tournament field and dates. Entries save in this browser. The proposed prize is 50,000 RMB. No cash prize is awarded here.</p>
+        <p>One entry per person. Pick all 63 winners by December 2, 2026 at 23:59 Beijing time. Each match with the organizer’s result bracket earns one point. The highest score wins the 500 RMB pilot prize. Tied scores share a rank.</p>
       </div></details>
     </section>
 
@@ -94,31 +95,13 @@
         <div class="seg" role="tablist" aria-label="Archive view"><button type="button" role="tab" data-archive-view="path" aria-selected="true">Champion's run</button><button type="button" role="tab" data-archive-view="full" aria-selected="false">Full bracket</button></div>
         <div id="archiveRegions" class="pills" role="tablist" aria-label="Historical bracket regions" hidden></div>
         <div id="archiveRounds" class="rounds" role="tablist" aria-label="Historical rounds" hidden></div>
-        <div id="archiveGames"></div><p class="sub roster-note">Actual NCAA men's results · Round of 64 onward · Select a game for its box score.</p>
+        <div id="archiveGames"></div><p class="sub roster-note">Actual NCAA men's results · Round of 64 onward · Select a game for the official bracket.</p>
         <div class="archive-highlights"><p class="kicker">Highlights</p><p class="sub">Official NCAA clips open on YouTube, which may be unavailable in mainland China. Each story also has a practice game.</p><div id="discoveryClips" class="discovery-clips"></div></div>
       </section>
     </section>
 
     <!-- ===== My bracket ===== -->
     <section class="view" id="v-bracket">
-      <div class="card pass" id="pass" hidden>
-        <button class="pass-bar" id="passBar" type="button" aria-expanded="false" aria-controls="passBody"><b>Pass-around entries</b><span class="hb-chev" aria-hidden="true"></span></button>
-        <div class="pass-body" id="passBody" hidden>
-          <div class="pass-row">
-            <div class="pass-copy"><p class="sub" id="passSub"></p></div>
-            <div class="pass-form" id="passForm">
-              <input id="passName" type="text" maxlength="40" placeholder="Their name" autocomplete="off" aria-label="Name of the person entering">
-              <button class="btn" id="passStart">Start their entry</button>
-            </div>
-            <div class="pass-on" id="passOn" hidden>
-              <span>Now entering: <b id="passWho"></b></span>
-              <button class="btn ghost" id="passExit">Back to my bracket</button>
-            </div>
-          </div>
-          <span class="msg" id="passMsg" aria-live="polite"></span>
-        </div>
-      </div>
-
       <div class="card">
         <div class="bhead">
           <h2 class="sec-h">Your bracket</h2>
@@ -183,48 +166,21 @@
 
     <!-- ===== Standings ===== -->
     <section class="view" id="v-standings" hidden>
-      <div class="card section-intro"><p class="kicker">The tournament</p><h2 class="sec-h">Results</h2><p class="sub">Game results and how many brackets are still perfect.</p><p class="sub" id="stSub"></p></div>
-      <details class="card simulation-tools" id="simulationTools" hidden>
-        <summary>Simulate the tournament</summary>
-        <p class="sub">Team seeds determine each team’s chances. Simulating a round locks your picks.</p>
-        <div class="row">
-          <button class="btn red" id="dSim">Simulate next round</button>
-          <button class="btn ghost" id="dReset">Reset results</button>
-          <button class="btn" id="dFans">Add 1,000 simulated fans</button>
-          <button class="btn ghost" id="dNoFans">Remove simulated fans</button>
-          <button class="btn ghost" id="dNoClass">Remove pass-around entries</button>
-        </div>
-        <span class="msg" id="dMsg" aria-live="polite"></span>
-      </details>
-      <div id="tournamentPanel" class="view">
-      <div class="card" id="results">
-        <div class="res-head"><h3 class="card-h">Results</h3><div class="pills" role="tablist" id="rtabs" aria-label="Rounds played"></div></div>
-        <p class="sub" id="resSub"></p>
-        <div id="resBody"></div>
-      </div>
-      <div class="kpis">
-        <div class="card kpi"><div class="n" id="kEntries">0</div><div class="l">Brackets entered</div></div>
-        <div class="card kpi"><div class="n" id="kPerfect">0</div><div class="l" id="kPerfectL">Perfect brackets left</div></div>
-        <div class="card kpi"><div class="n" id="kGames">0 / 63</div><div class="l" id="kGamesL">Games played</div></div>
-      </div>
-      <div class="card">
-        <h3 class="card-h"><span class="cnb" style="font-size:13px;line-height:18px;vertical-align:3px">中</span> Chinese players tracker</h3>
-        <p class="sub">Teams with Chinese players on 2026-27 rosters, placed in last season’s field.</p>
-        <div class="cn-track" id="cnTrack"></div>
-      </div>
-      </div>
+      <div class="card section-intro"><p class="kicker">Friends challenge</p><h2 class="sec-h">Leaderboard</h2><p class="sub">One point per correct pick. A perfect bracket earns 63 points. Tied scores share a rank.</p></div>
+      <div class="card"><p class="kicker" id="boardProgress"></p><h3 id="myStanding">Your standing</h3><p id="boardStatus" role="status"></p><ol id="leaderRows" class="leader-rows"></ol><button class="btn" id="boardRefresh" type="button">Refresh standings</button></div>
     </section>
   </div>
 </main>
 
-<footer><div class="wrap"><p>Entries are saved in this browser. Open Results to simulate a round.</p>2026 tournament field. Chinese player roster information from Sina Sports, 2026–27. School marks and player photos belong to their respective owners.</div></footer>
+<footer><div class="wrap"><p>Submitted brackets are saved online. Your nickname and score appear on the leaderboard. We count visits, starts and completions.</p>2026 tournament field. Chinese player roster information from Sina Sports, 2026–27. School marks and player photos belong to their respective owners.</div></footer>
 
+<dialog id="entryDialog" class="team-dialog pilot-dialog"><form id="entryForm"><h2>Submit your bracket</h2><label for="pilotName">Leaderboard nickname</label><input id="pilotName" required maxlength="32" autocomplete="nickname"><p class="sub">Your nickname will be public. You can update this entry on this browser until the deadline.</p><p id="entryError" role="alert"></p><button class="btn red" type="submit">Save my entry</button> <button class="btn" type="button" id="entryCancel">Cancel</button></form></dialog>
 <dialog id="teamDialog" class="team-dialog" aria-labelledby="teamDialogTitle"><div class="profile-topbar"><button type="button" class="dialog-close" id="teamDialogClose" aria-label="Close profile">×</button></div><div id="teamDialogBody"></div></dialog>
 <div id="teamPeek" class="team-peek" role="tooltip" hidden></div>
 
 <div class="bar">
   <div class="wrap">
-    <div class="prog"><div class="t"><span class="bar-prize">Win 50,000 RMB</span><span id="pT">0 of 63 picked</span><span class="msg" id="sMsg" aria-live="polite"></span></div><div class="meter"><i id="pM"></i></div><div class="s" id="pS"></div></div>
+    <div class="prog"><div class="t"><span class="bar-prize">Win 500 RMB</span><span id="pT">0 of 63 picked</span><span class="msg" id="sMsg" aria-live="polite"></span></div><div class="meter"><i id="pM"></i></div><div class="s" id="pS"></div></div>
     <button class="enter" id="btnEnter" disabled>Enter free</button>
   </div>
 </div>
@@ -234,9 +190,10 @@
   <button type="button" data-go="explore"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m16 8-2 6-6 2 2-6Z"/></svg><span>Discover</span></button>
   <button type="button" data-go="bracket"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4v5h5v6H3v5M21 4v5h-5v6h5v5M8 12h8"/></svg><span>My picks</span></button>
   <button type="button" data-go="crowd"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3M16 5a3 3 0 0 1 0 6M18 15a5 5 0 0 1 3 5"/></svg><span>Crowd</span></button>
-  <button type="button" data-go="standings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V11h5v10M10 21V4h5v17M15 21V8h5v13"/></svg><span>Results</span></button>
+  <button type="button" data-go="standings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V11h5v10M10 21V4h5v17M15 21V8h5v13"/></svg><span>Leaderboard</span></button>
 </nav>
 
+<script src="js/zh-dictionary.js"></script>
 <script src="js/logic.js"></script>
 <script src="js/profiles.js"></script>
 <script src="js/players.js"></script>
@@ -246,6 +203,8 @@
 <script src="js/experience.js"></script>
 <script src="js/guide.js"></script>
 <script src="js/discovery.js?v=tournament-banner"></script>
-<script src="js/app.js?v=tournament-banner"></script>
+<script src="js/pilot-client.js"></script>
+<script src="js/app.js?v=friends"></script>
+<script src="js/locale.js"></script>
 </body>
 </html>

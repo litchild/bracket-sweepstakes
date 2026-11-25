@@ -39,14 +39,13 @@ function showTeamProfile(id) {
   for (const [label, record] of [['2025–26',p.recent],['2024–25',p.previous]]) {
     const item = el('div'); item.append(el('p','kicker',label),el('strong','',record || 'Unavailable'),el('small','','Wins–losses')); history.append(item);
   }
-  body.append(history, el('p','sub roster-note','Archived record snapshots · ESPN'));
+  body.append(history, el('p','sub roster-note','Archived season records'));
   if (PLAYER_PROFILES[id]) {
     const player=PLAYER_PROFILES[id], b=el('button','profile-player-row'); b.type='button';
     const words=el('span'); words.append(el('small','','Player to follow'),el('b','',player.name));
     b.append(playerPhoto(id),words,el('span','','→')); b.addEventListener('click',()=>showPlayerProfile(id)); body.append(b);
   }
-  const link = el('a','link profile-link','Team & roster ↗'); link.href = p.url; link.target = '_blank'; link.rel = 'noopener noreferrer';
-  body.append(link); appendSchoolConnections(body,id); finishProfile();
+  appendSchoolConnections(body,id); finishProfile();
 }
 function playerPhoto(id) {
   const p=PLAYER_PROFILES[id], wrap=el('span','player-photo'); wrap.style.setProperty('--player-color',p.color);
@@ -110,7 +109,7 @@ function attachTeamPeek(row, id) {
 function initGuide() {
   S.tab = 'bracket';
   // Pass-around controls follow the main bracket rather than preceding a fan's first game.
-  $('v-bracket').append($('pass'));
+
   document.querySelectorAll('[data-go],[data-step]').forEach(b=>b.addEventListener('click',()=>navigateTo(b.dataset.go || b.dataset.step)));
   document.addEventListener('keydown',e=>{
     const list=e.target.closest('[role="tablist"]'); if(!list)return;

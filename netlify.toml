@@ -1,7 +1,10 @@
-# Static site: no build step. Netlify publishes the repository root.
+# Only browser assets are published.
 [build]
-  publish = "."
-  command = ""
+  publish = "dist"
+  command = "node scripts/build.mjs"
+
+[functions]
+  node_bundler = "esbuild"
 
 # Project files that are not part of the website. Serve the 404 page instead of publishing them.
 [[redirects]]
