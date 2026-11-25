@@ -5,7 +5,8 @@ function alumniPortrait(player){const wrap=el('span','alumni-face'),initials=el(
 function goSchoolGames(team){if($('teamDialog').open)$('teamDialog').close();S.br=TEAMS[team].br;S.round=1;navigateTo('bracket',false);renderBTabs();renderBracket();$('btabs').scrollIntoView({block:'start'});$('btabs').querySelector('[aria-selected="true"]')?.focus({preventScroll:true});}
 function schoolGamesButton(id){const b=el('button','btn',`Go to ${TEAMS[id].name}’s games`);b.type='button';b.addEventListener('click',()=>goSchoolGames(id));return b;}
 function openDiscovery(mode,school='all'){nbaSchool=school;nbaQuery='';nbaLimit=12;$('nbaSearch').value='';if(mode==='nba')nbaView='alumni';discoverMode=mode;renderDiscovery();navigateTo('explore');}
-function alumniRow(p){const b=el('button','connection-row');b.type='button';const words=el('span');words.append(el('b','',p.name),el('small','',`${p.year} NBA draft · Pick ${p.pick}`));b.append(alumniPortrait(p),words);b.setAttribute('aria-label',`View ${p.name} profile`);b.addEventListener('click',()=>showAlumniProfile(p.id));return b;}
+function alumniRow(p){const b=el('button','connection-row');b.type='button';const words=el('span');words.append(el('b','',p.name),el('small','',`NBA · ${nbaTeamLabel(p)}`));b.append(alumniPortrait(p),words);b.setAttribute('aria-label',`View ${p.name} profile`);b.addEventListener('click',()=>showAlumniProfile(p.id));return b;}
+function nbaAffiliation(p){const badge=el('p','nba-affiliation');badge.append(el('span','','NBA'),el('b','',nbaTeamLabel(p)));return badge;}
 function appendSchoolConnections(body,id){
   const data=schoolConnections(id),section=el('section','school-connections');section.append(el('h3','','NBA roots & draft watch'));
   const alumni=el('div','connection-list');alumni.append(el('p','kicker',`${data.alumni.length} featured NBA alumni`));
@@ -26,6 +27,7 @@ function showAlumniProfile(id){
   const p=NBA_ALUMNI.find(p=>p.id===id);if(!p)return;
   const body=prepareProfile(),hero=el('div','alumni-profile-hero'),words=el('div'),title=el('h2','',p.name);title.id='teamDialogTitle';
   words.append(el('p','kicker','NBA roots · Former college player'),title,el('p','',`${TEAMS[p.team].name} alumnus`));hero.append(alumniPortrait(p),words);body.append(hero);
+  const affiliation=el('section','nba-profile-affiliation');affiliation.append(nbaAffiliation(p),el('p','sub',`NBA status checked ${NBA_TEAM_AS_OF}`),discoveryLink(p.nbaStatus==='retired'?'NBA retirement report':'NBA team source',p.nbaSource));body.append(affiliation);
   const facts=el('dl','player-facts alumni-facts');
   for(const [label,value] of [['Position',p.position],['Height',p.height]]){const f=el('div');f.append(el('dt','',label),el('dd','',value));facts.append(f);}body.append(facts);
   const path=el('section','alumni-path');path.append(el('h3','','College to the NBA'));
@@ -48,7 +50,7 @@ function renderStartingFive(){
   const poster=el('div','alumni-poster');poster.append(el('p','kicker','School pride · NBA alumni edition'),el('h4','','DUKE / KENTUCKY'),el('p','alumni-warning','Tap a face to explore. Former players, not the college teams in your bracket.'));
   const grid=el('div','alumni-matchup-grid');
   for(const id of ['E1','M7']){const column=el('div','alumni-side');column.dataset.school=id;const head=el('div','alumni-side-head');head.append(teamLogo(id),el('b','',TEAMS[id].name));column.append(head);
-    NBA_ALUMNI.filter(p=>p.team===id).slice(0,5).forEach(p=>{const b=el('button','alumni-person');b.type='button';b.setAttribute('aria-label',`View ${p.name} profile`);b.append(alumniPortrait(p),el('span','',p.name));b.addEventListener('click',()=>showAlumniProfile(p.id));column.append(b);});column.append(schoolGamesButton(id));grid.append(column);}
+    NBA_ALUMNI.filter(p=>p.team===id).slice(0,5).forEach(p=>{const b=el('button','alumni-person');b.type='button';b.setAttribute('aria-label',`View ${p.name} profile`);b.title=`${p.name} · ${nbaTeamLabel(p)} · ${NBA_TEAM_AS_OF}`;b.append(alumniPortrait(p),el('span','',p.name));b.addEventListener('click',()=>showAlumniProfile(p.id));column.append(b);});column.append(schoolGamesButton(id));grid.append(column);}
   poster.append(grid,el('p','alumni-photo-credit','Photos: NBA · Curated alumni selection, not a ranking or predicted lineup. Duke and Kentucky are in different 2026 tournament groups.'));details.append(poster);host.append(details);
 }
 function renderNbaDiscovery(append=false){
@@ -58,6 +60,7 @@ function renderNbaDiscovery(append=false){
   const box=$('nbaCards'),watch=nbaView==='watch',start=append?box.children.length:0;
   if(!append)box.textContent='';
   $('nbaScope').textContent=watch?'2027 watch · Dated board ranks, not draft results · ESPN / Jeremy Woo, November 5, 2026.':nbaView==='past'?'Historical NBA draft selections. Tap a profile to trace the school connection.':`${NBA_ALUMNI.length} players. ${new Set(NBA_ALUMNI.map(p=>p.team)).size} schools. Find a familiar face, then meet his college team.`;
+  $('nbaTeamNote').hidden=watch;$('nbaTeamNote').textContent=`NBA teams checked ${NBA_TEAM_AS_OF} · Snapshot, not a live roster feed.`;
   for(const o of $('nbaSchool').options){const count=o.value==='all'?(watch?DRAFT_WATCH:NBA_ALUMNI).length:schoolConnections(o.value)[watch?'prospects':'alumni'].length;o.textContent=(o.value==='all'?'All featured schools':TEAMS[o.value].name)+` · ${count} ${watch?'prospects':'players'}`;}
   const schools=[...new Set(NBA_ALUMNI.map(p=>p.team))],groups=schools.map(id=>schoolConnections(id).alumni);
   const browse=Array.from({length:Math.max(...groups.map(g=>g.length))},(_,i)=>groups.map(g=>g[i]).filter(Boolean)).flat();
@@ -71,7 +74,7 @@ function renderNbaDiscovery(append=false){
     if(watch)card.append(teamLogo(p.team),el('p','kicker',`2027 watch · Board #${p.rank}`));else card.append(alumniPortrait(p),el('p','kicker',nbaView==='past'?`${p.year} NBA draft · Pick ${p.pick}`:p.position));
     const schoolName=el('b','nba-school-name');schoolName.append(teamLogo(p.team),document.createTextNode(TEAMS[p.team].name));
     card.append(el('h4','',p.name),schoolName);
-    if(!watch)card.append(el('p','sub',`${p.year} draft · No. ${p.pick} pick`));
+    if(!watch)card.append(nbaAffiliation(p),el('p','sub',`${p.year} draft · No. ${p.pick} pick`));
     const profile=el('button','btn','View player profile');profile.type='button';profile.setAttribute('aria-label',`View ${p.name} profile`);profile.addEventListener('click',()=>watch?showProspectProfile(p.name):showAlumniProfile(p.id));
     const school=el('button','link',`${TEAMS[p.team].name} school profile`);school.type='button';school.addEventListener('click',()=>showTeamProfile(p.team));card.append(profile,school);box.append(card);
   }

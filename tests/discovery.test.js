@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
 const {TEAMS}=require('../js/logic.js');
-const {NBA_ALUMNI,DRAFT_WATCH,schoolConnections,filterConnections}=require('../js/discovery-data.js');
+const {NBA_ALUMNI,DRAFT_WATCH,NBA_TEAM_AS_OF,nbaTeamLabel,schoolConnections,filterConnections}=require('../js/discovery-data.js');
 test('alumni cards resolve to field schools, unique NBA identities and valid local portraits',()=>{
   assert.equal(new Set(NBA_ALUMNI.map(p=>p.id)).size,NBA_ALUMNI.length);
   for(const p of NBA_ALUMNI){assert.ok(TEAMS[p.team]);assert.ok(p.year<=2026);assert.ok(p.pick>=1&&p.pick<=60);assert.match(p.source,new RegExp(`/player/${p.id}/`));assert.equal(fs.readFileSync(path.join(__dirname,'..',p.photo)).subarray(0,8).toString('hex'),'89504e470d0a1a0a');}
@@ -25,6 +25,24 @@ test('player search handles punctuation, school aliases and combined school filt
   assert.equal(find('E1','').length,9);
   assert.equal(find('all','<script>').length,0);
   assert.deepEqual(filterConnections(DRAFT_WATCH,TEAMS,'W1','Caleb').map(p=>p.name),['Caleb Holt']);
+  assert.deepEqual(find('all','Celtics').map(p=>p.name),['Jayson Tatum']);
+  assert.ok(find('all','New York Knicks').every(p=>p.nbaTeam==='New York Knicks'));
+  assert.ok(find('all','New York Knicks').length>1);
+  assert.equal(find('M7','Celtics').length,0);
+});
+test('NBA affiliations are dated and retired or unlisted players never receive a former team',()=>{
+  assert.equal(NBA_TEAM_AS_OF,'November 25, 2026');
+  for(const p of NBA_ALUMNI){
+    assert.ok(['listed','unlisted','retired'].includes(p.nbaStatus));
+    assert.match(p.nbaSource,/^https:\/\/www\.nba\.com\//);
+    if(p.nbaStatus==='listed'){assert.equal(typeof p.nbaTeam,'string');assert.ok(p.nbaTeam.length>3);assert.equal(nbaTeamLabel(p),p.nbaTeam);}
+    else assert.equal(p.nbaTeam,null);
+  }
+  const retired=NBA_ALUMNI.find(p=>p.name==='LaMarcus Aldridge');
+  assert.equal(nbaTeamLabel(retired),'Retired');assert.match(retired.nbaSource,/retires-for-2nd-time/);
+  for(const name of ['Jaden Ivey','Monte Morris'])assert.equal(nbaTeamLabel(NBA_ALUMNI.find(p=>p.name===name)),'No NBA team listed');
+  assert.equal(filterConnections(NBA_ALUMNI,TEAMS,'all','Brooklyn Nets').some(p=>p.id===retired.id),false);
+  for(const p of DRAFT_WATCH)assert.equal(p.nbaTeam,undefined);
 });
 test('school discovery separates dated projections from actual draft outcomes and supports every school',()=>{
   for(const p of DRAFT_WATCH){assert.ok(TEAMS[p.team]);assert.equal(p.year,2027);assert.equal(p.asOf,'November 5, 2026');assert.ok(p.rank>=1);assert.equal(p.pick,undefined);assert.match(p.source,/2027-nba-draft/);}

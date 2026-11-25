@@ -183,6 +183,12 @@ knows nothing about March Madness or brackets). Put new source material from the
   and all nine watchlist prospects. Alumni profiles show local portraits, dated NBA position/height, actual draft
   outcomes, related alumni and a school-to-bracket route. Prospect profiles keep projected board rank separate
   from actual picks. Both reuse the accessible native profile dialog and return focus to the initiating control.
+  NBA team affiliations were checked against official NBA profiles on November 25, 2026. Show the team on alumni
+  discovery cards, individual profiles and related-player rows, with a visible snapshot date and source in the
+  profile. Search also matches NBA team names. This is a curated snapshot, not a live roster feed. Aldridge is
+  labeled Retired using the NBA retirement report; Ivey and Morris show No NBA team listed because their official
+  profiles list no current team. Never fill these gaps with a former team or infer free-agent status. Recheck all
+  affiliations and update the date when refreshing. Draft-watch prospects never receive NBA team affiliations.
   Search accepts player or school names, punctuation variations and UConn/Connecticut aliases. School controls
   show curated counts; browse across schools with 12 cards at a time and append via Show more. School filters,
   queries and view changes reset pagination. Keep all 64 school profiles available, including honest empty states.

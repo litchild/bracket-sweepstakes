@@ -74,7 +74,7 @@ selects five notable alumni per school for recognition; it is not a positional l
 | Quentin Grimes | Houston | 2021 / 25 | Guard | 6'4" (1.93m) | https://www.nba.com/player/1629656/quentin-grimes |
 | Marcus Sasser | Houston | 2023 / 25 | Guard | 6'2" (1.88m) | https://www.nba.com/player/1631204/marcus-sasser |
 
-The collection covers selected alumni only. Position and height are a dated NBA bio snapshot, rather than live roster data. Profiles show college-to-draft paths, related alumni and school navigation. School links never make picks. Country, live NBA team, age and season statistics are omitted so a changing roster or nationality designation cannot be mistaken for a current NCAA roster. NBA IDs and portrait identity were checked against the official pages; Marcus Sasser is `1631204`.
+The collection covers selected alumni only. Position and height are a dated NBA bio snapshot, rather than live roster data. Profiles show college-to-draft paths, related alumni and school navigation. School links never make picks. Country, age and season statistics are omitted. NBA team affiliations were added on November 25, 2026 as a separately dated snapshot, with the college connection kept explicit. NBA IDs and portrait identity were checked against the official pages; Marcus Sasser is `1631204`.
 
 Portraits were downloaded from the official NBA CDN at
 `https://cdn.nba.com/headshots/nba/latest/260x190/<NBA_ID>.png` and stored in `images/alumni/`.
@@ -103,3 +103,74 @@ The first two local previews and practice data already existed; the Curry previe
 The Watch tab explains mainland playback limits and offers practice that needs no external video. There is no
 autoplay, external player load or highlights landing page. Merch integration remains open: no destination was
 provided, so no speculative shop link or product connection was added.
+
+## NBA team affiliations: November 25, 2026
+
+Checked all 62 official NBA profile headers for team affiliations. This is a manually verified snapshot, not a live roster feed. The app keeps `nbaTeam` separate from the NCAA `team` identifier and does not assign NBA teams to draft-watch prospects. Each individual profile links to its affiliation source; school connections, alumni discovery cards and related-player rows show the same NBA team/status. Search includes NBA team names.
+
+LaMarcus Aldridge's historical NBA profile still names Brooklyn, which must not be treated as a current affiliation. The NBA's March 31, 2023 retirement report establishes the retired label: https://www.nba.com/news/lamarcus-aldridge-retires-for-2nd-time-in-career . Jaden Ivey and Monte Morris have no team listed in their official NBA profiles; the UI says **No NBA team listed**, without inferring free agency or retirement. Their past NBA teams are not substituted.
+
+| Player | NBA team / status | Source |
+| --- | --- | --- |
+| Jayson Tatum | Boston Celtics | https://www.nba.com/player/1628369/jayson-tatum |
+| Kyrie Irving | Dallas Mavericks | https://www.nba.com/player/202681/kyrie-irving |
+| Paolo Banchero | Orlando Magic | https://www.nba.com/player/1631094/paolo-banchero |
+| Zion Williamson | New Orleans Pelicans | https://www.nba.com/player/1629627/zion-williamson |
+| Brandon Ingram | LA Clippers | https://www.nba.com/player/1627742/brandon-ingram |
+| Devin Booker | Phoenix Suns | https://www.nba.com/player/1626164/devin-booker |
+| Shai Gilgeous-Alexander | Oklahoma City Thunder | https://www.nba.com/player/1628983/shai-gilgeous-alexander |
+| Anthony Davis | Washington Wizards | https://www.nba.com/player/203076/anthony-davis |
+| Bam Adebayo | Miami Heat | https://www.nba.com/player/1628389/bam-adebayo |
+| Jamal Murray | Denver Nuggets | https://www.nba.com/player/1627750/jamal-murray |
+| Kevin Durant | Houston Rockets | https://www.nba.com/player/201142/kevin-durant |
+| RJ Barrett | Toronto Raptors | https://www.nba.com/player/1629628/rj-barrett |
+| Dereck Lively II | Dallas Mavericks | https://www.nba.com/player/1641726/dereck-lively-ii |
+| Wendell Carter Jr. | Orlando Magic | https://www.nba.com/player/1628976/wendell-carter-jr |
+| Grayson Allen | Charlotte Hornets | https://www.nba.com/player/1628960/grayson-allen |
+| Karl-Anthony Towns | New York Knicks | https://www.nba.com/player/1626157/karl-anthony-towns |
+| De’Aaron Fox | San Antonio Spurs | https://www.nba.com/player/1628368/deaaron-fox |
+| Tyrese Maxey | Philadelphia 76ers | https://www.nba.com/player/1630178/tyrese-maxey |
+| Tyler Herro | Milwaukee Bucks | https://www.nba.com/player/1629639/tyler-herro |
+| Myles Turner | Milwaukee Bucks | https://www.nba.com/player/1626167/myles-turner |
+| Jarrett Allen | Cleveland Cavaliers | https://www.nba.com/player/1628386/jarrett-allen |
+| LaMarcus Aldridge | Retired | https://www.nba.com/news/lamarcus-aldridge-retires-for-2nd-time-in-career |
+| Joel Embiid | Philadelphia 76ers | https://www.nba.com/player/203954/joel-embiid |
+| Andrew Wiggins | Miami Heat | https://www.nba.com/player/203952/andrew-wiggins |
+| Kelly Oubre Jr. | Indiana Pacers | https://www.nba.com/player/1626162/kelly-oubre-jr |
+| Franz Wagner | Orlando Magic | https://www.nba.com/player/1630532/franz-wagner |
+| Caris LeVert | Milwaukee Bucks | https://www.nba.com/player/1627747/caris-levert |
+| Jordan Poole | New Orleans Pelicans | https://www.nba.com/player/1629673/jordan-poole |
+| Andre Drummond | New York Knicks | https://www.nba.com/player/203083/andre-drummond |
+| Donovan Clingan | Portland Trail Blazers | https://www.nba.com/player/1642270/donovan-clingan |
+| Stephon Castle | San Antonio Spurs | https://www.nba.com/player/1642264/stephon-castle |
+| Lauri Markkanen | Utah Jazz | https://www.nba.com/player/1628374/lauri-markkanen |
+| Aaron Gordon | Denver Nuggets | https://www.nba.com/player/203932/aaron-gordon |
+| Deandre Ayton | Washington Wizards | https://www.nba.com/player/1629028/deandre-ayton |
+| Russell Westbrook | Sacramento Kings | https://www.nba.com/player/201566/russell-westbrook |
+| Zach LaVine | Sacramento Kings | https://www.nba.com/player/203897/zach-lavine |
+| Jrue Holiday | Portland Trail Blazers | https://www.nba.com/player/201950/jrue-holiday |
+| Domantas Sabonis | Sacramento Kings | https://www.nba.com/player/1627734/domantas-sabonis |
+| Rui Hachimura | LA Clippers | https://www.nba.com/player/1629060/rui-hachimura |
+| Jalen Suggs | Orlando Magic | https://www.nba.com/player/1630591/jalen-suggs |
+| Jaden Ivey | No NBA team listed | https://www.nba.com/player/1631093/jaden-ivey |
+| Zach Edey | Memphis Grizzlies | https://www.nba.com/player/1641744/zach-edey |
+| Jalen Brunson | New York Knicks | https://www.nba.com/player/1628973/jalen-brunson |
+| Mikal Bridges | New York Knicks | https://www.nba.com/player/1628969/mikal-bridges |
+| Josh Hart | New York Knicks | https://www.nba.com/player/1628404/josh-hart |
+| Draymond Green | Golden State Warriors | https://www.nba.com/player/203110/draymond-green |
+| Jaren Jackson Jr. | Utah Jazz | https://www.nba.com/player/1628991/jaren-jackson-jr |
+| Coby White | Charlotte Hornets | https://www.nba.com/player/1629632/coby-white |
+| Cameron Johnson | Denver Nuggets | https://www.nba.com/player/1629661/cameron-johnson |
+| Harrison Barnes | San Antonio Spurs | https://www.nba.com/player/203084/harrison-barnes |
+| Donovan Mitchell | Cleveland Cavaliers | https://www.nba.com/player/1628378/donovan-mitchell |
+| Terry Rozier | Miami Heat | https://www.nba.com/player/1626179/terry-rozier |
+| Keegan Murray | Sacramento Kings | https://www.nba.com/player/1631099/keegan-murray |
+| Kris Murray | Memphis Grizzlies | https://www.nba.com/player/1631200/kris-murray |
+| Tyrese Haliburton | Indiana Pacers | https://www.nba.com/player/1630169/tyrese-haliburton |
+| Monte Morris | No NBA team listed | https://www.nba.com/player/1628420/monte-morris |
+| Al Horford | Golden State Warriors | https://www.nba.com/player/201143/al-horford |
+| Bradley Beal | LA Clippers | https://www.nba.com/player/203078/bradley-beal |
+| Brandon Miller | Charlotte Hornets | https://www.nba.com/player/1641706/brandon-miller |
+| Herbert Jones | New Orleans Pelicans | https://www.nba.com/player/1630529/herbert-jones |
+| Quentin Grimes | Los Angeles Lakers | https://www.nba.com/player/1629656/quentin-grimes |
+| Marcus Sasser | Dallas Mavericks | https://www.nba.com/player/1631204/marcus-sasser |
