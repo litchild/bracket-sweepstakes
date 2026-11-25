@@ -3,7 +3,7 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
 const {TEAMS}=require('../js/logic.js');
-const {NBA_ALUMNI,DRAFT_WATCH,schoolConnections,filterConnections}=require('../js/discovery-data.js');
+const {NBA_ALUMNI,DRAFT_WATCH,FIRST_ROUND_2026,STAR_ORDER,STAR_PICKS,schoolConnections,alumniHint,filterConnections}=require('../js/discovery-data.js');
 test('alumni cards resolve to field schools, unique NBA identities and valid local portraits',()=>{
   assert.equal(new Set(NBA_ALUMNI.map(p=>p.id)).size,NBA_ALUMNI.length);
   for(const p of NBA_ALUMNI){assert.ok(TEAMS[p.team]);assert.ok(p.year<=2026);assert.ok(p.pick>=1&&p.pick<=60);assert.match(p.source,new RegExp(`/player/${p.id}/`));assert.equal(fs.readFileSync(path.join(__dirname,'..',p.photo)).subarray(0,8).toString('hex'),'89504e470d0a1a0a');}
@@ -27,7 +27,19 @@ test('player search handles punctuation, school aliases and combined school filt
   assert.deepEqual(filterConnections(DRAFT_WATCH,TEAMS,'W1','Caleb').map(p=>p.name),['Caleb Holt']);
 });
 test('school discovery separates dated projections from actual draft outcomes and supports every school',()=>{
-  for(const p of DRAFT_WATCH){assert.ok(TEAMS[p.team]);assert.equal(p.year,2027);assert.equal(p.asOf,'November 5, 2026');assert.ok(p.rank>=1);assert.equal(p.pick,undefined);assert.match(p.source,/2027-nba-draft/);}
+  assert.deepEqual(DRAFT_WATCH.map(p=>p.rank),[1,2,3,4,5,6,7,8,9,10,11,12,13,14]);
+  for(const p of DRAFT_WATCH){assert.ok(p.team===null||TEAMS[p.team]);assert.ok(p.club&&p.position&&p.level);assert.equal(p.year,2027);assert.equal(p.asOf,'November 5, 2026');assert.equal(p.pick,undefined);assert.match(p.source,/2027-nba-draft/);}
+  assert.equal(DRAFT_WATCH.filter(p=>!p.team).map(p=>p.name).join(),'Stefan Joksimovic');
+  assert.equal(FIRST_ROUND_2026.length,25);
+  for(const p of FIRST_ROUND_2026){assert.ok(TEAMS[p.team]);assert.ok(p.pick>=1&&p.pick<=30);assert.match(p.source,/NBA_2026/);}
   for(const id of Object.keys(TEAMS)){const data=schoolConnections(id);assert.ok(data.alumni.every(p=>p.team===id));assert.ok(data.prospects.every(p=>p.team===id));}
   assert.deepEqual(schoolConnections('E16'),{alumni:[],prospects:[]});
+});
+test('recognizable stars lead browsing, the star picker and game-card hints',()=>{
+  assert.deepEqual(NBA_ALUMNI.slice(0,4).map(p=>p.name),['Michael Jordan','Kevin Durant','Kyrie Irving','Jayson Tatum']);
+  assert.equal(STAR_PICKS.length,12);
+  for(const id of STAR_PICKS)assert.ok(NBA_ALUMNI.find(p=>p.id===id));
+  for(const id of STAR_ORDER)assert.ok(NBA_ALUMNI.find(p=>p.id===id),id);
+  assert.deepEqual(alumniHint('S6'),['Michael Jordan','Coby White']);
+  assert.deepEqual(alumniHint('E16'),[]);
 });
