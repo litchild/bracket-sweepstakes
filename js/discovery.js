@@ -21,7 +21,7 @@ function appendSchoolConnections(body,id){
   section.append(more,el('small','sub','Alumni are former students. Prospect ranks are projections, not confirmed picks.'));body.append(section);
 }
 function profileSchoolBridge(body,id){
-  const t=TEAMS[id],bridge=el('section','profile-school-bridge'),words=el('div');words.append(el('p','kicker','Your college connection'),el('h3','',t.name),el('p','sub',`2026 demo field · Seed ${t.seed} · ${BR[t.br].name} bracket`));
+  const t=TEAMS[id],bridge=el('section','profile-school-bridge'),words=el('div');words.append(el('p','kicker','Your college connection'),el('h3','',t.name),el('p','sub',`2026 tournament field · Seed ${t.seed} · ${BR[t.br].name} bracket`));
   bridge.append(teamLogo(id),words);
   const actions=el('div','profile-actions');actions.append(schoolGamesButton(id));const school=el('button','link','Explore school profile');school.type='button';school.addEventListener('click',()=>showTeamProfile(id));actions.append(school);bridge.append(actions);body.append(bridge);
 }
@@ -37,7 +37,7 @@ function showAlumniProfile(id){
   profileSchoolBridge(body,p.team);
   const others=schoolConnections(p.team).alumni.filter(other=>other.id!==id);
   if(others.length){const related=el('section','school-connections');related.append(el('h3','',`More from ${TEAMS[p.team].name}`));const list=el('div','related-alumni');others.forEach(other=>list.append(alumniRow(other)));related.append(list);body.append(related);}
-  body.append(discoveryLink('Official NBA biography & draft record',p.source),el('p','sub roster-note','Bio snapshot: November 23, 2026 · Photo: NBA. These alumni are former college players. Your picks follow the college teams in the demo field.'));finishProfile();
+  body.append(discoveryLink('Official NBA biography & draft record',p.source),el('p','sub roster-note','Bio snapshot: November 23, 2026 · Photo: NBA. These alumni are former college players. Your picks follow the college teams in this bracket.'));finishProfile();
 }
 function showProspectProfile(name){
   const p=DRAFT_WATCH.find(p=>p.name===name);if(!p)return;
@@ -57,10 +57,6 @@ function faceoffPoster(a,b){
 }
 function faceoffReady(a,b){return a&&b&&schoolConnections(a).alumni.length>=2&&schoolConnections(b).alumni.length>=2;}
 function showFaceoff(a,b){const body=prepareProfile(),title=el('h2','',`${TEAMS[a].name} vs. ${TEAMS[b].name}`);title.id='teamDialogTitle';title.className='visually-hidden';body.append(title,faceoffPoster(a,b));finishProfile();}
-function renderStartingFive(){
-  const host=$('startingFive');host.textContent='';const details=el('details','alumni-matchup');details.id='alumniMatchup';details.append(el('summary','','Alumni face-off: Duke vs. Kentucky'));
-  details.append(faceoffPoster('E1','M7'),el('p','sub faceoff-note','In your bracket, a face-off appears whenever two schools with NBA alumni meet.'));host.append(details);
-}
 function renderNbaDiscovery(append=false){
   if(!$('nbaSchool').options.length)return;
   $('nbaSchool').value=nbaSchool;
@@ -139,5 +135,5 @@ function initDiscovery(){
   $('nbaMore').addEventListener('click',()=>{const index=$('nbaCards').children.length;nbaLimit+=12;renderNbaDiscovery(true);$('nbaCards').children[index]?.querySelector('button')?.focus({preventScroll:true});});
   document.querySelectorAll('[data-draft-view]').forEach(b=>b.addEventListener('click',()=>{draftView=b.dataset.draftView;renderDraftWatch();}));
   document.querySelectorAll('[data-discover-go]').forEach(b=>b.addEventListener('click',()=>openDiscovery(b.dataset.discoverGo)));
-  renderStartingFive();renderDiscoveryClips();
+  renderDiscoveryClips();
 }

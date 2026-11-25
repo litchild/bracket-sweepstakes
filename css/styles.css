@@ -98,8 +98,7 @@ h1.title { font-family: var(--display); font-style: italic; font-weight: 800; te
 .tab { background: none; border: 0; padding: 13px 12px 10px; font-weight: 600; font-size: 15px; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; white-space: nowrap; }
 .tab:hover { color: var(--ink); }
 .tab[aria-selected="true"] { color: var(--ink); font-weight: 700; border-bottom-color: var(--red); }
-.concept { margin-left: auto; font-size: 12px; font-weight: 600; color: var(--faint); border: 1px solid var(--line); border-radius: 4px; padding: 2px 7px; white-space: nowrap; }
-@media (max-width: 440px) { .concept { display: none; } .tab { padding-inline: 10px; } }
+@media (max-width: 440px) { .tab { padding-inline: 10px; } }
 
 
 /* ---------- shared ---------- */
@@ -287,8 +286,8 @@ th { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: v
 td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
 tr.me td { background: var(--blue-soft); }
 .tagline { display: inline-flex; align-items: center; gap: 6px; }
-.demo { border-style: dashed; border-color: var(--red); }
-.demo .row { display: flex; flex-wrap: wrap; gap: 8px; }
+.simulation-tools { border-style: dashed; border-color: var(--red); }
+.simulation-tools .row { display: flex; flex-wrap: wrap; gap: 8px; }
 .res-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
 .res-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
 .res-grid.narrow { grid-template-columns: repeat(2, minmax(0, 1fr)); max-width: 640px; }
@@ -453,7 +452,7 @@ a:focus-visible, summary:focus-visible, [tabindex]:focus-visible { outline: 3px 
 .profile-records strong { font-size: 17px; }
 .player-callout { background: var(--red-soft); border-radius: 10px; padding: 14px; }
 .profile-link { text-decoration: none; justify-self: start; }
-.mobile-nav, .mobile-concept { display: none; }
+.mobile-nav { display: none; }
 .explore-title { display: grid; gap: 12px; padding: 4px 4px 12px; }
 .explore-title .sec-h { font-size: 34px; }
 .discovery-tabs, .profile-tabs { display: flex; gap: 24px; border-bottom: 1px solid var(--line); }
@@ -513,7 +512,6 @@ a:focus-visible, summary:focus-visible, [tabindex]:focus-visible { outline: 3px 
   .hero-in { padding-block: 18px 22px; gap: 0; }
   .hero .eyebrow { font-size: 10px; letter-spacing: .04em; gap: 7px; }
   .hero .live { padding: 2px 5px; }
-  .mobile-concept { display: inline-block; margin-left: auto; padding: 3px 6px; border: 1px solid #ffffff35; border-radius: 4px; font-size: 9px; text-transform: none; letter-spacing: 0; }
   h1.title { margin-block: 14px 16px; gap: 8px; }
   .t-name { font-size: 22px; }
   /* Phones: WIN sits on its own row so 50,000 RMB can fill the width. */
@@ -738,7 +736,7 @@ a:focus-visible, summary:focus-visible, [tabindex]:focus-visible { outline: 3px 
 .archive-stack { display:grid; gap:24px; }
 .board-empty { display:grid; justify-items:center; text-align:center; gap:16px; padding:28px 20px 40px; }.board-empty h4 { font-size:26px; margin:0; line-height:1.1; }.board-empty p { color:var(--muted); max-width:38ch; margin:0 0 6px; }
 .board-podium { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; padding:10px 0 20px; }.podium-place { display:grid; justify-items:center; gap:5px; padding:18px 12px; border-radius:12px; background:var(--surface-2); text-align:center; min-width:0; }.podium-place:first-child { background:var(--hero); color:var(--hero-ink); }.podium-place b { font-size:13px; overflow-wrap:anywhere; }.podium-place strong { font:800 italic 36px var(--display); }.podium-rank { font-size:11px; letter-spacing:.05em; }.podium-place small { font-size:11px; }
-details.demo { display:block; padding:18px 24px; }details.demo > summary { cursor:pointer; font-size:13px; color:var(--muted); font-weight:600; }details.demo[open] > :not(summary) { margin-top:18px; }
+details.simulation-tools { display:block; padding:18px 24px; }details.simulation-tools > summary { cursor:pointer; font-size:13px; color:var(--muted); font-weight:600; }details.simulation-tools[open] > :not(summary) { margin-top:18px; }
 .standings-tabs { margin:0 0 4px; }
 .section-intro { gap:8px; }
 .section-intro > .kicker { margin-bottom:2px; }
@@ -780,7 +778,7 @@ details.demo { display:block; padding:18px 24px; }details.demo > summary { curso
   #archiveRegions { gap:6px; flex-wrap:wrap; }#archiveRegions button { font-size:12px; padding:9px 12px; }#archiveRounds .rnd { min-height:50px; font-size:11px; padding:8px 5px; }
   .board-empty { padding:12px 0 20px; }.board-empty h4 { font-size:26px; }.board-empty p { font-size:14px; line-height:1.6; }.board-empty .btn { min-height:50px; width:100%; }.board-empty img { width:140px; height:auto; }
   .leaderboard-card .lb-root { display:none; }.leaderboard-card table { min-width:380px; }.board-podium { gap:8px; }.podium-place { padding:16px 8px; }.podium-place b { font-size:11px; }.podium-place strong { font-size:29px; }
-  details.demo { padding:18px; }details.demo .row { gap:12px; }details.demo .btn { width:100%; min-height:48px; }
+  details.simulation-tools { padding:18px; }details.simulation-tools .row { gap:12px; }details.simulation-tools .btn { width:100%; min-height:48px; }
 }
 @media (prefers-reduced-motion:reduce) { .moment-thumb img { transition:none; } }
 .explore-head { padding:0; background:transparent; border:0; gap:12px; }
@@ -954,8 +952,6 @@ details.demo { display:block; padding:18px 24px; }details.demo > summary { curso
 .alumni-face { position:relative; display:grid; place-items:center; width:94px; height:94px; border:3px solid var(--blue); background:#eef0f3; border-radius:50%; overflow:hidden; flex:none; color:#18191c; }
 .alumni-face > span { font-weight:700; font-size:22px; }
 .alumni-face img { position:absolute; bottom:0; width:133%; height:100%; object-fit:cover; object-position:50% 0; }
-.alumni-matchup { border-radius:14px; overflow:hidden; border:1px solid var(--line); background:var(--surface); }
-.alumni-matchup > summary { padding:18px 20px; min-height:58px; font-weight:700; cursor:pointer; }
 .alumni-poster { padding:30px; background:#0b0c10; color:#fff; }
 .alumni-poster > h4 { font:800 italic clamp(30px,4.5vw,56px)/1 var(--display); margin:12px 0; text-align:center; }
 .alumni-poster > .kicker { color:#c3c7cd; text-align:center; }
@@ -1063,11 +1059,9 @@ details.demo { display:block; padding:18px 24px; }details.demo > summary { curso
   .alumni-side-head { font-size:16px; gap:6px; }
   .alumni-side-head .team-logo { width:28px; height:28px; }
   .alumni-side > .btn { padding:10px 6px; font-size:12px; }
-  .starting-five { scroll-margin-top:18px; }
 }
 
 /* Basketball details: original local artwork, compact touch layouts, no tracking cursor script. */
-.hero::after { content:""; position:absolute; pointer-events:none; z-index:0; width:470px; height:308px; top:-18px; right:max(-45px,calc((100vw - 1180px)/2 - 55px)); background:url("../images/hoop-shot.svg") center/contain no-repeat; }
 .hero-in { z-index:1; }
 .hero-in > :first-child { position:relative; z-index:1; }
 .money-hook::before { content:""; display:inline-block; width:18px; height:18px; margin-right:9px; background:url("../images/basketball-cursor.svg") center/contain; vertical-align:-3px; }
@@ -1127,14 +1121,11 @@ details.demo { display:block; padding:18px 24px; }details.demo > summary { curso
   .hero-cta:hover,.btn:hover:not(:disabled) { transform:translateY(-2px); }
 }
 @media(max-width:800px) {
-  .hero::after { opacity:.55; right:-85px; }
   .nba-intro { grid-template-columns:minmax(0,1fr) 250px; padding:28px; gap:18px; }
   .star-school { width:90px; height:140px; }
   .star-school img { height:105px; }
 }
 @media(max-width:600px) {
-  .hero::after { width:210px; height:140px; top:14px; right:-92px; opacity:.32; }
-  body[data-page="bracket"] .hero::after { width:155px; height:102px; top:26px; right:-62px; opacity:.4; }
   .shot-meter { gap:14px; }
   .shot-meter-track { width:44px; }
   .nba-intro { grid-template-columns:minmax(0,1fr); gap:20px; padding:26px 22px 20px; }
@@ -1163,7 +1154,6 @@ details.demo { display:block; padding:18px 24px; }details.demo > summary { curso
 .faceoff-link { display:block; width:100%; min-height:40px; border:0; border-top:1px solid var(--line); background:var(--blue-soft); color:var(--ink); font-size:13px; font-weight:700; text-align:left; padding:8px 14px; cursor:pointer; }
 .faceoff-link::before { content:"⛹ "; }
 .faceoff-link:hover { background:var(--surface-2); }
-.faceoff-note { margin:10px 4px 0; }
 /* NBA stars in "Help me choose". */
 .star-opts { grid-template-columns:repeat(4,minmax(0,1fr)); }
 .star-opt { --c:var(--blue); display:flex; align-items:center; gap:10px; padding:10px; }
@@ -1215,10 +1205,9 @@ details.demo { display:block; padding:18px 24px; }details.demo > summary { curso
 .j-cur { align-self:end; margin:0 0 .05em .06em; }
 @media (max-width: 600px) {
   .j-win { font-size:.19em; }
-  /* Compact header while picking: one line, the hoop art steps aside for the prize. */
+  /* Keep the prize compact while picking. */
   body[data-page="bracket"] .jackpot { display:flex; align-items:center; flex-wrap:nowrap; }
   body[data-page="bracket"] .j-win { font-size:.28em; margin:0 .3em 0 0; }
-  body[data-page="bracket"] .hero::after { display:none; }
 }
 @media (min-width: 900px) { .draft-list { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px 14px; } }
 /* NBA stars: compact player rows. The whole row opens the profile. */
@@ -1236,34 +1225,41 @@ details.demo { display:block; padding:18px 24px; }details.demo > summary { curso
 @media (max-width: 600px) { .nba-card-main .alumni-face, .nba-card .alumni-face { width:56px; height:56px; } .clip-discovery h4 { font-size:19px; } }
 
 /* ---------- November 25 update: partner logos, star banner, view switch, Draft watch cards ---------- */
-/* ESPN and Bilibili logos (user decision, November 25, 2026) always sit beside the "Student concept · Not affiliated" label. */
 .partner-logos { display:inline-flex; align-items:center; gap:7px; min-height:32px; padding:3px 9px; border:1px solid rgba(255,255,255,.22); border-radius:999px; color:var(--hero-muted); text-decoration:none; text-transform:none; }
 .partner-logos img { display:block; height:16px; width:auto; }
 .partner-logos img + span + img { height:17px; }
 .partner-logos:hover, .partner-logos:focus-visible { border-color:#fff; }
 .partner-logos span { font-size:12px; }
-.concept-label { font-size:11px; letter-spacing:.02em; text-transform:none; color:var(--hero-muted); border:1px solid rgba(255,255,255,.22); border-radius:4px; padding:2px 7px; }
-/* Jordan and Curry replace the ball and hoop art. */
-.hero::after { display:none; }
-.hero-stars { position:absolute; z-index:0; right:max(170px, calc((100vw - 1180px) / 2 + 180px)); bottom:0; display:flex; align-items:flex-end; pointer-events:none; }
-.hero-stars figure { position:relative; margin:0; width:250px; }
-.hero-stars figure + figure { margin-left:-64px; }
-.hero-stars img { display:block; width:100%; height:auto; -webkit-mask-image:linear-gradient(#000 72%, transparent 98%); mask-image:linear-gradient(#000 72%, transparent 98%); }
-.hero-stars figcaption { position:absolute; left:18px; bottom:14px; display:grid; font-family:var(--display); font-style:italic; font-weight:800; font-size:17px; line-height:1; text-transform:uppercase; color:#fff; text-shadow:0 1px 8px rgba(0,0,0,.6); }
-.hero-stars figcaption span { font-family:var(--body); font-style:normal; font-weight:600; font-size:11px; letter-spacing:.06em; color:var(--hero-muted); margin-top:4px; }
-.hero-stars figure + figure figcaption { left:auto; right:16px; text-align:right; }
-@media (max-width: 1100px) { .hero-stars { right:150px; } .hero-stars figure { width:210px; } }
-@media (max-width: 900px) { .hero-stars { right:120px; opacity:.75; } .hero-stars figure { width:170px; } .hero-stars figcaption { display:none; } }
+/* A soft edge joins the tournament photo to the dark prize panel. */
+.tournament-hero { isolation:isolate; }
+.tournament-photo {
+  position:absolute; inset-block:0; right:max(0px, calc((100% - 1500px) / 2));
+  width:min(65%, 975px); height:100%; object-fit:cover; object-position:center 4%;
+  filter:saturate(.72); pointer-events:none;
+  mask-image:linear-gradient(to right, transparent, #000 23%, #000 87%, transparent);
+}
+.tournament-hero::before {
+  z-index:1; opacity:1;
+  background:linear-gradient(to top, var(--hero), rgba(11,12,16,.20) 24%, transparent 65%);
+}
+.tournament-hero .hero-in { z-index:2; }
 @media (max-width: 600px) {
-  .hero-stars { right:-6px; bottom:auto; top:44px; opacity:.9; }
-  .hero-stars figure { width:96px; }
-  .hero-stars figure + figure { margin-left:-30px; }
-  body[data-page="bracket"] .hero-stars { display:none; }
+  .tournament-photo {
+    right:0; width:62%; object-position:center top;
+    mask-image:linear-gradient(to right, transparent, rgba(0,0,0,.8) 35%, #000 75%);
+  }
+  body[data-page="bracket"] .tournament-hero .jackpot {
+    display:grid; grid-template-columns:auto auto; align-items:end;
+    font-size:clamp(40px, 11.7vw, 60px);
+  }
+  body[data-page="bracket"] .tournament-hero .j-win {
+    margin:0 0 .32em; font-size:clamp(12px, 3vw, 15px);
+  }
+  body[data-page="bracket"] .tournament-hero .j-cur { align-self:end; margin:0 0 .04em .1em; }
   #eyeTxt { display:none; }
   .partner-logos { min-height:26px; padding:2px 8px; gap:5px; }
   .partner-logos img { height:12px; }
   .partner-logos img + span + img { height:13px; }
-  .concept-label { font-size:9.5px; padding:2px 5px; }
 }
 /* Bracket view switch: a clear two-way control on every screen size. */
 .bracket-overview { display:flex !important; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px 16px; }
@@ -1318,10 +1314,10 @@ details.demo { display:block; padding:18px 24px; }details.demo > summary { curso
 /* The view switch lives in the "Your bracket" header. */
 .bracket-definition .link { margin-left:6px; font-size:inherit; }
 @media (max-width: 600px) {
-  #v-bracket .bhead { flex-wrap:nowrap; }
+  #v-bracket .bhead { flex-wrap:wrap; }
   #v-bracket .bhead .sec-h { font-size:22px; white-space:nowrap; }
   #v-bracket .shot-meter { display:none; }
-  .bhead-r { flex-wrap:nowrap; gap:8px; }
+  .bhead-r { flex-wrap:wrap; gap:8px; }
   .view-seg { width:auto; display:inline-flex; }
   .view-seg button { min-height:38px; padding:6px 10px; font-size:12.5px; }
   .bracket-overview { display:none !important; }
@@ -1332,7 +1328,6 @@ details.demo { display:block; padding:18px 24px; }details.demo > summary { curso
   .partner-logos { padding:2px 6px; gap:4px; min-height:24px; }
   .partner-logos img { height:11px; }
   .partner-logos img + span + img { height:12px; }
-  .concept-label { font-size:9px; padding:1px 4px; white-space:nowrap; }
 }
 /* Keep the decorative slab behind the card content so buttons stay tappable. */
 .draft-card.is-top { isolation:isolate; }

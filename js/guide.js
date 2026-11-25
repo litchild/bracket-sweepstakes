@@ -109,7 +109,7 @@ function attachTeamPeek(row, id) {
 }
 function initGuide() {
   S.tab = 'bracket';
-  // Class-demo controls follow the main bracket rather than preceding a fan's first game.
+  // Pass-around controls follow the main bracket rather than preceding a fan's first game.
   $('v-bracket').append($('pass'));
   document.querySelectorAll('[data-go],[data-step]').forEach(b=>b.addEventListener('click',()=>navigateTo(b.dataset.go || b.dataset.step)));
   document.addEventListener('keydown',e=>{

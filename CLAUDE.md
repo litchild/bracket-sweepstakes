@@ -55,7 +55,7 @@ knows nothing about March Madness or brackets). Put new source material from the
   SVGs are original drawings.
 - `images/history/`: local school marks for historical teams outside the current field.
 - `images/brand/`: ESPN and Bilibili logo SVGs (Wikimedia Commons, editor metadata removed) for the hero link only.
-- `images/hero/`: Jordan and Curry banner portraits, cropped from official NBA headshots to 640 px WebP.
+- `images/hero/`: two local WebP sizes of the owner-supplied tournament banner.
 - `fonts/`: Barlow and Barlow Condensed woff2 files (SIL OFL, see `fonts/OFL.txt`).
 - `tests/logic.test.js`: rule and data checks.
 - `docs/`: project background, not part of the website.
@@ -78,14 +78,9 @@ knows nothing about March Madness or brackets). Put new source material from the
   Do not load external players, fonts, scripts or image assets. The native
   WeChat development project retains its separate clip catalog and media setup described below. Vercel is blocked
   in mainland China, so the site stays on Netlify. See `docs/history-sources.md` for video and archive sources.
-- **ESPN and Bilibili logos: one place only, always labeled.** Until November 25, 2026 the site used no ESPN or
-  Bilibili logos, because a working entry page with real logos could pass as an official contest. On November 25 the
-  user chose to show them anyway, after that risk was explained: the hero's top line shows the ESPN and Bilibili
-  logos (local SVGs in `images/brand/`, from Wikimedia Commons) as one link to https://www.bilibili.com/ in a new tab,
-  and a "Student concept · Not affiliated" label always sits right beside them. Do not add the logos anywhere else
-  (prize, Enter button, share cards), and keep the "Student concept" tag and the footer disclaimer. The look still
-  borrows the feel (black broadcast hero, red slashes, condensed italic headlines,
-  Bilibili-style gray canvas with white rounded cards).
+- The header links the local ESPN and Bilibili logos to Bilibili. Keep them in this location only.
+  The user requested that the public website omit the student and affiliation labels and demo wording.
+  Keep the scope of browser-local entries, simulated results and the proposed prize clear in plain language.
 - **UI copy in English** (the audience is English-speaking), with Chinese characters for region names and the 中 badge.
 - **Original color palette.** Preserve the original repository's red, black, gray and white surfaces, cyan pick
   accents, and home-region colors in light and dark modes. New sections and illustrations should fit that palette.
@@ -93,13 +88,9 @@ knows nothing about March Madness or brackets). Put new source material from the
   uses solid regional reds and blues, matching region-button swatches, and a selected-region accent on the school
   list. Avoid faded map fills and extra gray panels around the map controls.
 - **Writing style for all copy:** no em dashes, no litotes, no irony.
-- **Basketball visual details (November 23).** Original local SVGs provide the basketball cursor and hoop artwork.
-  The ball cursor applies only to fine pointers with hover; clickable controls use its cyan-ring version. Keep
-  native text-entry and disabled cursors. Touch devices retain their normal behavior. Since November 25 the hero art
-  is Michael Jordan and Stephen Curry (NBA headshots cropped to local WebP files in `images/hero/`, captioned with
-  their colleges, North Carolina and Davidson), replacing the ball and hoop. They sit at the right on desktop, small at
-  the top right on phones, and are hidden in the compact header while picking, so the prize and first game come
-  first. The NBA introduction
+- The local basketball cursor applies to fine pointers with hover. Clickable controls use its cyan-ring version.
+  Preserve native touch, text-entry and disabled cursor behavior. The header uses the owner's four-player
+  tournament photo, faded into the dark background on desktop and mobile. The NBA introduction
   includes three clickable alumni school cards, and player cards have school logos and bold red/cyan accents.
   The bracket completion meter shows actual picks out of 63; its moving ball is decorative. A short manual-pick
   confirmation animates only the selected team, never changes picks or scoring, and respects reduced motion.
@@ -158,8 +149,8 @@ knows nothing about March Madness or brackets). Put new source material from the
 - The prize leads the page. The hero headline reads "One shot to win" (a red slashed tag on its own line) above a
   giant "50,000 RMB" (number in the display face, "RMB" in red), with "Bracket Sweepstakes" as a smaller line above
   and "Free to enter · Picks lock March 18" below on every screen size. Desktop adds a red "Make your picks" button.
-  While picking on phones, the header shrinks to one "One shot to win 50,000 RMB" line and the decorative hoop is
-  hidden so it never covers the prize. The fixed entry bar carries a red "Win 50,000 RMB" tag on every screen size,
+  On phones the headline fits beside the tournament photo. The fixed entry bar carries a red
+  "Win 50,000 RMB" tag on every screen size,
   and the browser tab title starts with "One shot to win 50,000 RMB". Learn's
   "What is a bracket?" steps end with a red step 4, "Win 50,000 RMB". Never state which
   prize rule applies or mention the odds (see `docs/pitch-context.md`).
@@ -216,9 +207,9 @@ knows nothing about March Madness or brackets). Put new source material from the
   and show prospect profiles; keep all 64 school profiles, including honest empty states. Alumni profiles show local portraits, dated NBA position/height, actual draft outcomes, related alumni and a
   school-to-bracket route. This is a curated collection, not a complete alumni database; empty schools say no
   featured data, never no alumni. Alumni are former college players, never current lineups.
-  Alumni face-off: up to five alumni per school, faces in circles, opening profiles. Discover shows a collapsed
-  Duke vs. Kentucky example. In the bracket's round view, a game card shows an "NBA alumni face-off" link whenever
-  both teams have at least two featured alumni; it opens the same graphic in the profile dialog. Label faces as former
+  Discover leads directly from its featured alumni to the searchable directory. Alumni face-offs belong only
+  to bracket matchups. In round view, a game card opens the poster when both schools have at least two alumni.
+  Show up to five clickable former players per school. Identify them as former
   players. Portrait initials are a load fallback only and are hidden once the transparent headshot loads.
   Game cards in the round view show the school's two best-known alumni under its name ("NBA: Kyrie Irving, Jayson
   Tatum"). Hide these hints and face-off links in the full four-column view.
@@ -260,8 +251,8 @@ knows nothing about March Madness or brackets). Put new source material from the
   Open on the champion's six wins. Full bracket uses region and round tabs on mobile; larger screens show round
   columns. Preserve adjacent-game ordering and source links. Historical results never populate current results.
 - Results (the former Standings tab, renamed November 25, 2026, with its leaderboard, podium and points removed):
-  collapsed demo controls, game results by round with upset tags, three counts (brackets entered, perfect brackets
-  left, games played) and the Chinese players tracker. The "Regions still alive" cards were removed. Label demo
+  collapsed simulation controls, game results by round with upset tags, three counts (brackets entered, perfect brackets
+  left, games played) and the Chinese players tracker. The "Regions still alive" cards were removed. Label simulated
   results and keep the browser-local scope visible.
 - Pass-around entries let several people enter on one device during class.
 
