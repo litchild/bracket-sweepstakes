@@ -1,18 +1,12 @@
 # Bracket Sweepstakes
 
-Student concept prototype for NYU Experience Studio | ESPN China: a free March Madness bracket sweepstakes for
-Chinese basketball fans, with a 50,000 RMB prize. Fans fill a bracket themselves, or auto-fill it by rooting for an
-American region or for the teams with Chinese players.
+The friends pilot is a free 63-game college basketball bracket challenge. The prize is 500 RMB. Entries close at the end of December 2, 2026, Beijing time.
 
-Not affiliated with or endorsed by ESPN, Bilibili or the NCAA.
-
-- [Website](https://bracket-sweepstakes.netlify.app/). Use this existing GitHub-connected Netlify project for updates.
-  The separate November 13 manual review copy is at https://timely-klepon-8e4d37.netlify.app/.
-- The website records real entries (nickname and picks) and counts visits for an NYU class test; no prize is paid.
-  The team dashboard is at `/admin/` and needs the `ADMIN_TOKEN` environment variable in Netlify. See
-  [docs/backend.md](docs/backend.md).
-- `npm install`, then `npm start` runs the site with its API at http://localhost:8888/. Opening `index.html` from disk
-  still works with browser-only storage.
+- [Public website](https://bracket-sweepstakes.netlify.app/). First-time visitors see Simplified Chinese and can switch to US English in the top-right corner.
+- [Private organizer dashboard](https://bracket-sweepstakes.netlify.app/organizer/). Sign in with the separate organizer key to review entries, check participation, and enter the result bracket. Save private winners as you go. After the deadline, release scores. Each correct pick earns one point and tied entries share a rank.
+- Submitted entries and participation counts are stored on the existing Netlify project. Each browser can edit its own entry until the deadline. The public leaderboard shows nicknames and scores. The result bracket stays private.
+- Earlier study entries and detailed traffic reports are available from the organizer dashboard. The earlier study uses its own store.
+- For local development, run `npm install` and `npm start`, then visit http://localhost:8888/. The local organizer key defaults to `local-admin`. Local data is separate from the live site.
 - `npm test` checks the bracket rules and the API.
 - First-time visitors start with How it works and a practice pick, then explore school home regions and tournament
   groups before building their bracket one round at a time. Returning visitors resume their picks.
