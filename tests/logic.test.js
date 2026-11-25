@@ -29,6 +29,26 @@ test("region rule: rooted region beats every other region; champion comes from i
   }
 });
 
+test("NBA-star rule: the star's college team wins every game; other games stay seed-weighted", () => {
+  assert.strictEqual(L.helperFor("star", "nope"), null);
+  for (const team of ["S6", "E1", "W11", "M8"]) {
+    const h = L.helperFor("star", team);
+    assert.deepStrictEqual(h, { team });
+    let upsets = 0;
+    for (let i = 0; i < N; i++) {
+      const p = L.randomBracket(h);
+      assert.strictEqual(p["F6-0"], team);
+      const path = L.GAMES.filter(g => L.cands(g, p).includes(team));
+      assert.strictEqual(path.length, 6);
+      path.forEach(g => assert.strictEqual(p[g.id], team));
+      for (const g of L.GAMES.filter(g => g.round === 1 && !L.cands(g, p).includes(team))) {
+        const [a, b] = L.cands(g, p); if (L.TEAMS[p[g.id]].seed > L.TEAMS[a === p[g.id] ? b : a].seed) upsets++;
+      }
+    }
+    assert.ok(upsets / N > 3 && upsets / N < 12, `first-round upsets per bracket stay seed-weighted (${upsets / N})`);
+  }
+});
+
 test("Chinese-player rule: chosen team wins it all; Chinese-player teams never lose to other teams", () => {
   for (const pick of L.CN_IDS) {
     for (let i = 0; i < N; i++) {
