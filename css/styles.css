@@ -1234,7 +1234,7 @@ details.simulation-tools { display:block; padding:18px 24px; }details.simulation
 .tournament-hero { isolation:isolate; }
 .tournament-photo {
   position:absolute; inset-block:0; right:max(0px, calc((100% - 1500px) / 2));
-  width:min(65%, 975px); height:100%; object-fit:cover; object-position:center 16%;
+  width:min(65%, 975px); height:100%; object-fit:cover; object-position:center 4%;
   filter:saturate(.72); pointer-events:none;
   mask-image:linear-gradient(to right, transparent, #000 23%, #000 87%, transparent);
 }
@@ -1314,10 +1314,10 @@ details.simulation-tools { display:block; padding:18px 24px; }details.simulation
 /* The view switch lives in the "Your bracket" header. */
 .bracket-definition .link { margin-left:6px; font-size:inherit; }
 @media (max-width: 600px) {
-  #v-bracket .bhead { flex-wrap:nowrap; }
+  #v-bracket .bhead { flex-wrap:wrap; }
   #v-bracket .bhead .sec-h { font-size:22px; white-space:nowrap; }
   #v-bracket .shot-meter { display:none; }
-  .bhead-r { flex-wrap:nowrap; gap:8px; }
+  .bhead-r { flex-wrap:wrap; gap:8px; }
   .view-seg { width:auto; display:inline-flex; }
   .view-seg button { min-height:38px; padding:6px 10px; font-size:12.5px; }
   .bracket-overview { display:none !important; }
