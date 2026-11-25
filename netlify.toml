@@ -3,6 +3,21 @@
   publish = "."
   command = ""
 
+[build.environment]
+  NODE_VERSION = "22"
+
+# /api/* runs netlify/functions/api.mjs (entries and visit counts in Netlify Blobs). Set ADMIN_TOKEN in the
+# Netlify environment variables to open the dashboard at /admin/.
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Referrer-Policy = "no-referrer"
+
 # Project files that are not part of the website. Serve the 404 page instead of publishing them.
 [[redirects]]
   from = "/wechat/*"
@@ -42,6 +57,30 @@
 
 [[redirects]]
   from = "/AGENTS.md"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/netlify/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/scripts/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/node_modules/*"
+  to = "/404.html"
+  status = 404
+  force = true
+
+[[redirects]]
+  from = "/package-lock.json"
   to = "/404.html"
   status = 404
   force = true
