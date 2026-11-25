@@ -82,17 +82,10 @@ function renderArchive() {
   shown.forEach(r=>{const col=el('div','archive-col');col.append(el('h4','',ROUND_NAME[r]));const games=el('div','archive-col-games');archiveRoundGames(tournament,archiveRegion,r).forEach(g=>games.append(archiveGameCard(g)));col.append(games);grid.append(col);});box.append(grid);
   $('archiveRounds').hidden=!isPhone||archiveRegion==='Final Four';
 }
-function renderBoardEmpty(count,isDemo) {
-  const box=$('boardEmpty');box.textContent='';const art=el('img');art.src='images/trophy.svg';art.alt='';art.width=120;art.height=100;
-  box.append(art,el('h4','',count?'First bracket in. Who’s next?':'The board starts with you.'),el('p','',isDemo?'Add simulated fans in Demo controls to preview rankings.':count?'Standings appear when a second fan enters on this device.':'Enter your bracket. Standings appear when two fans have entered on this device.'));
-  const go=el('button','btn',count?'Back to my picks':'Make my picks →');go.type='button';go.addEventListener('click',()=>navigateTo('bracket'));box.append(go);
-}
 function initExperience() {
   const saved=load('bs-practice');if(saved&&typeof saved==='object'){PRACTICE_GAMES.forEach((d,i)=>{if(practiceGame(d).teams.some(t=>t.id===saved[i]))practiceAnswers[i]=saved[i];});}
   practiceIndex=Math.max(0,PRACTICE_GAMES.findIndex((_,i)=>!practiceAnswers[i]));
   document.querySelectorAll('[data-archive-view]').forEach(b=>b.addEventListener('click',()=>{archiveView=b.dataset.archiveView;renderArchive();}));
-  document.querySelectorAll('[data-board]').forEach(b=>b.addEventListener('click',()=>{S.boardMode=b.dataset.board;renderStandings();}));
-  document.querySelectorAll('[data-standings]').forEach(b=>b.addEventListener('click',()=>{S.standingsPanel=b.dataset.standings;renderStandings();}));
   matchMedia('(max-width:600px)').addEventListener('change',()=>{if(discoverMode==='archive')renderArchive();});
   renderPractice();renderArchive();initCamp();
 }

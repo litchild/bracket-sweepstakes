@@ -93,20 +93,32 @@ function teamRun(id){
   return runCache[id]||{last:0,won:false};
 }
 function runLabel(id){const r=teamRun(id);if(!r.last)return '';if(r.won&&r.last===6)return 'Won the 2026 title';return r.last===6?'Lost the 2026 final':`Out in the ${ROUND_NAME[r.last]}`;}
+function draftLogo(p){const box=el('span','draft-logo');if(p.team)box.append(teamLogo(p.team));else box.append(el('span','draft-pro','PRO'));return box;}
+function runBadge(id){const r=teamRun(id),label=runLabel(id),tone=r.won&&r.last===6?'gold':r.last>=5?'deep':r.last>=3?'mid':'early';return el('span',`run-badge ${tone}`,label);}
 function renderDraftWatch(){
   document.querySelectorAll('[data-draft-view]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.draftView===draftView)));
-  const list=$('draftList'),lottery=draftView==='lottery';list.textContent='';list.className=`draft-list ${lottery?'is-lottery':'is-2026'}`;
-  $('draftScope').textContent=lottery?'The 14 lottery picks are the first 14 in the NBA draft. These are the 14 players ESPN ranks highest for 2027, and where they play now.':'25 of the 30 first-round picks in June 2026 played for teams in this bracket.';
+  const board=$('draftList'),lottery=draftView==='lottery';board.textContent='';
+  $('draftScope').textContent=lottery?'The NBA lottery is the first 14 picks. These are the 14 players ESPN ranks highest for 2027, and where they play now.':'25 of the 30 first-round picks in June 2026 played for teams in this bracket.';
   $('draftSource').textContent=lottery?'Source: ESPN big board by Jeremy Woo, November 5, 2026. Board ranks are projections, not a mock draft or the draft order. The bracket uses the 2026 field.':'Source: Basketball Reference 2026 draft. Tournament runs from the official 2026 bracket.';
-  for(const p of lottery?DRAFT_WATCH:FIRST_ROUND_2026){
-    const li=el('li','draft-row'),num=el('span','draft-num',lottery?`${p.rank}`:`${p.pick}`),words=el('div','draft-words');
-    words.append(el('b','',p.name));
-    const where=el('span','draft-school');if(p.team)where.append(teamLogo(p.team));where.append(document.createTextNode(p.team?TEAMS[p.team].name:p.club));words.append(where);
-    words.append(el('small','',lottery?`${p.position} · ${p.level}${p.team?` · ${TEAMS[p.team].seed} seed in this bracket`:''}`:`No. ${p.pick} pick · ${TEAMS[p.team].seed} seed · ${runLabel(p.team)}`));
-    li.append(num,words);
-    if(p.team){const go=el('button','link',lottery?'Profile':'Games');go.type='button';go.setAttribute('aria-label',lottery?`View ${p.name} profile`:`Go to ${TEAMS[p.team].name}’s games`);go.addEventListener('click',()=>lottery?showProspectProfile(p.name):goSchoolGames(p.team));li.append(go);}
-    else li.append(el('span','draft-tag','Pro club'));
-    list.append(li);
+  const card=(p,top)=>{
+    const li=el('li',`draft-card${top?' is-top':''}`),num=lottery?p.rank:p.pick;
+    li.append(el('span','draft-rank',String(num)),draftLogo(p));
+    const info=el('div','draft-info');info.append(el('b','',p.name),el('span','draft-school',p.team?TEAMS[p.team].name:`${p.club} · pro club`));
+    const chips=el('span','draft-chips');
+    if(lottery){chips.append(el('i','',p.position),el('i','',p.level));if(p.team)chips.append(el('i','seed-chip',`${TEAMS[p.team].seed} seed · ${BR[TEAMS[p.team].br].name}`));}
+    else chips.append(el('i','',`No. ${p.pick} pick`),el('i','seed-chip',`${TEAMS[p.team].seed} seed`),runBadge(p.team));
+    info.append(chips);li.append(info);
+    if(p.team){const go=el('button','draft-go',lottery?'Profile →':'Games →');go.type='button';go.setAttribute('aria-label',lottery?`View ${p.name} profile`:`Go to ${TEAMS[p.team].name}’s games`);go.addEventListener('click',()=>lottery?showProspectProfile(p.name):goSchoolGames(p.team));li.append(go);}
+    return li;
+  };
+  if(lottery){
+    const top=el('ol','draft-top');top.setAttribute('aria-label','Top three on the board');DRAFT_WATCH.slice(0,3).forEach(p=>top.append(card(p,true)));
+    const rest=el('ol','draft-grid');rest.start=4;rest.setAttribute('aria-label','Ranks 4 to 14');DRAFT_WATCH.slice(3).forEach(p=>rest.append(card(p,false)));
+    board.append(top,rest);
+  }else{
+    const champs=FIRST_ROUND_2026.filter(p=>teamRun(p.team).won&&teamRun(p.team).last===6);
+    if(champs.length){const note=el('p','draft-callout');note.append(el('b','',`${champs.length} first-round picks came from the champion, ${TEAMS[champs[0].team].name}.`),document.createTextNode(` ${champs.map(p=>p.name).join(', ')}.`));board.append(note);}
+    const grid=el('ol','draft-grid');grid.setAttribute('aria-label','2026 first-round picks from this bracket');FIRST_ROUND_2026.forEach(p=>grid.append(card(p,false)));board.append(grid);
   }
 }
 function renderDiscoveryClips(){
@@ -127,5 +139,5 @@ function initDiscovery(){
   $('nbaMore').addEventListener('click',()=>{const index=$('nbaCards').children.length;nbaLimit+=12;renderNbaDiscovery(true);$('nbaCards').children[index]?.querySelector('button')?.focus({preventScroll:true});});
   document.querySelectorAll('[data-draft-view]').forEach(b=>b.addEventListener('click',()=>{draftView=b.dataset.draftView;renderDraftWatch();}));
   document.querySelectorAll('[data-discover-go]').forEach(b=>b.addEventListener('click',()=>openDiscovery(b.dataset.discoverGo)));
-  $('chineseRosterFilter').addEventListener('change',renderRegion);renderStartingFive();renderDiscoveryClips();
+  renderStartingFive();renderDiscoveryClips();
 }

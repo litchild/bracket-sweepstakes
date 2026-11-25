@@ -11,7 +11,7 @@
 <header class="hero">
   <div class="wrap hero-in">
     <div>
-      <div class="eyebrow"><span class="live" id="liveBadge"><i></i><span id="liveWord">Open</span></span><span id="eyeTxt">March Madness 2026</span><span class="mobile-concept">Student concept</span></div>
+      <div class="eyebrow"><span class="live" id="liveBadge"><i></i><span id="liveWord">Open</span></span><a class="partner-logos" href="https://www.bilibili.com/" target="_blank" rel="noopener noreferrer" aria-label="ESPN and Bilibili logos. Opens bilibili.com in a new tab"><img src="images/brand/espn.svg" alt="" width="65" height="16"><span aria-hidden="true">×</span><img src="images/brand/bilibili.svg" alt="" width="71" height="18"></a><span class="concept-label">Student concept · Not affiliated</span><span id="eyeTxt">March Madness 2026</span></div>
       <h1 class="title"><span class="t-name">Bracket Sweepstakes</span><span class="jackpot"><span class="j-win">One shot to win</span><span class="j-num">50,000</span><span class="j-cur">RMB</span></span></h1>
       <p class="money-hook">Free to enter · Picks lock March 18</p>
       <div class="prize-row">
@@ -20,6 +20,7 @@
     </div>
     <div class="count" aria-live="polite"><div class="n" id="liveN">–</div><div class="l" id="liveL">Connecting…</div></div>
   </div>
+  <div class="hero-stars"><figure><img src="images/hero/jordan.webp" alt="Michael Jordan" width="640" height="640" decoding="async"><figcaption>Michael Jordan<span>North Carolina</span></figcaption></figure><figure><img src="images/hero/curry.webp" alt="Stephen Curry" width="640" height="640" decoding="async"><figcaption>Stephen Curry<span>Davidson</span></figcaption></figure></div>
   <div class="ticker" aria-label="Bracket wire">
     <span class="t-lab">Bracket wire</span>
     <div class="t-view"><div class="t-track" id="tTrack"></div></div>
@@ -32,7 +33,7 @@
     <button class="tab" role="tab" aria-selected="false" data-tab="explore">Discover</button>
     <button class="tab" role="tab" aria-selected="true" data-tab="bracket">My bracket</button>
     <button class="tab" role="tab" aria-selected="false" data-tab="crowd">Crowd</button>
-    <button class="tab" role="tab" aria-selected="false" data-tab="standings">Standings</button>
+    <button class="tab" role="tab" aria-selected="false" data-tab="standings">Results</button>
     <span class="concept">Student concept</span>
   </div>
 </nav>
@@ -51,7 +52,7 @@
         <div class="bracket-explainer">
           <h3>What is a bracket?</h3>
           <p>A bracket is your prediction of every game's winner, from the first round to the champion.</p>
-          <ol class="pick-steps"><li><span>1</span><div><b>Tap your winner</b><small>Choose one team in each pair.</small></div></li><li><span>2</span><div><b>Move them forward</b><small>Your winners meet in the next round.</small></div></li><li><span>3</span><div><b>Pick your champion</b><small>Keep choosing until one team remains.</small></div></li><li class="step-prize"><span>4</span><div><b>Win 50,000 RMB</b><small>Enter your bracket free. Correct picks earn points.</small></div></li></ol>
+          <ol class="pick-steps"><li><span>1</span><div><b>Tap your winner</b><small>Choose one team in each pair.</small></div></li><li><span>2</span><div><b>Move them forward</b><small>Your winners meet in the next round.</small></div></li><li><span>3</span><div><b>Pick your champion</b><small>Keep choosing until one team remains.</small></div></li><li class="step-prize"><span>4</span><div><b>Win 50,000 RMB</b><small>Enter your bracket free and follow it all March.</small></div></li></ol>
           <div class="welcome-actions"><button class="btn red" type="button" id="tryMini">Try a 3-pick bracket →</button><button class="link" type="button" data-go="bracket">Ready? Make my picks →</button></div>
           <p class="sub beginner-note">No team knowledge needed. Try it below.</p>
         </div>
@@ -65,18 +66,18 @@
         <section id="camp-mini" class="camp-activity" hidden aria-label="Mini bracket"><div class="camp-activity-head"><p class="kicker">4 teams → 2 finalists → 1 champion</p><h4 id="miniTitle" tabindex="-1">Build your first bracket.</h4><p class="sub">Tap one team in each game. Then choose between your two winners.</p></div><div id="miniBracket" class="mini-bracket"></div><div id="miniFeedback" class="mini-feedback" role="status" aria-live="polite"></div><p class="sub">Practice with the 2026 Final Four teams. Your main picks stay separate.</p></section>
         <section id="camp-quiz" class="camp-activity" hidden aria-label="Rules quiz"><div class="camp-activity-head"><p class="kicker">Three quick questions · 10 XP each</p><h4 id="quizTitle" tabindex="-1">Know the game.</h4></div><div class="quiz-steps" id="quizSteps" role="tablist" aria-label="Quiz questions"></div><div id="campQuiz" class="card camp-quiz"></div></section>
         <div class="practice-finish" id="practiceFinish" hidden><span class="finish-star" aria-hidden="true">★</span><div><b>March ready.</b><p>All 10 challenges complete. Your bracket is next.</p></div><button type="button" class="btn" data-go="bracket">Make my picks →</button></div>
-        <p class="sub camp-scope">Practice XP is separate from bracket points. Progress saves in this browser.</p>
+        <p class="sub camp-scope">Practice XP never changes your bracket. Progress saves in this browser.</p>
       </section>
       <div class="learn-next"><div><h3>Got the idea?</h3><p>The full bracket starts with 64 teams. We'll guide you one round at a time.</p></div><button class="btn red" type="button" data-go="bracket">Make my picks →</button><button class="link" type="button" data-go="explore">Meet the teams first →</button></div>
-      <details class="card rules"><summary>Rules &amp; scoring</summary><div class="rules-body">
+      <details class="card rules"><summary>Rules</summary><div class="rules-body">
         <p>This prototype begins with 64 teams after the opening games. Teams advance through the Round of 64, Round of 32, Sweet 16, Elite 8, Final Four, and championship.</p>
-        <p>Correct picks earn 10, 20, 40, 80, 160, and 320 points in those rounds. A perfect bracket earns 1,920 points. Changing a winner clears later picks that depend on that team.</p>
-        <p>Entry is free in the concept. The proposed prize is 50,000 RMB; the team is still choosing the prize rule. This demo uses the 2026 field and placeholder dates. Entries stay in your browser and results are simulated in Standings.</p>
+        <p>Pick a winner for every game. Changing a winner clears later picks that depend on that team.</p>
+        <p>Entry is free in the concept. The proposed prize is 50,000 RMB; the team is still choosing the prize rule. This demo uses the 2026 field and placeholder dates. Entries stay in your browser and results are simulated in Results.</p>
       </div></details>
     </section>
 
     <section class="view" id="v-explore" hidden aria-label="Discover">
-      <div class="explore-title"><p class="kicker">Find your connection</p><h2 class="sec-h">Discover your team</h2><div class="discovery-tabs" role="tablist" aria-label="Discover"><button type="button" role="tab" data-discover="nba" aria-selected="true">NBA stars</button><button type="button" role="tab" data-discover="draft" aria-selected="false">Draft watch</button><button type="button" role="tab" data-discover="regions" aria-selected="false">Regions</button><button type="button" role="tab" data-discover="archive" aria-selected="false">History</button></div></div>
+      <div class="explore-title"><p class="kicker">Find your connection</p><h2 class="sec-h">Discover your team</h2><div class="discovery-tabs" role="tablist" aria-label="Discover"><button type="button" role="tab" data-discover="nba" aria-selected="true">NBA stars</button><button type="button" role="tab" data-discover="draft" aria-selected="false">Draft watch</button><button type="button" role="tab" data-discover="archive" aria-selected="false">History</button></div></div>
       <section id="discoverNba" class="view" aria-label="NBA stars and their schools">
         <div class="nba-intro"><div class="nba-intro-copy"><p class="kicker">The schools behind the stars</p><h3 class="sec-h">You know their names.<br>Meet their schools.</h3><p class="sub">Find a familiar face. Follow his college team.</p></div><div class="star-school-cards" aria-label="Featured alumni school connections"><button type="button" class="star-school" data-alumni-profile="1628369" aria-label="Explore Jayson Tatum and Duke"><img src="images/alumni/1628369.png" alt="" width="260" height="190"><span>Duke</span></button><button type="button" class="star-school" data-alumni-profile="1626164" aria-label="Explore Devin Booker and Kentucky"><img src="images/alumni/1626164.png" alt="" width="260" height="190"><span>Kentucky</span></button><button type="button" class="star-school" data-alumni-profile="201142" aria-label="Explore Kevin Durant and Texas"><img src="images/alumni/201142.png" alt="" width="260" height="190"><span>Texas</span></button></div><p class="nba-intro-note">NBA alumni. Your bracket follows each school’s current college team.</p></div>
         <div id="startingFive" class="starting-five"></div>
@@ -87,34 +88,9 @@
         <div class="draft-head"><p class="kicker">Draft watch</p><h3 class="sec-h">See them in March.<br>Hear their names in June.</h3><p class="sub">College basketball is where most NBA lottery picks play first. Follow them in your bracket.</p></div>
         <div class="seg" role="tablist" aria-label="Draft watch view"><button type="button" role="tab" data-draft-view="lottery" aria-selected="true">2027 lottery watch</button><button type="button" role="tab" data-draft-view="r2026" aria-selected="false">2026 first round</button></div>
         <p class="sub draft-scope" id="draftScope"></p>
-        <ol class="draft-list" id="draftList"></ol>
+        <div class="draft-board" id="draftList"></div>
         <p class="sub roster-note" id="draftSource"></p>
       </section>
-      <div id="discoverRegions" class="view">
-      <div class="card explore-head">
-        <div class="seg" role="tablist" aria-label="Region meaning"><button type="button" role="tab" data-map-mode="home" aria-selected="true">School home regions</button><button type="button" role="tab" data-map-mode="bracket" aria-selected="false">Tournament groups</button></div>
-        <p class="region-explanation" id="regionExplanation"></p>
-        <details class="region-details"><summary>Why are there two kinds of region?</summary><p>Home regions show a school's location. The NCAA balances its four tournament groups by seed, location, and matchup rules. Purdue, for example, is a Midwest school in the West bracket.</p></details>
-      </div>
-      <div class="explore-grid">
-        <div class="card map-card">
-          <div id="homeMap">
-            <svg class="region-map" viewBox="0 0 640 380" role="group" aria-label="Simplified map of school home regions in the United States">
-              <g data-region="west" tabindex="0" role="button" aria-label="West home region" style="--c:var(--west)"><path d="M73 45 163 64 222 72 210 123 231 166 220 257 172 260 147 233 119 231 91 196 76 160 61 126 62 90Z"/><text x="145" y="145">西</text><text x="145" y="174" class="map-en">WEST</text><path d="M90 300 107 306 102 316 86 311ZM119 314 139 322 134 334 114 326Z"/><text x="155" y="327" class="map-note">Hawaii</text></g>
-              <g data-region="midwest" tabindex="0" role="button" aria-label="Midwest home region" style="--c:var(--midwest)"><path d="M222 72 307 75 324 63 343 80 371 83 378 108 397 94 414 120 410 167 373 195 327 191 275 172 231 166 210 123Z"/><text x="310" y="124">北</text><text x="310" y="151" class="map-en">MIDWEST</text></g>
-              <g data-region="south" tabindex="0" role="button" aria-label="South home region" style="--c:var(--south)"><path d="M231 166 275 172 327 191 373 195 410 167 458 166 496 187 486 213 463 232 441 259 431 287 451 323 443 340 429 326 413 291 386 277 356 278 336 267 309 270 285 302 263 281 252 252 220 257Z"/><text x="344" y="225">南</text><text x="344" y="254" class="map-en">SOUTH</text></g>
-              <g data-region="east" tabindex="0" role="button" aria-label="East home region" style="--c:var(--east)"><path d="M410 167 414 120 445 108 473 98 494 76 515 66 528 38 546 31 554 59 540 88 548 105 523 114 511 138 496 153 496 187 458 166Z"/><text x="470" y="128">东</text><text x="470" y="151" class="map-en">EAST</text></g>
-            </svg>
-            <p class="sub map-caption">Simplified map · Hawaii inset · 北 = Midwest (中西部)</p>
-          </div>
-          <div id="tournamentGroups" class="tournament-groups" hidden></div>
-          <div class="pills" id="mapButtons" aria-label="Choose a region"></div>
-          <div class="region-story" id="regionStory"></div>
-        </div>
-        <div class="card region-roster"><div aria-live="polite" aria-atomic="true"><p class="kicker" id="regionCount"></p><h3 class="sec-h" id="regionTitle"></h3></div><label class="roster-filter"><input type="checkbox" id="chineseRosterFilter"> Chinese-player teams only <small>2026–27 roster snapshot</small></label><div id="regionTeams" class="school-list"></div></div>
-      </div>
-      <button type="button" class="btn red explore-pick" data-go="bracket">Make my picks →</button>
-      </div>
       <section id="discoverArchive" class="view" hidden aria-label="Past tournaments">
         <div class="archive-heading"><div><p class="kicker">The games that made March</p><h3 class="sec-h">Past brackets</h3></div><div id="archiveYears" class="pills" role="tablist" aria-label="Tournament year"></div></div>
         <div id="archiveChampion" class="archive-champion"></div>
@@ -150,14 +126,14 @@
         <div class="bhead">
           <h2 class="sec-h">Your bracket</h2>
           <div class="bhead-r">
+            <div class="seg view-seg" role="group" aria-label="Bracket view"><button type="button" data-view="full" aria-pressed="true">Full bracket</button><button type="button" data-view="rounds" aria-pressed="false">Round by round</button></div>
             <div class="shot-meter" id="shotMeter" role="progressbar" aria-label="Bracket completion" aria-valuemin="0" aria-valuemax="63" aria-valuenow="0"><span class="prog-mini" id="progMini">0 / 63</span><span class="shot-meter-track" aria-hidden="true"><i></i></span></div>
-            <button class="link" id="introOpen" type="button" data-go="learn">How it works</button>
             <button class="link" id="btnShuffle" hidden>Shuffle again</button>
             <button class="link" id="btnClear">Clear all</button>
           </div>
         </div>
 
-        <p class="sub bracket-definition">Tap who you think wins each game.</p>
+        <p class="sub bracket-definition">Tap who you think wins each game. <button class="link" id="introOpen" type="button" data-go="learn">How it works</button></p>
 
         <div class="helper">
           <button class="helper-bar" id="helperBar" aria-expanded="false" aria-controls="helperBody">
@@ -168,18 +144,12 @@
           <div class="helper-body" id="helperBody" hidden>
             <div class="seg" role="tablist" id="helperSeg" aria-label="Ways to fill your bracket">
               <button role="tab" data-h="nba">NBA stars</button>
-              <button role="tab" data-h="region">Regions</button>
               <button role="tab" data-h="cn"><span class="cnb">中</span>Chinese players</button>
             </div>
             <div id="hNba" class="helper-body" style="padding:0">
               <p class="rule"><b>NBA fan?</b> Pick a star you know. His college team wins every game, and seeds decide the rest.</p>
               <div class="opts star-opts" id="starOpts"></div>
               <button class="link" type="button" data-discover-go="nba">More stars and their schools →</button>
-            </div>
-            <div id="hRegion" class="helper-body" style="padding:0" hidden>
-              <p class="rule"><b>Don’t know the players?</b> Pick a home region. Its schools advance against schools from other regions.</p>
-              <details class="rule"><summary>How auto-fill works</summary><p>Home regions show school locations, not tournament groups. When both teams are from the same region, or neither is from yours, seed-weighted random picks decide the winner.</p></details>
-              <div class="opts" id="regionOpts"></div>
             </div>
             <div id="hCn" class="helper-body" style="padding:0" hidden>
               <p class="rule">Choose a player's team as your champion. Edit any pick afterward.</p>
@@ -190,10 +160,10 @@
           </div>
         </div>
 
-        <div class="bhead bracket-overview"><p class="sub">16 teams per group. One reaches the Final Four.</p><button class="link" id="viewToggle" type="button" aria-pressed="false">Show full bracket</button></div>
+        <div class="bhead bracket-overview"><p class="sub">16 teams per group. One reaches the Final Four.</p></div>
         <div class="pills" role="tablist" id="btabs" aria-label="Bracket regions"></div>
         <div class="coach-row"><p class="round-coach" id="roundCoach" aria-live="polite"></p><button class="info-btn" id="seedBtn" type="button" aria-expanded="false" aria-controls="seedTip"><span class="info-ic" aria-hidden="true">i</span>What is a seed?</button></div>
-        <div class="tip key-tip" id="seedTip" hidden><p>The number beside each team is its seed: 1 is the highest rank, 16 the lowest.</p><p>ⓘ opens a school profile. “NBA:” names famous former players from that school.</p><div class="legend" id="legend"></div></div>
+        <div class="tip key-tip" id="seedTip" hidden><p>The number beside each team is its seed: 1 is the highest rank, 16 the lowest.</p><p>ⓘ opens a school profile. “NBA:” names famous former players from that school.</p></div>
         <div class="rounds" role="tablist" id="rndTabs" aria-label="Rounds" hidden></div>
         <div class="bracket-scroll" id="bracketView"></div>
       </div>
@@ -216,7 +186,7 @@
 
     <!-- ===== Standings ===== -->
     <section class="view" id="v-standings" hidden>
-      <div class="card section-intro"><p class="kicker">The scores</p><h2 class="sec-h">Standings</h2><p class="sub">Who’s ahead, based on correct picks.</p><p class="sub" id="stSub"></p></div>
+      <div class="card section-intro"><p class="kicker">The tournament</p><h2 class="sec-h">Results</h2><p class="sub">Game results and how many brackets are still perfect.</p><p class="sub" id="stSub"></p></div>
       <details class="card demo" id="demo" hidden>
         <summary>Try demo fans &amp; results</summary>
         <p class="sub" id="demoSub">Demo controls. Results are simulated from seeds, not real games.</p>
@@ -229,8 +199,7 @@
         </div>
         <span class="msg" id="dMsg" aria-live="polite"></span>
       </details>
-      <div class="discovery-tabs standings-tabs" role="tablist" aria-label="Standings view"><button type="button" role="tab" data-standings="board" aria-selected="true">Leaderboard</button><button type="button" role="tab" data-standings="tournament" aria-selected="false">Game results</button></div>
-      <div id="tournamentPanel" class="view" hidden>
+      <div id="tournamentPanel" class="view">
       <div class="card" id="results">
         <div class="res-head"><h3 class="card-h">Results</h3><div class="pills" role="tablist" id="rtabs" aria-label="Rounds played"></div></div>
         <p class="sub" id="resSub"></p>
@@ -246,18 +215,6 @@
         <p class="sub">Teams with Chinese players on 2026-27 rosters, placed in last season’s field.</p>
         <div class="cn-track" id="cnTrack"></div>
       </div>
-      <div class="card" style="gap:10px">
-        <h3 class="card-h">Regions still alive</h3>
-        <div class="alive" id="aliveCards"></div>
-      </div>
-      </div>
-      <div class="card leaderboard-card" id="leaderboardCard">
-        <h3 class="card-h">Leaderboard</h3>
-        <p class="sub" id="lbSub"></p>
-        <div class="seg" id="boardModes" role="tablist" aria-label="Leaderboard entries" hidden><button type="button" role="tab" data-board="entries" aria-selected="true">Entries</button><button type="button" role="tab" data-board="demo" aria-selected="false">Demo fans</button></div>
-        <div id="boardEmpty" class="board-empty"></div><div id="boardPodium" class="board-podium" hidden></div>
-        <div class="tbl" id="boardTable" hidden><table><thead><tr><th class="n">#</th><th>Fan</th><th>Champion</th><th class="n">Correct</th><th class="n">Points</th></tr></thead><tbody id="lb"></tbody></table></div>
-        <p class="sub roster-note" id="boardScope">Local demo · Only entries saved in this browser appear here.</p>
       </div>
     </section>
   </div>
@@ -280,7 +237,7 @@
   <button type="button" data-go="explore"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m16 8-2 6-6 2 2-6Z"/></svg><span>Discover</span></button>
   <button type="button" data-go="bracket"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4v5h5v6H3v5M21 4v5h-5v6h5v5M8 12h8"/></svg><span>My picks</span></button>
   <button type="button" data-go="crowd"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3M16 5a3 3 0 0 1 0 6M18 15a5 5 0 0 1 3 5"/></svg><span>Crowd</span></button>
-  <button type="button" data-go="standings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V11h5v10M10 21V4h5v17M15 21V8h5v13"/></svg><span>Standings</span></button>
+  <button type="button" data-go="standings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V11h5v10M10 21V4h5v17M15 21V8h5v13"/></svg><span>Results</span></button>
 </nav>
 
 <script src="js/logic.js"></script>
