@@ -57,7 +57,7 @@ function renderPractice() {
   }
 }
 function archiveGameCard(game) {
-  const link=el('a','archive-game');link.href=game.url;link.target='_blank';link.rel='noopener noreferrer';link.setAttribute('aria-label',`${game.teams.map(t=>`${t.name} ${t.score}`).join(', ')}. Open historical box score`);
+  const link=el('a','archive-game');link.href='https://www.ncaa.com/brackets/basketball-men/d1/'+archiveYear;link.target='_blank';link.rel='noopener noreferrer';link.setAttribute('aria-label',`${game.teams.map(t=>`${t.name} ${t.score}`).join(', ')}. Open official tournament bracket`);
   game.teams.forEach(t=>{const row=el('span','archive-team'+(t.won?' won':''));row.append(el('small','',String(t.seed)),historyLogo(t),el('span','',t.name),el('strong','',String(t.score)),el('span','archive-check',t.won?'✓':''));link.append(row);});return link;
 }
 function renderArchive() {

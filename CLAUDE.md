@@ -1,3 +1,17 @@
+# Friends pilot (current public website)
+
+The public pilot on the existing Netlify project supersedes the older prototype notes below.
+The root opens in Simplified Chinese. The top-right switch offers US English. The friends prize is 500 RMB.
+Entries close at 2026-12-03 00:00 Asia/Shanghai. Drafts stay in the browser. Submitted entries go to
+a site-wide Netlify Blobs store via the same-origin pilot function. A random browser credential owns an
+entry. The leaderboard awards one point per correct game and uses competition ranking for ties.
+The organizer supplies a private reference bracket. Saved winners stay private. After the deadline
+the organizer may release scores for decided games. Published scores never expose the answer key.
+The organizer dashboard requires a high-entropy key. Only its SHA-256 digest belongs in Git.
+Deploy previews have their own store. Build with node scripts/build.mjs. Only dist/ is public.
+Record distinct browser visits, sessions, first picks, completions and durable entries. The public
+site omits Bilibili, ESPN and NYU branding. The native development app is a separate project.
+
 # Bracket Sweepstakes prototype
 
 Student concept for NYU Stern's Experience Studio | ESPN China course (fall 2026), built by Ever Chin with teammates.

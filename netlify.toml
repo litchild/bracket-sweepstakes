@@ -1,7 +1,7 @@
-# Static site: no build step. Netlify publishes the repository root.
+# Only browser assets are published.
 [build]
-  publish = "."
-  command = ""
+  publish = "dist"
+  command = "node scripts/build.mjs"
 
 [build.environment]
   NODE_VERSION = "22"
@@ -83,4 +83,16 @@
   from = "/package-lock.json"
   to = "/404.html"
   status = 404
+  force = true
+
+[[headers]]
+  for = "/organizer/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+    Referrer-Policy = "no-referrer"
+
+[[redirects]]
+  from = "/admin/"
+  to = "/organizer/"
+  status = 302
   force = true

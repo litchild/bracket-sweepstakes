@@ -43,9 +43,9 @@ function showProspectProfile(name){
   const p=DRAFT_WATCH.find(p=>p.name===name);if(!p)return;
   const body=prepareProfile(),hero=el('div','profile-head'),words=el('div'),title=el('h2','',p.name);title.id='teamDialogTitle';
   words.append(el('p','kicker','2027 draft watch'),title,el('p','sub',`${p.position} · ${p.team?TEAMS[p.team].name:p.club} · ${p.level}`));if(p.team)hero.append(teamLogo(p.team));hero.append(words);body.append(hero);
-  const board=el('div','prospect-board');board.append(el('strong','',`#${p.rank}`),el('span','','ESPN prospect board'),el('small','',p.asOf));body.append(board,el('p','sub','A prospect board ranks the players an analyst expects NBA teams to want most. It is a projection that changes during the season, not the draft order.'));
+  const board=el('div','prospect-board');board.append(el('strong','',`#${p.rank}`),el('span','','Prospect board'),el('small','',p.asOf));body.append(board,el('p','sub','A prospect board ranks the players an analyst expects NBA teams to want most. It is a projection that changes during the season, not the draft order.'));
   if(p.team)profileSchoolBridge(body,p.team);else body.append(el('p','sub',`${p.name} plays for ${p.club}, a professional club, so he is not in the college tournament.`));
-  body.append(discoveryLink('Read Jeremy Woo’s full prospect board',p.source),el('p','sub roster-note','ESPN / Jeremy Woo · November 5, 2026. The bracket uses the 2026 tournament field as a stand-in for 2027.'));finishProfile();
+  body.append(el('p','sub roster-note','Jeremy Woo · November 5, 2026. The bracket uses the 2026 tournament field as a stand-in for 2027.'));finishProfile();
 }
 // NBA alumni face-off: up to five former players per school, faces in circles. A school-pride graphic, never a lineup.
 function faceoffPoster(a,b){
@@ -65,7 +65,7 @@ function renderNbaDiscovery(append=false){
   $('nbaScope').textContent=`${NBA_ALUMNI.length} NBA players from ${new Set(NBA_ALUMNI.map(p=>p.team)).size} schools in this bracket. Best-known names first.`;
   $('nbaTeamNote').textContent=`NBA teams checked ${NBA_TEAM_AS_OF}. A snapshot, not a live roster feed.`;
   for(const o of $('nbaSchool').options){const count=o.value==='all'?NBA_ALUMNI.length:schoolConnections(o.value).alumni.length;o.textContent=(o.value==='all'?'All schools':TEAMS[o.value].name)+(count?` · ${count}`:'');}
-  const players=filterConnections(NBA_ALUMNI,TEAMS,nbaSchool,nbaQuery),shown=Math.min(nbaLimit,players.length);
+  const players=filterConnections(NBA_ALUMNI,TEAMS,nbaSchool,nbaQuery,ZH_COPY),shown=Math.min(nbaLimit,players.length);
   $('nbaCount').textContent=players.length?`Showing ${shown} of ${players.length} player${players.length===1?'':'s'}`:'No matching players';
   $('nbaMore').hidden=shown>=players.length;$('nbaMore').textContent=`Show ${Math.min(12,players.length-shown)} more players`;
   if(!players.length){const empty=el('div','card discovery-empty');empty.append(el('h4','','Try another name'),el('p','sub',nbaQuery?'Try a different name or clear the school filter.':'This school has no featured NBA alumni in this collection yet.'));
@@ -94,8 +94,8 @@ function runBadge(id){const r=teamRun(id),label=runLabel(id),tone=r.won&&r.last=
 function renderDraftWatch(){
   document.querySelectorAll('[data-draft-view]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.draftView===draftView)));
   const board=$('draftList'),lottery=draftView==='lottery';board.textContent='';
-  $('draftScope').textContent=lottery?'The NBA lottery is the first 14 picks. These are the 14 players ESPN ranks highest for 2027, and where they play now.':'25 of the 30 first-round picks in June 2026 played for teams in this bracket.';
-  $('draftSource').textContent=lottery?'Source: ESPN big board by Jeremy Woo, November 5, 2026. Board ranks are projections, not a mock draft or the draft order. The bracket uses the 2026 field.':'Source: Basketball Reference 2026 draft. Tournament runs from the official 2026 bracket.';
+  $('draftScope').textContent=lottery?'The NBA lottery is the first 14 picks. These are the 14 players Jeremy Woo ranks highest for 2027, and where they play now.':'25 of the 30 first-round picks in June 2026 played for teams in this bracket.';
+  $('draftSource').textContent=lottery?'Source: Jeremy Woo’s prospect board, November 5, 2026. Board ranks are projections, not a mock draft or the draft order. The bracket uses the 2026 field.':'Source: Basketball Reference 2026 draft. Tournament runs from the official 2026 bracket.';
   const card=(p,top)=>{
     const li=el('li',`draft-card${top?' is-top':''}`),num=lottery?p.rank:p.pick;
     li.append(el('span','draft-rank',String(num)),draftLogo(p));
@@ -131,7 +131,7 @@ function initDiscovery(){
   const select=$('nbaSchool');select.append(el('option','','All schools'));select.firstChild.value='all';
   Object.values(TEAMS).sort((a,b)=>a.name.localeCompare(b.name)).forEach(t=>{const o=el('option','',t.name);o.value=t.id;select.append(o);});
   select.addEventListener('change',()=>{nbaSchool=select.value;nbaLimit=12;renderNbaDiscovery();});
-  $('nbaSearch').addEventListener('input',()=>{nbaQuery=$('nbaSearch').value;nbaLimit=12;renderNbaDiscovery();});
+  $('nbaSearch').addEventListener('input',()=>{nbaQuery=$('nbaSearch').value.trim();nbaLimit=12;renderNbaDiscovery();});
   $('nbaMore').addEventListener('click',()=>{const index=$('nbaCards').children.length;nbaLimit+=12;renderNbaDiscovery(true);$('nbaCards').children[index]?.querySelector('button')?.focus({preventScroll:true});});
   document.querySelectorAll('[data-draft-view]').forEach(b=>b.addEventListener('click',()=>{draftView=b.dataset.draftView;renderDraftWatch();}));
   document.querySelectorAll('[data-discover-go]').forEach(b=>b.addEventListener('click',()=>openDiscovery(b.dataset.discoverGo)));
