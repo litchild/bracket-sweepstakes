@@ -1,13 +1,13 @@
 # Main website NBA discovery
 
-Alumni profiles verified November 23, 2026. Prospect watch remains the November 5, 2026 snapshot. The separate Concept Lab was left intact. These sources support the main website's
+Alumni profiles verified November 23, 2026; nine alumni added and the 2027 lottery watch expanded on November 25, 2026. The lottery watch uses the November 5, 2026 board. The separate Concept Lab was left intact. These sources support the main website's
 curated collection, not an exhaustive alumni directory. School links navigate to college games without choosing a
 winner or changing picks. Alumni are former students, not present college participants.
 
 ## Alumni and actual draft outcomes
 
-Official NBA player bios give Last Attended, Draft, position and height. The expanded catalog contains 62 alumni across 19 schools, including nine each for Duke and Kentucky. Each card links to its source. The Duke/Kentucky graphic
-selects five notable alumni per school for recognition; it is not a positional lineup, ranking or actual game.
+Official NBA player bios give Last Attended, Draft, position and height. The catalog contains 71 alumni across 25 schools, including nine each for Duke and Kentucky. Each card links to its source. Alumni face-offs (the Duke/Kentucky example and the ones on bracket game cards)
+show up to five alumni per school for recognition; they are not positional lineups, rankings or actual games.
 
 | Player | School | Draft year / pick | Position | Height | NBA bio |
 | --- | --- | --- | --- | --- | --- |
@@ -73,6 +73,24 @@ selects five notable alumni per school for recognition; it is not a positional l
 | Herbert Jones | Alabama | 2021 / 35 | Forward | 6'7" (2.01m) | https://www.nba.com/player/1630529/herbert-jones |
 | Quentin Grimes | Houston | 2021 / 25 | Guard | 6'4" (1.93m) | https://www.nba.com/player/1629656/quentin-grimes |
 | Marcus Sasser | Houston | 2023 / 25 | Guard | 6'2" (1.88m) | https://www.nba.com/player/1631204/marcus-sasser |
+| Michael Jordan | North Carolina | 1984 / 3 | Guard | 6'6" (1.98m) | https://www.nba.com/player/893/michael-jordan |
+| Magic Johnson | Michigan State | 1979 / 1 | Forward-Guard | 6'9" (2.06m) | https://www.nba.com/player/77142/magic-johnson |
+| Hakeem Olajuwon | Houston | 1984 / 1 | Center | 7'0" (2.13m) | https://www.nba.com/player/165/hakeem-olajuwon |
+| Anthony Edwards | Georgia | 2020 / 1 | Guard | 6'4" (1.93m) | https://www.nba.com/player/1630162/anthony-edwards |
+| Jimmer Fredette | BYU | 2011 / 10 | Guard | 6'2" (1.88m) | https://www.nba.com/player/202690/jimmer-fredette |
+| Mike Conley | Ohio State | 2007 / 4 | Guard | 6'0" (1.83m) | https://www.nba.com/player/201144/mike-conley |
+| Khris Middleton | Texas A&M | 2012 / 39 | Forward | 6'7" (2.01m) | https://www.nba.com/player/203114/khris-middleton |
+| De’Andre Hunter | Virginia | 2019 / 4 | Forward-Guard | 6'7" (2.01m) | https://www.nba.com/player/1629631/deandre-hunter |
+| Patty Mills | Saint Mary’s | 2009 / 55 | Guard | 6'2" (1.88m) | https://www.nba.com/player/201988/patty-mills |
+
+The nine November 25 additions were read from each NBA.com bio's player data (school, position, height, draft year,
+round and number); retired players' pages redirect to their NBA.com stats page, which carries the same bio. Their
+colleges also match Basketball Reference (see `docs/concept-sources.md` for Jordan, Magic Johnson, Olajuwon and
+Edwards). Portraits come from the same official NBA CDN path as the rest.
+
+Order: alumni are listed best-known first for Chinese NBA fans (`STAR_ORDER` in `js/discovery-data.js`). That order
+and the 12 stars offered in "Help me choose" (`STAR_PICKS`) are our editorial judgment, not a ranking from a source.
+Game-card hints show each school's first two alumni in that order.
 
 The collection covers selected alumni only. Position and height are a dated NBA bio snapshot, rather than live roster data. Profiles show college-to-draft paths, related alumni and school navigation. School links never make picks. Country, age and season statistics are omitted. NBA team affiliations were added on November 25, 2026 as a separately dated snapshot, with the college connection kept explicit. NBA IDs and portrait identity were checked against the official pages; Marcus Sasser is `1631204`.
 
@@ -85,10 +103,30 @@ The website makes no runtime image requests to that CDN. Image ownership remains
 Jeremy Woo, ESPN, November 5, 2026, syndicated by ABC11:
 https://abc11.com/post/2027-nba-draft-big-board-rankings-top-100-prospects/20017483/
 
-Selected college players: Tyran Stokes (Kansas, board 1), Bruce Branch III (BYU, 3), Jordan Smith Jr. (Arkansas, 4),
-Caleb Holt (Arizona, 5), Quentin Coleman (Illinois, 6), Motiejus Krivas (Arizona, 7), Patrick Ngongba II (Duke, 10),
-Austin Goosby (Texas, 13), Malachi Moreno (Kentucky, 14). These are editorial board ranks, not predictions of a
-particular NBA team's pick, eligibility guarantees or final selection results. No scout descriptions were copied.
+The lottery watch shows the board's top 14, the size of the NBA lottery (picks 1 to 14). Rank, position, current team
+and class are from the board's headings:
+
+| Rank | Player | Position | Team | Class | In the 2026 field |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Tyran Stokes | SF/PG | Kansas | Freshman | 4 East |
+| 2 | Stefan Joksimovic | PG | Baskonia (pro club, Spain) | Pro | No |
+| 3 | Bruce Branch III | SG/SF | BYU | Freshman | 6 West |
+| 4 | Jordan Smith Jr. | SG/PG | Arkansas | Freshman | 4 West |
+| 5 | Caleb Holt | SG/PG | Arizona | Freshman | 1 West |
+| 6 | Quentin Coleman | SG/PG | Illinois | Freshman | 3 South |
+| 7 | Motiejus Krivas | C | Arizona | Senior | 1 West |
+| 8 | Braylon Mullins | SG | UConn | Sophomore | 2 East |
+| 9 | Thomas Haugh | SF/PF | Florida | Senior | 1 South |
+| 10 | Patrick Ngongba II | C | Duke | Junior | 1 East |
+| 11 | Ivan Kharchenkov | SF | Arizona | Sophomore | 1 West |
+| 12 | Obinna Ekezie Jr. | C | Louisville | Freshman | 6 East |
+| 13 | Austin Goosby | SG/PG | Texas | Freshman | 11 West |
+| 14 | Malachi Moreno | C | Kentucky | Sophomore | 7 Midwest |
+
+The board states it "is not a mock draft and does not consider team fit or the potential draft order". The site calls
+these board ranks and projections, never picks. ESPN's linked early 2027 mock draft (espn.com) predates this board
+and was not used. These are editorial board ranks, not predictions of a particular NBA team's pick, eligibility
+guarantees or final selection results. No scout descriptions were copied.
 The 2027 watchlist is separate from the playable 2026 tournament field; no 2027 field is implied.
 
 ## Secondary highlights
@@ -100,8 +138,15 @@ Official NCAA YouTube clips, opened only through an explicit external link:
 - Curry at Davidson 2008: https://www.youtube.com/watch?v=tQN9hdPNVS4
 
 The first two local previews and practice data already existed; the Curry preview is reused from Concept Lab.
-The Watch tab explains mainland playback limits and offers practice that needs no external video. There is no
-autoplay, external player load or highlights landing page. Merch integration remains open: no destination was
+Since November 25, 2026 the clips sit in Discover > History after the past brackets. The section explains mainland
+playback limits and offers practice that needs no external video. There is no
+autoplay, external player load or highlights landing page. ## 2026 first round in Draft watch
+
+The 25 first-round picks whose college was in the 2026 field come from
+https://www.basketball-reference.com/draft/NBA_2026.html; the full table, with drafting teams, is in
+`docs/concept-sources.md`. Each team's 2026 run is computed from `js/history-data.js` by region and seed.
+
+Merch integration remains open: no destination was
 provided, so no speculative shop link or product connection was added.
 
 ## NBA team affiliations: November 25, 2026
@@ -174,3 +219,17 @@ LaMarcus Aldridge's historical NBA profile still names Brooklyn, which must not 
 | Herbert Jones | New Orleans Pelicans | https://www.nba.com/player/1630529/herbert-jones |
 | Quentin Grimes | Los Angeles Lakers | https://www.nba.com/player/1629656/quentin-grimes |
 | Marcus Sasser | Dallas Mavericks | https://www.nba.com/player/1631204/marcus-sasser |
+| Michael Jordan | Retired (inactive since his final NBA season) | https://www.nba.com/player/893/michael-jordan |
+| Magic Johnson | Retired (inactive since his final NBA season) | https://www.nba.com/player/77142/magic-johnson |
+| Hakeem Olajuwon | Retired (inactive since his final NBA season) | https://www.nba.com/player/165/hakeem-olajuwon |
+| Anthony Edwards | Minnesota Timberwolves | https://www.nba.com/player/1630162/anthony-edwards |
+| Jimmer Fredette | No NBA team listed | https://www.nba.com/player/202690/jimmer-fredette |
+| Mike Conley | Boston Celtics | https://www.nba.com/player/201144/mike-conley |
+| Khris Middleton | Washington Wizards | https://www.nba.com/player/203114/khris-middleton |
+| De’Andre Hunter | Sacramento Kings | https://www.nba.com/player/1629631/deandre-hunter |
+| Patty Mills | No NBA team listed | https://www.nba.com/player/201988/patty-mills |
+
+The nine alumni added on November 25, 2026 were checked the same day from each NBA.com profile's player data
+(roster status and team). Active players show their listed team. Inactive profiles still name a last team, which is
+never shown as current: Jordan, Magic Johnson and Olajuwon are labeled Retired with their profile as the source, and
+Jimmer Fredette and Patty Mills show No NBA team listed because no retirement report was checked for them.

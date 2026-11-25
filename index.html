@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Win 50,000 RMB · Bracket Sweepstakes Prototype</title>
+<title>One shot to win 50,000 RMB · Bracket Sweepstakes Prototype</title>
 <meta name="description" content="Win 50,000 RMB. Student concept prototype: a free March Madness bracket sweepstakes for Chinese basketball fans.">
 <link rel="stylesheet" href="css/styles.css">
 </head>
@@ -12,12 +12,10 @@
   <div class="wrap hero-in">
     <div>
       <div class="eyebrow"><span class="live" id="liveBadge"><i></i><span id="liveWord">Open</span></span><span id="eyeTxt">March Madness 2026</span><span class="mobile-concept">Student concept</span></div>
-      <h1 class="title"><span class="t-name">Bracket Sweepstakes</span><span class="jackpot"><span class="j-win">Win</span><span class="j-num">50,000</span><span class="j-cur">RMB</span></span></h1>
-      <p class="money-hook">One bracket. One shot to win.</p>
+      <h1 class="title"><span class="t-name">Bracket Sweepstakes</span><span class="jackpot"><span class="j-win">One shot to win</span><span class="j-num">50,000</span><span class="j-cur">RMB</span></span></h1>
+      <p class="money-hook">Free to enter · Picks lock March 18</p>
       <div class="prize-row">
         <button class="hero-cta" type="button" data-go="bracket">Make your picks</button>
-        <span class="chip">Free to enter</span>
-        <span class="chip">Picks lock March 18</span>
       </div>
     </div>
     <div class="count" aria-live="polite"><div class="n" id="liveN">–</div><div class="l" id="liveL">Connecting…</div></div>
@@ -41,11 +39,6 @@
 
 <main>
   <div class="wrap">
-    <nav class="journey" aria-label="Your bracket journey">
-      <button type="button" data-step="learn"><span>1</span> Learn</button>
-      <button type="button" data-step="explore"><span>2</span> Explore</button>
-      <button type="button" data-step="bracket"><span>3</span> Pick</button>
-    </nav>
 
     <section class="view" id="v-learn" hidden aria-label="How it works">
       <div class="welcome card">
@@ -82,15 +75,21 @@
       </div></details>
     </section>
 
-    <section class="view" id="v-explore" hidden aria-label="Teams and regions">
-      <div class="explore-title"><p class="kicker">Find your connection</p><h2 class="sec-h">Discover your team</h2><div class="discovery-tabs" role="tablist" aria-label="Explore"><button type="button" role="tab" data-discover="nba" aria-selected="true">NBA roots</button><button type="button" role="tab" data-discover="regions" aria-selected="false">Regions</button><button type="button" role="tab" data-discover="archive" aria-selected="false">Past brackets</button><button type="button" role="tab" data-discover="moments" aria-selected="false">Watch</button></div></div>
-      <section id="discoverNba" class="view" aria-label="NBA alumni and draft discovery">
-        <div class="nba-intro"><div class="nba-intro-copy"><p class="kicker">The schools behind the stars</p><h3 class="sec-h">You know their names.<br>Meet their schools.</h3><p class="sub">Find a familiar face. Follow his college team.</p></div><div class="star-school-cards" aria-label="Featured alumni school connections"><button type="button" class="star-school" data-alumni-profile="1628369" aria-label="Explore Jayson Tatum and Duke"><img src="images/alumni/1628369.png" alt="" width="260" height="190"><span>Duke</span></button><button type="button" class="star-school" data-alumni-profile="1626164" aria-label="Explore Devin Booker and Kentucky"><img src="images/alumni/1626164.png" alt="" width="260" height="190"><span>Kentucky</span></button><button type="button" class="star-school" data-alumni-profile="201142" aria-label="Explore Kevin Durant and Texas"><img src="images/alumni/201142.png" alt="" width="260" height="190"><span>Texas</span></button></div><p class="nba-intro-note">NBA alumni · Your bracket follows today’s college teams.</p></div>
+    <section class="view" id="v-explore" hidden aria-label="Discover">
+      <div class="explore-title"><p class="kicker">Find your connection</p><h2 class="sec-h">Discover your team</h2><div class="discovery-tabs" role="tablist" aria-label="Discover"><button type="button" role="tab" data-discover="nba" aria-selected="true">NBA stars</button><button type="button" role="tab" data-discover="draft" aria-selected="false">Draft watch</button><button type="button" role="tab" data-discover="regions" aria-selected="false">Regions</button><button type="button" role="tab" data-discover="archive" aria-selected="false">History</button></div></div>
+      <section id="discoverNba" class="view" aria-label="NBA stars and their schools">
+        <div class="nba-intro"><div class="nba-intro-copy"><p class="kicker">The schools behind the stars</p><h3 class="sec-h">You know their names.<br>Meet their schools.</h3><p class="sub">Find a familiar face. Follow his college team.</p></div><div class="star-school-cards" aria-label="Featured alumni school connections"><button type="button" class="star-school" data-alumni-profile="1628369" aria-label="Explore Jayson Tatum and Duke"><img src="images/alumni/1628369.png" alt="" width="260" height="190"><span>Duke</span></button><button type="button" class="star-school" data-alumni-profile="1626164" aria-label="Explore Devin Booker and Kentucky"><img src="images/alumni/1626164.png" alt="" width="260" height="190"><span>Kentucky</span></button><button type="button" class="star-school" data-alumni-profile="201142" aria-label="Explore Kevin Durant and Texas"><img src="images/alumni/201142.png" alt="" width="260" height="190"><span>Texas</span></button></div><p class="nba-intro-note">NBA alumni. Your bracket follows each school’s current college team.</p></div>
         <div id="startingFive" class="starting-five"></div>
-        <div class="nba-controls"><div class="nba-filters"><label>Player, college, or NBA team<input id="nbaSearch" type="search" placeholder="Try Tatum, Duke, or Celtics" autocomplete="off" maxlength="100"></label><label>Explore a school<select id="nbaSchool" aria-label="Explore a school"></select></label></div><div class="seg" role="tablist" aria-label="NBA discovery view"><button type="button" role="tab" data-nba-view="alumni" aria-selected="true">Notable alumni</button><button type="button" role="tab" data-nba-view="past" aria-selected="false">Past picks</button><button type="button" role="tab" data-nba-view="watch" aria-selected="false">2027 watch</button></div></div>
+        <div class="nba-controls"><div class="nba-filters"><label>Player, college or NBA team<input id="nbaSearch" type="search" placeholder="Try Jordan, Duke or Celtics" autocomplete="off" maxlength="100"></label><label>Explore a school<select id="nbaSchool" aria-label="Explore a school"></select></label></div></div>
         <p class="sub" id="nbaScope"></p><p class="sub nba-team-note" id="nbaTeamNote"></p><p class="nba-count" id="nbaCount" role="status" aria-live="polite"></p><div id="nbaCards" class="nba-cards"></div><button type="button" class="btn nba-more" id="nbaMore" hidden>Show more players</button>
       </section>
-      <section id="discoverMoments" class="view" hidden aria-label="NCAA highlights"><div><p class="kicker">A little March drama</p><h3 class="sec-h">Watch the stakes.</h3><p class="sub">Official NCAA clips. YouTube may be unavailable in mainland China; every story has a local practice path.</p></div><div id="discoveryClips" class="discovery-clips"></div></section>
+      <section id="discoverDraft" class="view" hidden aria-label="Draft watch">
+        <div class="draft-head"><p class="kicker">Draft watch</p><h3 class="sec-h">See them in March.<br>Hear their names in June.</h3><p class="sub">College basketball is where most NBA lottery picks play first. Follow them in your bracket.</p></div>
+        <div class="seg" role="tablist" aria-label="Draft watch view"><button type="button" role="tab" data-draft-view="lottery" aria-selected="true">2027 lottery watch</button><button type="button" role="tab" data-draft-view="r2026" aria-selected="false">2026 first round</button></div>
+        <p class="sub draft-scope" id="draftScope"></p>
+        <ol class="draft-list" id="draftList"></ol>
+        <p class="sub roster-note" id="draftSource"></p>
+      </section>
       <div id="discoverRegions" class="view">
       <div class="card explore-head">
         <div class="seg" role="tablist" aria-label="Region meaning"><button type="button" role="tab" data-map-mode="home" aria-selected="true">School home regions</button><button type="button" role="tab" data-map-mode="bracket" aria-selected="false">Tournament groups</button></div>
@@ -123,6 +122,7 @@
         <div id="archiveRegions" class="pills" role="tablist" aria-label="Historical bracket regions" hidden></div>
         <div id="archiveRounds" class="rounds" role="tablist" aria-label="Historical rounds" hidden></div>
         <div id="archiveGames"></div><p class="sub roster-note">Actual NCAA men's results · Round of 64 onward · Select a game for its box score.</p>
+        <div class="archive-highlights"><p class="kicker">Highlights</p><p class="sub">Official NCAA clips open on YouTube, which may be unavailable in mainland China. Each story also has a practice game.</p><div id="discoveryClips" class="discovery-clips"></div></div>
       </section>
     </section>
 
@@ -157,8 +157,7 @@
           </div>
         </div>
 
-        <p class="sub bracket-definition">A bracket is your prediction of every winner. Tap one team in each game.</p>
-        <details class="entry-paths-wrap"><summary>Find your team: NBA stars or regions</summary><div class="entry-paths"><button type="button" data-discover-go="nba"><b>NBA fan?</b><span>Find your star’s school →</span></button><button type="button" data-discover-go="regions"><b>New to the teams?</b><span>Explore a region →</span></button></div><div class="bracket-discovery-links"><button type="button" class="link" id="bracketAlumni">Duke vs. Kentucky: alumni Starting 5 ↗</button><button type="button" class="link" data-go="learn">Practice three picks first →</button></div></details>
+        <p class="sub bracket-definition">Tap who you think wins each game.</p>
 
         <div class="helper">
           <button class="helper-bar" id="helperBar" aria-expanded="false" aria-controls="helperBody">
@@ -168,11 +167,17 @@
           </button>
           <div class="helper-body" id="helperBody" hidden>
             <div class="seg" role="tablist" id="helperSeg" aria-label="Ways to fill your bracket">
-              <button role="tab" data-h="region">Root for a region</button>
+              <button role="tab" data-h="nba">NBA stars</button>
+              <button role="tab" data-h="region">Regions</button>
               <button role="tab" data-h="cn"><span class="cnb">中</span>Chinese players</button>
             </div>
-            <div id="hRegion" class="helper-body" style="padding:0">
-              <p class="rule">Choose a home region. Its schools advance against other regions.</p>
+            <div id="hNba" class="helper-body" style="padding:0">
+              <p class="rule"><b>NBA fan?</b> Pick a star you know. His college team wins every game, and seeds decide the rest.</p>
+              <div class="opts star-opts" id="starOpts"></div>
+              <button class="link" type="button" data-discover-go="nba">More stars and their schools →</button>
+            </div>
+            <div id="hRegion" class="helper-body" style="padding:0" hidden>
+              <p class="rule"><b>Don’t know the players?</b> Pick a home region. Its schools advance against schools from other regions.</p>
               <details class="rule"><summary>How auto-fill works</summary><p>Home regions show school locations, not tournament groups. When both teams are from the same region, or neither is from yours, seed-weighted random picks decide the winner.</p></details>
               <div class="opts" id="regionOpts"></div>
             </div>
@@ -181,19 +186,15 @@
               <details class="rule"><summary>How auto-fill works</summary><p>Your chosen team wins every game. Other teams with Chinese players advance against teams without one. Other matchups use seed-weighted random picks.</p></details>
               <div class="opts" id="cnOpts"></div>
             </div>
-            <button class="btn lottery-fill" id="btnSeed" type="button">Lucky draw: fill all 63 picks ↗</button><p class="sub">Random picks weighted by seed. Free demo; no ticket purchase.</p>
+            <button class="btn quick-fill" id="btnSeed" type="button">Quick fill by seed</button><p class="sub">Fills all 63 games. Higher seeds win more often. Edit any game after.</p>
           </div>
         </div>
 
-        <div class="bracket-key"><span>Tap a team to pick. <span class="key-profile">ⓘ opens profiles.</span></span><details><summary>Colors &amp; symbols</summary><div class="legend" id="legend"></div></details></div>
         <div class="bhead bracket-overview"><p class="sub">16 teams per group. One reaches the Final Four.</p><button class="link" id="viewToggle" type="button" aria-pressed="false">Show full bracket</button></div>
         <div class="pills" role="tablist" id="btabs" aria-label="Bracket regions"></div>
-        <p class="round-coach" id="roundCoach" aria-live="polite"></p>
+        <div class="coach-row"><p class="round-coach" id="roundCoach" aria-live="polite"></p><button class="info-btn" id="seedBtn" type="button" aria-expanded="false" aria-controls="seedTip"><span class="info-ic" aria-hidden="true">i</span>What is a seed?</button></div>
+        <div class="tip key-tip" id="seedTip" hidden><p>The number beside each team is its seed: 1 is the highest rank, 16 the lowest.</p><p>ⓘ opens a school profile. “NBA:” names famous former players from that school.</p><div class="legend" id="legend"></div></div>
         <div class="rounds" role="tablist" id="rndTabs" aria-label="Rounds" hidden></div>
-        <div class="seedinfo">
-          <button class="info-btn" id="seedBtn" type="button" aria-expanded="false" aria-controls="seedTip"><span class="info-ic" aria-hidden="true">i</span>What is a seed?</button>
-          <p class="tip" id="seedTip" hidden>The number beside each team is its seed: 1 is the highest rank, 16 the lowest.</p>
-        </div>
         <div class="bracket-scroll" id="bracketView"></div>
       </div>
     </section>
@@ -276,7 +277,7 @@
 
 <nav class="mobile-nav" aria-label="Mobile sections">
   <button type="button" data-go="learn"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v16M12 6C8 3 5 3 2 4v15c4-1 7-1 10 2 3-3 6-3 10-2V4c-3-1-6-1-10 2Z"/></svg><span>Learn</span></button>
-  <button type="button" data-go="explore"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m16 8-2 6-6 2 2-6Z"/></svg><span>Explore</span></button>
+  <button type="button" data-go="explore"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m16 8-2 6-6 2 2-6Z"/></svg><span>Discover</span></button>
   <button type="button" data-go="bracket"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 4v5h5v6H3v5M21 4v5h-5v6h5v5M8 12h8"/></svg><span>My picks</span></button>
   <button type="button" data-go="crowd"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><path d="M3 21v-3a6 6 0 0 1 12 0v3M16 5a3 3 0 0 1 0 6M18 15a5 5 0 0 1 3 5"/></svg><span>Crowd</span></button>
   <button type="button" data-go="standings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V11h5v10M10 21V4h5v17M15 21V8h5v13"/></svg><span>Standings</span></button>

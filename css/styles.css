@@ -1151,3 +1151,86 @@ details.demo { display:block; padding:18px 24px; }details.demo > summary { curso
   .team.just-picked,.team.just-picked .pick-check { animation:none; }
   .star-school:hover,.nba-card:hover,.nba-card:hover .alumni-face,.hero-cta:hover,.btn:hover:not(:disabled) { transform:none; }
 }
+
+/* ---------- November 25 feedback pass: clearer hook, NBA path at the bracket, Draft watch ---------- */
+.visually-hidden { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+/* Portrait initials are a fallback only; transparent NBA headshots must not show them through. */
+.alumni-face.has-photo > span { visibility:hidden; }
+/* Who went there: the two best-known NBA alumni under a school's name in the round view. */
+.tn-wrap { flex:1; min-width:0; display:grid; gap:1px; }
+.tn-hint { font-size:11.5px; font-weight:500; color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.bracket .tn-hint, .bracket .faceoff-link { display:none; }
+.faceoff-link { display:block; width:100%; min-height:40px; border:0; border-top:1px solid var(--line); background:var(--blue-soft); color:var(--ink); font-size:13px; font-weight:700; text-align:left; padding:8px 14px; cursor:pointer; }
+.faceoff-link::before { content:"⛹ "; }
+.faceoff-link:hover { background:var(--surface-2); }
+.faceoff-note { margin:10px 4px 0; }
+/* NBA stars in "Help me choose". */
+.star-opts { grid-template-columns:repeat(4,minmax(0,1fr)); }
+.star-opt { --c:var(--blue); display:flex; align-items:center; gap:10px; padding:10px; }
+.star-opt .alumni-face { width:48px; height:48px; border-width:2px; }
+.star-opt-words { display:grid; gap:2px; min-width:0; }
+.star-opt .opt-nm { font-size:17px; line-height:1.1; overflow-wrap:anywhere; }
+.quick-fill { justify-self:start; min-height:48px; }
+/* Draft watch. */
+.draft-head h3 { margin:6px 0 8px; }
+.draft-list { list-style:none; padding:0; margin:0; display:grid; gap:8px; }
+.draft-row { display:grid; grid-template-columns:40px minmax(0,1fr) auto; align-items:center; gap:12px; background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:12px 14px; }
+.draft-num { font-family:var(--display); font-style:italic; font-weight:800; font-size:28px; line-height:1; color:var(--red); text-align:center; }
+.is-2026 .draft-num { color:var(--ink); font-size:24px; }
+.draft-words { display:grid; gap:3px; min-width:0; }
+.draft-words b { font-size:16px; }
+.draft-school { display:flex; align-items:center; gap:7px; font-weight:600; font-size:14px; }
+.draft-school .team-logo { width:22px; height:22px; }
+.draft-words small { font-size:12.5px; color:var(--muted); }
+.draft-row .link { min-height:44px; padding-inline:4px; }
+.draft-tag { font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--muted); border:1px solid var(--line); border-radius:999px; padding:3px 8px; }
+.draft-scope { margin:4px 0 2px; }
+.archive-highlights { display:grid; gap:10px; margin-bottom:28px; }
+.archive-highlights > .sub { margin:0; }
+@media (max-width: 820px) { .star-opts { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width: 600px) {
+  .star-opt { padding:8px; gap:8px; }
+  .star-opt .alumni-face { width:42px; height:42px; }
+  .star-opt .opt-nm { font-size:15px; }
+  .star-opt .opt-meta { font-size:12px; }
+  .draft-row { grid-template-columns:34px minmax(0,1fr) auto; gap:10px; padding:10px 12px; }
+  .draft-num { font-size:24px; }
+}
+/* One row: the round instruction, with the seed and color key beside it. */
+.coach-row { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:4px 14px; }
+.coach-row .round-coach { margin:0; }
+.coach-row .info-btn { min-height:40px; }
+.key-tip { display:grid; gap:8px; margin:0; }
+.key-tip p { margin:0; }
+.key-tip .legend { font-size:13px; }
+@media (max-width: 600px) { .coach-row .round-coach { font-size:17px; } .coach-row .info-btn { font-size:12.5px; } }
+@media (max-width: 600px) {
+  /* Keep the first game on the first screen of small phones (360 x 740). */
+  #v-bracket > .card { gap:12px; }
+  #v-bracket .bracket-definition { margin-top:-4px; }
+}
+/* The hook tag sits on its own line above the number, so "One shot to win 50,000 RMB" reads in order. */
+.jackpot { display:grid; grid-template-columns:auto auto; justify-content:start; align-items:end; font-size:clamp(92px, 11.5vw, 150px); }
+.j-win { grid-column:1 / -1; justify-self:start; margin:0 0 .12em .04em; font-size:.2em; white-space:nowrap; }
+.j-cur { align-self:end; margin:0 0 .05em .06em; }
+@media (max-width: 600px) {
+  .j-win { font-size:.19em; }
+  /* Compact header while picking: one line, the hoop art steps aside for the prize. */
+  body[data-page="bracket"] .jackpot { display:flex; align-items:center; flex-wrap:nowrap; }
+  body[data-page="bracket"] .j-win { font-size:.28em; margin:0 .3em 0 0; }
+  body[data-page="bracket"] .hero::after { display:none; }
+}
+@media (min-width: 900px) { .draft-list { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px 14px; } }
+/* NBA stars: compact player rows. The whole row opens the profile. */
+.nba-cards { gap:10px; }
+.nba-card, .nba-card:nth-child(3n+2) { display:grid; grid-template-columns:none; gap:4px; padding:12px 14px; border-top-width:3px; }
+.nba-card::before { display:none; }
+.nba-card-main { display:flex; align-items:center; gap:14px; width:100%; min-height:72px; padding:0; border:0; background:none; color:inherit; text-align:left; cursor:pointer; font:inherit; }
+.nba-card-main .alumni-face, .nba-card .alumni-face { width:64px; height:64px; border-width:2px; }
+.nba-card-words { display:grid; gap:3px; min-width:0; }
+.nba-card-words b { font-size:17px; line-height:1.15; }
+.nba-card-words small { font-size:12.5px; color:var(--muted); }
+.nba-card .nba-school-name { display:flex; align-items:center; gap:6px; font-weight:600; font-size:14px; }
+.nba-card .nba-games { justify-self:start; min-height:36px; font-size:13px; }
+.archive-highlights { margin:32px 0 0; }
+@media (max-width: 600px) { .nba-card-main .alumni-face, .nba-card .alumni-face { width:56px; height:56px; } .clip-discovery h4 { font-size:19px; } }

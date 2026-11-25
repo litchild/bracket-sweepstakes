@@ -38,8 +38,9 @@ knows nothing about March Madness or brackets). Put new source material from the
   script in the browser (globals) and via `require()` in tests. Keep it free of DOM code.
 - `js/app.js`: UI, rendering and storage. Depends on globals from `logic.js`.
 - `js/guide.js`: first-visit journey, interactive home-region map and team profile dialogs.
-- `js/discovery-data.js` and `js/discovery.js`: dated NBA alumni/draft connections, the alumni Starting 5,
-  per-school discovery and school-to-bracket navigation. Sources are in `docs/discovery-sources.md`.
+- `js/discovery-data.js` and `js/discovery.js`: NBA alumni (with a recognition order and the 12 star picks), the
+  2027 lottery watch, the 2026 first round from this bracket, alumni face-offs, per-school discovery and
+  school-to-bracket navigation. Sources are in `docs/discovery-sources.md`.
 - `js/home.js`: retained official clip catalog for native WeChat development and its content sync. The website
   does not load this file; it contains no browser playback or homepage behavior.
 - `js/experience.js`: six historical practice games, archive views and leaderboard presentation helpers.
@@ -69,7 +70,8 @@ knows nothing about March Madness or brackets). Put new source material from the
   Keep fonts, scripts and images in the repo. User-initiated profile links may open an external team page in a new
   tab, but the experience must never depend on it. The website's video homepage and playback were removed at
   the user's request on November 15, 2026. On November 18 the user requested highlights as secondary content:
-  Discover's Watch tab links to official NCAA videos after a user click, with local previews and practice paths.
+  Discover > History lists them after the past brackets. They link to official NCAA videos after a user click,
+  with local previews and practice paths.
   Do not load external players, fonts, scripts or image assets. The native
   WeChat development project retains its separate clip catalog and media setup described below. Vercel is blocked
   in mainland China, so the site stays on Netlify. See `docs/history-sources.md` for video and archive sources.
@@ -115,7 +117,10 @@ knows nothing about March Madness or brackets). Put new source material from the
   other-region matchups are seed-weighted coin flips. The champion always comes from the rooted region.
 - Root for Chinese players: the fan picks one of the four teams. That team wins every game. The other three beat
   every team without a Chinese player. Two of them meeting (neither the pick) is a seed-weighted coin flip.
-- Random by seed: seed-weighted coin flips everywhere.
+- Root for an NBA star's school (added November 25, 2026): the fan picks one of 12 NBA stars. The star's college
+  team wins every game; every other game is a seed-weighted coin flip. Stored as `root: "star"`, the school id in
+  `cnTeam` and the NBA player id in `star`.
+- Random by seed ("Quick fill by seed"): seed-weighted coin flips everywhere.
 - Scoring: 10, 20, 40, 80, 160, 320 points per correct pick by round (max 1,920).
 - Brackets lock once any result exists.
 
@@ -137,21 +142,23 @@ knows nothing about March Madness or brackets). Put new source material from the
   concept 03's practice. Concepts 04 to 06 use no league, team or player logos and no player photos: type and CSS
   art only. Ambassador brackets are always labeled as sample picks by region, never with names or as a real
   person's choices. Data and evidence sources, with inference labels, are in `docs/concept-sources.md`.
-- The prize leads the page. The hero headline is a giant "Win 50,000 RMB" (number in the display face, "Win" in a red
-  slashed tag, "RMB" in red), with "Bracket Sweepstakes" as a smaller line above it and a red "Make your picks"
-  button that opens My bracket. On phones "Win" sits on its own row so the number fills the width; while picking,
-  the header shrinks to one "Win 50,000 RMB" line. The fixed entry bar carries a red "Win 50,000 RMB" tag on every
-  screen size, the ticker leads with "Win 50,000 RMB", and the browser tab title starts with it. Learn's
+- The prize leads the page. The hero headline reads "One shot to win" (a red slashed tag on its own line) above a
+  giant "50,000 RMB" (number in the display face, "RMB" in red), with "Bracket Sweepstakes" as a smaller line above
+  and "Free to enter · Picks lock March 18" below on every screen size. Desktop adds a red "Make your picks" button.
+  While picking on phones, the header shrinks to one "One shot to win 50,000 RMB" line and the decorative hoop is
+  hidden so it never covers the prize. The fixed entry bar carries a red "Win 50,000 RMB" tag on every screen size,
+  the ticker leads with "Win 50,000 RMB", and the browser tab title starts with "One shot to win 50,000 RMB". Learn's
   "What is a bracket?" steps end with a red step 4, "Win 50,000 RMB". Never state which
   prize rule applies or mention the odds (see `docs/pitch-context.md`).
 - All website visits open My bracket, per the November 18 feedback. The compact mobile prize headline and bracket
-  are immediately visible; the hook reads "One bracket. One shot to win." Learn is optional through navigation
-  and How it works. Keep existing drafts intact. Highlights belong in Discover > Watch, never the landing page.
+  are immediately visible: at 390 x 844 the whole first game sits above the entry bar, and at 360 x 740 the first
+  team's name and NBA hint show above it. Learn is optional through navigation and How it works. Keep existing drafts intact. Highlights belong
+  in Discover > History, after the past brackets, never on the landing page.
   The native WeChat development app keeps its existing Home and eleven-clip experience.
 - Learn explains March Madness and defines a bracket as predictions of every game's winner through the champion.
   Three short steps explain tapping a winner, advancing that pick, and choosing a champion, then step 4 is the prize. Keep the illustrated
   four-to-two-to-one practice path and clear phone-and-hand drawing, with readable team labels, a cyan selection and a check mark.
-  The three-step journey connects Learn, Explore and Pick. Fan camp opens on Mini bracket and offers ten learning
+  The Learn/Explore/Pick stepper was removed on November 25, 2026 to cut a navigation layer. Fan camp opens on Mini bracket and offers ten learning
   challenges across three tabs: a three-pick Final Four mini bracket, six historical game picks, and three rules
   questions. XP and badges live in an expandable progress section. Each activity stays separate from real picks.
   Practice choices reveal scores, an explanation and a takeaway. Save the first choice, then make it read-only.
@@ -168,48 +175,56 @@ knows nothing about March Madness or brackets). Put new source material from the
   the information button opens a keyboard-accessible native dialog with archived recent history and form, Chinese
   player context where applicable, and an external team information link. Profile access remains available when
   predictions are locked.
-- The bracket key and home-region color legend appear above the picks.
-- At 600px and below, the primary navigation is a fixed five-item bottom bar: Learn, Explore, My picks, Crowd,
+- The bracket key and home-region color legend sit above the picks, inside the "What is a seed?" key beside the
+  round instruction ("Pick 8 winners."). One short instruction line ("Tap who you think wins each game.") sits under
+  "Your bracket". "Clear all" appears only once there is a pick.
+- At 600px and below, the primary navigation is a fixed five-item bottom bar: Learn, Discover, My picks, Crowd,
   Standings. Learn also remains available from the bracket's How it works button. The entry controls sit above it only
   on My picks. The header is smaller while picking, and pass-around controls follow the bracket. Keep both bars
-  clear of content and honor safe-area insets. The three-step journey appears only in Explore.
+  clear of content and honor safe-area insets. The section is named Discover in both navigation bars.
   Netlify's injected attribution badge stays visible in normal page flow after the content so it cannot cover
   the fixed navigation or entry controls on phones.
 - Keep first-visit copy brief: one definition, a visual tournament path, and short practice activities. Extra rules,
   region explanations, and auto-fill mechanics belong in expandable details.
-- Discover opens on NBA roots, with Regions, Past brackets and Watch as alternatives. NBA alumni routes lead to
-  the school's actual bracket group without auto-picking or treating NBA alumni as current college players.
-  The November 23 expansion includes 62 NBA alumni across 19 schools and individual profiles for those alumni
-  and all nine watchlist prospects. Alumni profiles show local portraits, dated NBA position/height, actual draft
-  outcomes, related alumni and a school-to-bracket route. Prospect profiles keep projected board rank separate
-  from actual picks. Both reuse the accessible native profile dialog and return focus to the initiating control.
+- Discover has four tabs: NBA stars (default), Draft watch, Regions and History. Keep it to these four.
+  NBA stars: 71 NBA alumni across 25 field schools, best-known names first (editorial `STAR_ORDER`: Jordan,
+  Durant, Kyrie Irving, Tatum, ...). Each player is one compact row (portrait, name, school, NBA team and actual
+  draft) that opens the profile, plus one small link to the school's games. Search accepts player, school or NBA team
+  names, punctuation variations and UConn/Connecticut aliases; the school select shows counts; 12 rows at a time
+  with Show more.
   NBA team affiliations were checked against official NBA profiles on November 25, 2026. Show the team on alumni
-  discovery cards, individual profiles and related-player rows, with a visible snapshot date and source in the
-  profile. Search also matches NBA team names. This is a curated snapshot, not a live roster feed. Aldridge is
-  labeled Retired using the NBA retirement report; Ivey and Morris show No NBA team listed because their official
-  profiles list no current team. Never fill these gaps with a former team or infer free-agent status. Recheck all
-  affiliations and update the date when refreshing. Draft-watch prospects never receive NBA team affiliations.
-  Search accepts player or school names, punctuation variations and UConn/Connecticut aliases. School controls
-  show curated counts; browse across schools with 12 cards at a time and append via Show more. School filters,
-  queries and view changes reset pagination. Keep all 64 school profiles available, including honest empty states.
-  School profiles preview four clickable alumni, link to every featured connection and show prospect profiles.
-  The Starting 5 still uses five per school; its faces now open individual profiles. This is a
-  curated collection, not a complete all-time alumni database; empty schools say no featured data, never no alumni.
-  Past selections show actual draft years/picks. 2027 watch shows dated board ranks, not pick numbers, based on
-  the November 5, 2026 source snapshot. Keep that date and the 2026 field distinction visible.
-  The expandable Duke vs. Kentucky Starting 5 is a school-association graphic with ten locally hosted NBA portraits;
-  label them as former players, not current college lineups or a real 2026 matchup. On phones use two readable columns.
+  rows, individual profiles, related-player rows and face-off tooltips, with a visible snapshot date and source in
+  the profile. This is a curated snapshot, not a live roster feed. Aldridge is labeled Retired using the NBA
+  retirement report; Jordan, Magic Johnson and Olajuwon are labeled Retired from their NBA.com profiles, which list
+  them as inactive with careers that ended decades ago. Ivey, Morris, Jimmer Fredette and Patty Mills show No NBA team
+  listed because their official profiles list no current team. Never fill these gaps with a former team or infer
+  free-agent status. Recheck all affiliations and update the date when refreshing. Draft-watch prospects never
+  receive NBA team affiliations. School profiles preview four clickable alumni, link to every featured connection
+  and show prospect profiles; keep all 64 school profiles, including honest empty states. Alumni profiles show local portraits, dated NBA position/height, actual draft outcomes, related alumni and a
+  school-to-bracket route. This is a curated collection, not a complete alumni database; empty schools say no
+  featured data, never no alumni. Alumni are former college players, never current lineups.
+  Alumni face-off: up to five alumni per school, faces in circles, opening profiles. Discover shows a collapsed
+  Duke vs. Kentucky example. In the bracket's round view, a game card shows an "NBA alumni face-off" link whenever
+  both teams have at least two featured alumni; it opens the same graphic in the profile dialog. Label faces as former
+  players. Portrait initials are a load fallback only and are hidden once the transparent headshot loads.
+  Game cards in the round view show the school's two best-known alumni under its name ("NBA: Kyrie Irving, Jayson
+  Tatum"). Hide these hints and face-off links in the full four-column view.
+  Draft watch: "See them in March. Hear their names in June." Two views. 2027 lottery watch lists ESPN's top 14
+  (Jeremy Woo big board, November 5, 2026) with position, class and current team: college players link to their
+  school (logo, seed in this bracket, profile); Stefan Joksimovic is marked as a pro club player. Always call these
+  board ranks and projections, never a mock draft or draft order. 2026 first round lists the 25 first-round picks
+  from 2026 tournament teams, with seed and the team's actual 2026 run, linking to the school's games.
+  History: past brackets first, then the three highlight clips.
   Regions retains the original map and roster, plus a Chinese-player roster filter with its snapshot date.
-  Region/Chinese-player auto-fill retains its existing rules. The Lucky draw button fills all 63 by seed weighting,
-  and is a free demo, with no purchase or guarantee. Extra entry paths follow the picks, keeping the first game close
-  to the top on phones.
+  "Help me choose" in My bracket offers three tabs in this order: NBA stars (12 star cards; default), Regions ("Don’t
+  know the players?") and Chinese players, then "Quick fill by seed". Never call any fill a draw or lottery.
   The standalone Players tab, cards and introduction were removed at the user's request on November 15, 2026.
   Four verified player profiles remain connected to
   their school profiles through School/Player tabs in the same dialog. On phones this dialog is a bottom sheet
   with a persistent close control. Stat labels must name the season and competition; never imply the snapshots
   are current NCAA performance. Player champion buttons use the existing Chinese-player auto-fill rule.
-- Plain-language definitions: a "What is a seed?" button above the first game toggles a one-sentence definition
-  (tap, click or keyboard; Esc closes). The "Root for a region" panel starts with one line saying home regions
+- Plain-language definitions: a "What is a seed?" button above the first game toggles a one-sentence definition,
+  the ⓘ and "NBA:" explanations and the color legend (tap, click or keyboard; Esc closes). The "Root for a region" panel starts with one line saying home regions
   (东 南 西 北) are different from the NCAA's four bracket tabs.
 - All sizes default to round buttons (Round of 64, Round of 32, Sweet 16, Elite 8, each with picks made) and only
   that round's games. Phones use full-width cards with 68px team targets and a visible selection check; larger screens use two columns. Desktop
@@ -250,8 +265,9 @@ AppSecret. The browser adapter is for review, not native compilation or a public
 `js/app.js` uses `localBackend()`, which keeps everything in `localStorage` under `bs-local-db`, so each visitor sees
 only their own entries plus simulated fans. Documents:
 
-- `entries/<id>`: `{ picks: {gameId: teamId}, root: "east"|"south"|"west"|"midwest"|"cn"|"", cnTeam, mode, updatedAt,
-  name?, guest? }`. Pass-around entries use ids starting `g-`.
+- `entries/<id>`: `{ picks: {gameId: teamId}, root: "east"|"south"|"west"|"midwest"|"cn"|"star"|"", cnTeam, star,
+  mode, updatedAt, name?, guest? }`. `cnTeam` is the chosen team for the Chinese-player and NBA-star routes; `star` is
+  the NBA player id for the star route. Pass-around entries use ids starting `g-`.
 - `state/results`: `{ winners: {gameId: teamId} }`.
 - `state/sims`: `{ list: [packed] }`, each packed string is a root code (`e s w m c x`) plus 11 base64 characters
   holding the 63 pick bits in `GAMES` order.
@@ -260,7 +276,7 @@ To share entries between visitors, swap `localBackend()` for a hosted database w
 `doc().get/set/delete/onSnapshot` and `collection().limit().onSnapshot` shape. Check that the service loads in
 mainland China without a VPN before choosing it.
 
-The draft bracket is kept separately in `localStorage` under `bs-draft`. Journey completion uses `bs-onboarding`.
+The draft bracket is kept separately in `localStorage` under `bs-draft` (same fields as an entry, including `star`). Journey completion uses `bs-onboarding`.
 The former `bs-intro` dismissal is no longer used. Validated practice choices use `bs-practice`, separately from
 draft picks. Fan camp uses `bs-camp` for validated mini picks, a mini-completion flag and correct quiz answers.
 Legacy practice choices retain their progress. XP is derived: 10 per game tried (60 total), 30 once for the mini

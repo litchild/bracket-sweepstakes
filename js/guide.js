@@ -23,7 +23,6 @@ function updateJourney() {
   document.querySelectorAll('[data-step]').forEach(b => {
     if (b.dataset.step === S.tab) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
   });
-  document.querySelector('.journey').hidden = S.tab !== 'explore';
   document.querySelector('.bar').hidden = S.tab !== 'bracket';
   document.querySelectorAll('.mobile-nav button').forEach(b=>{
     if (b.dataset.go === S.tab) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current');
@@ -87,8 +86,8 @@ function showPlayerProfile(id) {
 }
 function renderDiscovery() {
   $('discoverRegions').hidden=discoverMode!=='regions';
-  $('discoverNba').hidden=discoverMode!=='nba';$('discoverMoments').hidden=discoverMode!=='moments';
-  if(discoverMode==='nba')renderNbaDiscovery();
+  $('discoverNba').hidden=discoverMode!=='nba';$('discoverDraft').hidden=discoverMode!=='draft';
+  if(discoverMode==='nba')renderNbaDiscovery();if(discoverMode==='draft')renderDraftWatch();
   $('discoverArchive').hidden=discoverMode!=='archive';if(discoverMode==='archive')renderArchive();
   document.querySelectorAll('[data-discover]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.discover===discoverMode)));
 }
@@ -145,8 +144,6 @@ function initGuide() {
   S.tab = 'bracket';
   // Class-demo controls follow the main bracket rather than preceding a fan's first game.
   $('v-bracket').append($('pass'));
-  $('bracketView').after(document.querySelector('.entry-paths-wrap'));
-  const hints=el('div','bracket-hints');hints.append(document.querySelector('.bracket-key'),document.querySelector('.seedinfo'));$('bracketView').before(hints);
   document.querySelectorAll('[data-go],[data-step]').forEach(b=>b.addEventListener('click',()=>navigateTo(b.dataset.go || b.dataset.step)));
   document.addEventListener('keydown',e=>{
     const list=e.target.closest('[role="tablist"]'); if(!list)return;

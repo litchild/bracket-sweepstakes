@@ -37,14 +37,19 @@ function cands(g, sel) { return g.srcT ? g.srcT.slice() : g.srcG.map(s => sel[s]
 function strength(tid) { return Math.pow(TEAMS[tid].seed, -1.2); }
 function helperFor(root, cnTeam) {
   if (root === "cn" && cnTeam && CN_PLAYERS[cnTeam]) return { cn: cnTeam };
+  if (root === "star" && cnTeam && TEAMS[cnTeam]) return { team: cnTeam };
   if (root && ROOTS[root]) return { root };
   return null;
 }
 // Region rule: your region's team always beats a team from another region.
 // Chinese-player rule: your chosen team wins every game; other Chinese-player teams beat everyone else.
+// NBA-star rule: the star's college team wins every game.
 // Every other matchup is a coin flip weighted by seed.
 function winProb(a, b, h) {
-  if (h && h.cn) {
+  if (h && h.team) {
+    if (a === h.team) return 1;
+    if (b === h.team) return 0;
+  } else if (h && h.cn) {
     if (a === h.cn) return 1;
     if (b === h.cn) return 0;
     const ca = a in CN_PLAYERS, cb = b in CN_PLAYERS;

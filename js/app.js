@@ -5,7 +5,7 @@
 // ---------- state ----------
 const S = {
   tab: "bracket", br: "E", cbr: "E",
-  root: null, cnTeam: null, picks: {}, mode: "manual", helpOpen: false, helpTab: "region",
+  root: null, cnTeam: null, star: null, picks: {}, mode: "manual", helpOpen: false, helpTab: "nba",
   db: null, user: null, uid: null, canEdit: false, dbState: "connecting",
   real: [], sims: [], simEntries: [], winners: {},
   entered: false, savedSig: null, busy: false,
@@ -20,8 +20,8 @@ const sig = (p, r, c) => encode(p) + "|" + (r || "") + "|" + (c || "") + "|" + c
 function store(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
 function load(k) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch (e) { return null; } }
 const draft = load("bs-draft");
-if (draft && draft.picks) { S.picks = draft.picks; S.root = draft.root || null; S.cnTeam = draft.cnTeam || null; S.mode = draft.mode || "manual"; }
-function saveDraft() { if (S.guest) return; store("bs-draft", { picks: S.picks, root: S.root, cnTeam: S.cnTeam, mode: S.mode }); }
+if (draft && draft.picks) { S.picks = draft.picks; S.root = draft.root || null; S.cnTeam = draft.cnTeam || null; S.star = draft.star || null; S.mode = draft.mode || "manual"; }
+function saveDraft() { if (S.guest) return; store("bs-draft", { picks: S.picks, root: S.root, cnTeam: S.cnTeam, star: S.star, mode: S.mode }); }
 function locked() { return decidedIds(S.winners).length > 0; }
 function allEntries() { return S.real.concat(S.simEntries); }
 function classEntries() { return S.real.filter(e => e.guest); }
@@ -30,9 +30,10 @@ function teamColor(t) { return `var(${ROOTS[t.home].color})`; }
 function cnBadge() { const b = el("span", "cnb", "中"); b.title = "Chinese player on the roster"; return b; }
 function zhSpan(k, extra) { const z = el("span", "zh", ROOTS[k].zh + (extra || "")); z.style.setProperty("--c", `var(${ROOTS[k].color})`); return z; }
 function homeCount(k) { return Object.values(TEAMS).filter(t => t.home === k).length; }
-function isMine(tid) { if (S.root === "cn") return tid in CN_PLAYERS; if (S.root && ROOTS[S.root]) return TEAMS[tid].home === S.root; return false; }
+function isMine(tid) { if (S.root === "star") return tid === S.cnTeam; if (S.root === "cn") return tid in CN_PLAYERS; if (S.root && ROOTS[S.root]) return TEAMS[tid].home === S.root; return false; }
 function fanText(root, cnTeam) {
   if (root === "cn") return `Chinese players${cnTeam && TEAMS[cnTeam] ? ` (${TEAMS[cnTeam].name})` : ""}`;
+  if (root === "star") return `an NBA star’s school${cnTeam && TEAMS[cnTeam] ? ` (${TEAMS[cnTeam].name})` : ""}`;
   if (root && ROOTS[root]) return `${ROOTS[root].zh} ${ROOTS[root].name}`;
   return "Own picks";
 }
@@ -40,6 +41,7 @@ function fanTag(root, cnTeam) {
   const s = el("span", "tagline");
   if (root === "cn") { s.append(cnBadge(), document.createTextNode(fanText(root, cnTeam))); }
   else if (root && ROOTS[root]) { s.append(zhSpan(root), document.createTextNode(ROOTS[root].name)); }
+  else if (root === "star") s.textContent = cnTeam && TEAMS[cnTeam] ? `NBA star’s school (${TEAMS[cnTeam].name})` : "NBA star’s school";
   else s.textContent = "Own picks";
   return s;
 }
@@ -103,16 +105,18 @@ document.addEventListener("keydown", e => { if (e.key === "Escape" && S.seedOpen
 function helperSummary() {
   if (S.root === "cn" && S.cnTeam) { const t = TEAMS[S.cnTeam]; return { title: `${t.name} is your champion`, sub: `${CN_PLAYERS[S.cnTeam]} · Edit any pick below.` }; }
   if (S.root && ROOTS[S.root]) { const r = ROOTS[S.root]; return { title: `Rooting for ${r.zh} ${r.name}`, sub: "Bracket filled. Edit any pick below." }; }
-  if (S.mode === "seed") return { title: "Auto-filled by seed", sub: "Edit any pick below." };
-  return { title: "Help me choose", sub: "Auto-fill by region or player." };
+  if (S.root === "star" && S.cnTeam) { const t = TEAMS[S.cnTeam], p = NBA_ALUMNI.find(x => x.id === S.star); return { title: `${t.name} is your champion`, sub: `${p ? `${p.name}’s school` : "Your star’s school"} wins every game. Edit any pick below.` }; }
+  if (S.mode === "seed") return { title: "Quick-filled by seed", sub: "Edit any pick below." };
+  return { title: "Help me choose", sub: "Start from an NBA star, a region or a Chinese player." };
 }
-function fillWith(root, cnTeam) {
+function fillWith(root, cnTeam, star) {
   if (locked()) return;
-  S.root = root; S.cnTeam = root === "cn" ? cnTeam : null;
-  S.mode = root === "cn" ? "cn" : root ? "region" : "seed";
+  const team = root === "cn" || root === "star";
+  S.root = root; S.cnTeam = team ? cnTeam : null; S.star = root === "star" ? star : null;
+  S.mode = root === "cn" ? "cn" : root === "star" ? "star" : root ? "region" : "seed";
   S.picks = randomBracket(helperFor(S.root, S.cnTeam));
   S.helpOpen = false; S.round = 1;
-  if (root === "cn" && cnTeam) S.br = TEAMS[cnTeam].br;
+  if (team && cnTeam) S.br = TEAMS[cnTeam].br;
   saveDraft(); renderAllLocal();
 }
 function renderHelper() {
@@ -123,10 +127,20 @@ function renderHelper() {
   if (locked()) $("hbSub").textContent = "Brackets are locked because games have started.";
   $("helperBody").hidden = !S.helpOpen || locked();
   $("btnShuffle").hidden = !(S.root || S.mode === "seed") || locked();
-  $("btnClear").disabled = locked();
+  $("btnClear").disabled = locked(); $("btnClear").hidden = !countPicks(S.picks);
   document.querySelectorAll("#helperSeg button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.h === S.helpTab)));
-  $("hRegion").hidden = S.helpTab !== "region"; $("hCn").hidden = S.helpTab !== "cn";
+  $("hNba").hidden = S.helpTab !== "nba"; $("hRegion").hidden = S.helpTab !== "region"; $("hCn").hidden = S.helpTab !== "cn";
   if (!S.helpOpen) return;
+  const so = $("starOpts"); so.textContent = "";
+  STAR_PICKS.forEach(pid => {
+    const p = NBA_ALUMNI.find(x => x.id === pid), t = TEAMS[p.team], b = el("button", "opt star-opt"); b.type = "button";
+    b.setAttribute("aria-pressed", String(S.root === "star" && S.star === pid));
+    b.setAttribute("aria-label", `${p.name}: make ${t.name} your champion`);
+    const words = el("span", "star-opt-words"); words.append(el("span", "opt-nm", p.name), el("span", "opt-meta", `${t.name} · ${t.seed} seed`));
+    b.append(alumniPortrait(p), words);
+    b.addEventListener("click", () => fillWith("star", p.team, pid));
+    so.append(b);
+  });
   const ro = $("regionOpts"); ro.textContent = "";
   ROOT_ORDER.forEach(k => {
     const r = ROOTS[k]; const b = el("button", "opt"); b.type = "button";
@@ -149,7 +163,7 @@ $("helperBar").addEventListener("click", () => { if (locked()) return; S.helpOpe
 document.querySelectorAll("#helperSeg button").forEach(b => b.addEventListener("click", () => { S.helpTab = b.dataset.h; renderHelper(); }));
 $("btnSeed").addEventListener("click", () => fillWith(null, null));
 $("btnShuffle").addEventListener("click", () => { if (locked()) return; S.picks = randomBracket(helperFor(S.root, S.cnTeam)); saveDraft(); renderAllLocal(); });
-$("btnClear").addEventListener("click", () => { if (locked()) return; S.picks = {}; S.root = null; S.cnTeam = null; S.mode = "manual"; S.br = "E"; S.round = 1; saveDraft(); renderAllLocal(); });
+$("btnClear").addEventListener("click", () => { if (locked()) return; S.picks = {}; S.root = null; S.cnTeam = null; S.star = null; S.mode = "manual"; S.br = "E"; S.round = 1; saveDraft(); renderAllLocal(); });
 
 // ---------- bracket ----------
 function teamBtn(g, tid, elim) {
@@ -162,7 +176,9 @@ function teamBtn(g, tid, elim) {
   if (elim.has(tid)) b.classList.add("lost");
   b.setAttribute("aria-pressed", String(S.picks[g.id] === tid));
   b.title = `${t.name}, ${ROOTS[t.home].name} school${CN_PLAYERS[tid] ? `, Chinese player: ${CN_PLAYERS[tid]}` : ""}`;
-  b.append(el("span", "seed", String(t.seed)), teamLogo(tid), el("span", "tn", t.name));
+  const hint = typeof alumniHint === "function" ? alumniHint(tid) : [];
+  const name = el("span", "tn-wrap"); name.append(el("span", "tn", t.name)); if (hint.length) name.append(el("span", "tn-hint", `NBA: ${hint.join(", ")}`));
+  b.append(el("span", "seed", String(t.seed)), teamLogo(tid), name);
   if (CN_PLAYERS[tid]) b.append(cnBadge());
   b.append(el("span", "dot")); const check=el('span','pick-check','✓');check.setAttribute('aria-hidden','true');b.append(check);
   b.disabled = locked();
@@ -184,6 +200,10 @@ function gameCard(g, elim) {
   const c = cands(g, S.picks); const d = el("div", "game"); d.dataset.game = g.id; const w = S.winners[g.id];
   if (w && S.picks[g.id]) d.classList.add(S.picks[g.id] === w ? "ok" : "miss");
   c.forEach(t => d.append(teamBtn(g, t, elim)));
+  if (typeof faceoffReady === "function" && faceoffReady(c[0], c[1])) {
+    const f = el("button", "faceoff-link", `NBA alumni face-off: ${TEAMS[c[0]].name} vs. ${TEAMS[c[1]].name}`); f.type = "button";
+    f.addEventListener("click", () => showFaceoff(c[0], c[1])); d.append(f);
+  }
   return d;
 }
 function renderBTabs() {
@@ -303,15 +323,15 @@ function startGuest() {
   if (locked()) return;
   const name = $("passName").value.trim().replace(/\s+/g, " ").slice(0, 40);
   if (!name) { $("passMsg").textContent = "Type their name first."; $("passMsg").className = "msg bad"; $("passName").focus(); return; }
-  if (!S.guest) S.ownerSnap = { picks: S.picks, root: S.root, cnTeam: S.cnTeam, mode: S.mode };
+  if (!S.guest) S.ownerSnap = { picks: S.picks, root: S.root, cnTeam: S.cnTeam, star: S.star, mode: S.mode };
   S.guest = { id: "g-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7), name };
-  S.picks = {}; S.root = null; S.cnTeam = null; S.mode = "manual"; S.br = "E"; S.round = 1; S.helpOpen = false;
+  S.picks = {}; S.root = null; S.cnTeam = null; S.star = null; S.mode = "manual"; S.br = "E"; S.round = 1; S.helpOpen = false;
   $("passName").value = ""; $("passMsg").textContent = ""; $("sMsg").textContent = "";
   renderAllLocal();
   $("v-bracket").querySelector('h2').scrollIntoView({block:'start'}); $("helperBar").focus({preventScroll:true});
 }
 function exitGuest(msg) {
-  if (S.ownerSnap) { S.picks = S.ownerSnap.picks; S.root = S.ownerSnap.root; S.cnTeam = S.ownerSnap.cnTeam; S.mode = S.ownerSnap.mode; }
+  if (S.ownerSnap) { S.picks = S.ownerSnap.picks; S.root = S.ownerSnap.root; S.cnTeam = S.ownerSnap.cnTeam; S.star = S.ownerSnap.star || null; S.mode = S.ownerSnap.mode; }
   S.guest = null; S.ownerSnap = null; S.br = "E"; S.round = 1; S.helpOpen = false;
   $("passMsg").textContent = msg || ""; $("passMsg").className = "msg good";
   renderAllLocal();
@@ -344,7 +364,7 @@ function renderBar() {
 async function submit() {
   if (!S.db || !S.uid || locked() || countPicks(S.picks) < 63) return;
   S.busy = true; renderBar(); $("sMsg").textContent = ""; $("sMsg").className = "msg";
-  const doc = { picks: Object.assign({}, S.picks), root: S.root || "", cnTeam: S.cnTeam || "", mode: S.mode, updatedAt: new Date().toISOString() };
+  const doc = { picks: Object.assign({}, S.picks), root: S.root || "", cnTeam: S.cnTeam || "", star: S.star || "", mode: S.mode, updatedAt: new Date().toISOString() };
   if (S.guest) {
     const g = S.guest;
     try {
@@ -396,7 +416,8 @@ function renderCrowd() {
   else {
     ROOT_ORDER.forEach(k => rb.append(hbar([zhSpan(k), document.createTextNode(ROOTS[k].name)], E.filter(e => e.root === k).length / N, `var(${ROOTS[k].color})`)));
     rb.append(hbar([cnBadge(), document.createTextNode("Chinese players")], E.filter(e => e.root === "cn").length / N, "var(--cn)"));
-    const own = E.filter(e => !e.root || (e.root !== "cn" && !ROOTS[e.root])).length;
+    rb.append(hbar([document.createTextNode("NBA star’s school")], E.filter(e => e.root === "star").length / N, "var(--blue)"));
+    const own = E.filter(e => !e.root || (e.root !== "cn" && e.root !== "star" && !ROOTS[e.root])).length;
     rb.append(hbar([document.createTextNode("Own picks")], own / N, "var(--faint)"));
   }
   const ct = $("ctabs"); ct.textContent = "";
@@ -627,7 +648,7 @@ renderAll();
       const s = await db.doc("entries/" + S.uid).get();
       if (s.exists) {
         const d = s.data() || {}; S.entered = true; S.savedSig = sig(d.picks || {}, d.root || null, d.cnTeam || null);
-        if (!draft || !draft.picks || !countPicks(draft.picks)) { S.picks = Object.assign({}, d.picks); S.root = d.root || null; S.cnTeam = d.cnTeam || null; S.mode = d.mode || "manual"; }
+        if (!draft || !draft.picks || !countPicks(draft.picks)) { S.picks = Object.assign({}, d.picks); S.root = d.root || null; S.cnTeam = d.cnTeam || null; S.star = d.star || null; S.mode = d.mode || "manual"; }
       }
     } catch (e) {}
   }

@@ -63,19 +63,52 @@ const NBA_ALUMNI = [
   ['1641706','Brandon Miller','M4',2023,2,'brandon-miller',"Forward","6'7\" (2.01m)","Charlotte Hornets",'listed'],
   ['1630529','Herbert Jones','M4',2021,35,'herbert-jones',"Forward","6'7\" (2.01m)","New Orleans Pelicans",'listed'],
   ['1629656','Quentin Grimes','S2',2021,25,'quentin-grimes',"Guard","6'4\" (1.93m)","Los Angeles Lakers",'listed'],
-  ['1631204','Marcus Sasser','S2',2023,25,'marcus-sasser',"Guard","6'2\" (1.88m)","Dallas Mavericks",'listed']
-].map(([id,name,team,year,pick,slug,position,height,nbaTeam,nbaStatus])=>({id,name,team,year,pick,position,height,nbaTeam,nbaStatus,nbaSource:nbaStatus==='retired'?NBA_RETIREMENT_SOURCE:`https://www.nba.com/player/${id}/${slug}`,photo:`images/alumni/${id}.png`,source:`https://www.nba.com/player/${id}/${slug}`}));
+  ['1631204','Marcus Sasser','S2',2023,25,'marcus-sasser',"Guard","6'2\" (1.88m)","Dallas Mavericks",'listed'],
+  // Added November 25, 2026 from NBA.com bios. Retired legends cite their NBA.com profile (inactive, final season listed);
+  // inactive players without a retirement report show "No NBA team listed".
+  ['893','Michael Jordan','S6',1984,3,'michael-jordan',"Guard","6'6\" (1.98m)",null,'retired','https://www.nba.com/player/893/michael-jordan'],
+  ['77142','Magic Johnson','E3',1979,1,'magic-johnson',"Forward-Guard","6'9\" (2.06m)",null,'retired','https://www.nba.com/player/77142/magic-johnson'],
+  ['165','Hakeem Olajuwon','S2',1984,1,'hakeem-olajuwon',"Center","7'0\" (2.13m)",null,'retired','https://www.nba.com/player/165/hakeem-olajuwon'],
+  ['1630162','Anthony Edwards','M8',2020,1,'anthony-edwards',"Guard","6'4\" (1.93m)","Minnesota Timberwolves",'listed'],
+  ['202690','Jimmer Fredette','W6',2011,10,'jimmer-fredette',"Guard","6'2\" (1.88m)",null,'unlisted'],
+  ['201144','Mike Conley','E8',2007,4,'mike-conley',"Guard","6'0\" (1.83m)","Boston Celtics",'listed'],
+  ['203114','Khris Middleton','S10',2012,39,'khris-middleton',"Forward","6'7\" (2.01m)","Washington Wizards",'listed'],
+  ['1629631','De’Andre Hunter','M3',2019,4,'deandre-hunter',"Forward-Guard","6'7\" (2.01m)","Sacramento Kings",'listed'],
+  ['201988','Patty Mills','S7',2009,55,'patty-mills',"Guard","6'2\" (1.88m)",null,'unlisted']
+].map(([id,name,team,year,pick,slug,position,height,nbaTeam,nbaStatus,statusSource])=>({id,name,team,year,pick,position,height,nbaTeam,nbaStatus,nbaSource:statusSource||(nbaStatus==='retired'?NBA_RETIREMENT_SOURCE:`https://www.nba.com/player/${id}/${slug}`),photo:`images/alumni/${id}.png`,source:`https://www.nba.com/player/${id}/${slug}`}));
+// Editorial recognition order for Chinese NBA fans (our judgment): browse order, star picker and game-card hints.
+const STAR_ORDER = ['893','201142','202681','1628369','203076','1628983','1626164','203954','201566','1629627','77142','165','1630162','1628973','1626157','203110','1628378','1630169','1629060','202690','201144','203114','201950','203897','1628368','1630178','1627750','1628389','1631094','1627742','203952','200746','201143','203078','1627734','1628374','203932','1629028','1628969','1628404','1629639','1630532','1628991','1631093','1641744','1642264','201988','1629631'];
+const fameRank = id => { const i = STAR_ORDER.indexOf(id); return i < 0 ? STAR_ORDER.length : i; };
+NBA_ALUMNI.sort((a, b) => fameRank(a.id) - fameRank(b.id));
+// Twelve stars for the bracket's "NBA stars" auto-fill: recognizable names across different schools.
+const STAR_PICKS = ['893','201142','202681','1628369','203076','1628983','203954','201566','1630162','77142','165','202690'];
+// 2027 lottery watch: ESPN's top 14 (Jeremy Woo big board, November 5, 2026). Board ranks, not a mock draft.
+// team is the school's id in the 2026 demo field, or null for players outside college basketball.
 const DRAFT_SOURCE='https://abc11.com/post/2027-nba-draft-big-board-rankings-top-100-prospects/20017483/';
 const DRAFT_WATCH = [
-  ['Tyran Stokes','E4',1],['Bruce Branch III','W6',3],['Jordan Smith Jr.','W4',4],
-  ['Caleb Holt','W1',5],['Quentin Coleman','S3',6],['Motiejus Krivas','W1',7],
-  ['Patrick Ngongba II','E1',10],['Austin Goosby','W11',13],['Malachi Moreno','M7',14]
-].map(([name,team,rank])=>({name,team,rank,year:2027,asOf:'November 5, 2026',source:DRAFT_SOURCE}));
+  [1,'Tyran Stokes','SF/PG','Kansas','Freshman','E4'],[2,'Stefan Joksimovic','PG','Baskonia','Pro club in Spain',null],
+  [3,'Bruce Branch III','SG/SF','BYU','Freshman','W6'],[4,'Jordan Smith Jr.','SG/PG','Arkansas','Freshman','W4'],
+  [5,'Caleb Holt','SG/PG','Arizona','Freshman','W1'],[6,'Quentin Coleman','SG/PG','Illinois','Freshman','S3'],
+  [7,'Motiejus Krivas','C','Arizona','Senior','W1'],[8,'Braylon Mullins','SG','UConn','Sophomore','E2'],
+  [9,'Thomas Haugh','SF/PF','Florida','Senior','S1'],[10,'Patrick Ngongba II','C','Duke','Junior','E1'],
+  [11,'Ivan Kharchenkov','SF','Arizona','Sophomore','W1'],[12,'Obinna Ekezie Jr.','C','Louisville','Freshman','E6'],
+  [13,'Austin Goosby','SG/PG','Texas','Freshman','W11'],[14,'Malachi Moreno','C','Kentucky','Sophomore','M7']
+].map(([rank,name,position,club,level,team])=>({rank,name,position,club,level,team,year:2027,asOf:'November 5, 2026',source:DRAFT_SOURCE}));
+// 2026 first round: picks whose college was in the 2026 field (Basketball Reference). Team runs come from js/history-data.js.
+const DRAFT_2026_SOURCE='https://www.basketball-reference.com/draft/NBA_2026.html';
+const FIRST_ROUND_2026 = [
+  [1,'AJ Dybantsa','W6'],[2,'Darryn Peterson','E4'],[3,'Cameron Boozer','E1'],[4,'Caleb Wilson','S6'],[5,'Keaton Wagler','S3'],
+  [6,'Mikel Brown Jr.','E6'],[7,'Darius Acuff Jr.','W4'],[8,'Kingston Flemings','S2'],[9,'Morez Johnson Jr.','M1'],[10,'Brayden Burries','W1'],
+  [11,'Yaxel Lendeborg','M1'],[12,'Aday Mara','M1'],[13,'Nate Ament','M6'],[15,'Dailyn Swain','W11'],[16,'Bennett Stirtz','S9'],
+  [18,'Christian Anderson Jr.','M5'],[19,'Allen Graves','M10'],[20,'Jayden Quaintance','M7'],[22,'Labaron Philon Jr.','M4'],[23,'Zuby Ejiofor','E5'],
+  [26,'Tarris Reed Jr.','E2'],[27,'Chris Cenac Jr.','S2'],[28,'Joshua Jefferson','M2'],[29,'Alex Karaban','E2'],[30,'Koa Peat','W1']
+].map(([pick,name,team])=>({pick,name,team,year:2026,source:DRAFT_2026_SOURCE}));
 function nbaTeamLabel(player) { return player.nbaStatus==='retired'?'Retired':player.nbaTeam||'No NBA team listed'; }
 function schoolConnections(team) { return {alumni:NBA_ALUMNI.filter(p=>p.team===team),prospects:DRAFT_WATCH.filter(p=>p.team===team)}; }
+function alumniHint(team, n = 2) { return NBA_ALUMNI.filter(p => p.team === team).slice(0, n).map(p => p.name); }
 function filterConnections(players,schools,school='all',query='') {
   const normalize=value=>value.normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
   const needle=normalize(query),aliases={E2:'Connecticut UConn',S6:'UNC North Carolina',E3:'MSU Michigan State'};
-  return players.filter(p=>(school==='all'||p.team===school)&&normalize(p.name+' '+schools[p.team].name+' '+(p.nbaTeam||'')+' '+(aliases[p.team]||'')).includes(needle));
+  return players.filter(p=>(school==='all'||p.team===school)&&normalize(p.name+' '+(schools[p.team]?.name||p.club||'')+' '+(p.nbaTeam||'')+' '+(aliases[p.team]||'')).includes(needle));
 }
-if(typeof module!=='undefined'&&module.exports)module.exports={NBA_ALUMNI,DRAFT_WATCH,NBA_TEAM_AS_OF,nbaTeamLabel,schoolConnections,filterConnections};
+if(typeof module!=='undefined'&&module.exports)module.exports={NBA_ALUMNI,DRAFT_WATCH,FIRST_ROUND_2026,STAR_ORDER,STAR_PICKS,NBA_TEAM_AS_OF,nbaTeamLabel,schoolConnections,alumniHint,filterConnections};
