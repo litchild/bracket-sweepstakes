@@ -53,8 +53,8 @@ async function pilotEvent(event) {
   finally {sendingEvents.delete(event);}
 }
 function recordProgress(count) {
-  if(count)pilotEvent('start');
-  if(count===63)pilotEvent('complete');
+  if(count){pilotEvent('start');track('start','bracket');}
+  if(count===63){pilotEvent('complete');track('complete','bracket');}
 }
 function renderPilotBoard() {
   $('boardProgress').textContent=pilot.scored+' / 63';
@@ -91,7 +91,7 @@ function initPilot(){
       $('entryError').textContent=error.message==='closed'?'The entry deadline has passed.':error.message==='name'?'Use a nickname of 1 to 32 characters.':'Could not save. Check your connection and try again.';
     } finally {S.busy=false;submit.disabled=false;renderBar();}
   });
-  refreshPilot();pilotEvent('visit');recordProgress(countPicks(S.picks));
+  refreshPilot();trackVisit();track('tab','bracket');pilotEvent('visit');recordProgress(countPicks(S.picks));
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshPilot();});
   setInterval(()=>{if(!document.hidden && S.tab==='standings')refreshPilot();},45000);
   const untilClose=Date.parse(pilot.closesAt)-Date.now();

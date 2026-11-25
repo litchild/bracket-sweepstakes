@@ -94,7 +94,7 @@ function nextRound(win, rng) {
   return { winners: out, round: r };
 }
 const B64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_";
-const RCODE = { east: "e", south: "s", west: "w", midwest: "m", cn: "c" };
+const RCODE = { east: "e", south: "s", west: "w", midwest: "m", cn: "c", star: "n" };
 function packBits(bits) { let out = ""; for (let i = 0; i < bits.length; i += 6) out += B64[parseInt((bits.slice(i, i + 6) + "00000").slice(0, 6), 2)]; return out; }
 function unpackBits(str) { let bits = ""; for (const ch of str) bits += Math.max(0, B64.indexOf(ch)).toString(2).padStart(6, "0"); return bits.slice(0, 63); }
 function packSim(root, picks) { return (RCODE[root] || "x") + packBits(encode(picks)); }

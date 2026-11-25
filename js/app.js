@@ -65,6 +65,7 @@ function helperSummary() {
 }
 function fillWith(root, cnTeam, star) {
   if (locked()) return;
+  track("fill",root || "seed");
   const team = root === "cn" || root === "star";
   S.root = root; S.cnTeam = team ? cnTeam : null; S.star = root === "star" ? star : null;
   S.mode = root === "cn" ? "cn" : root === "star" ? "star" : root ? "region" : "seed";
@@ -329,4 +330,3 @@ document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () =>
 initGuide();
 renderAll();
 initPilot();
-

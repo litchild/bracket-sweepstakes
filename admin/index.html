@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Entries dashboard · Bracket Sweepstakes</title>
+<link rel="stylesheet" href="admin.css?v=1">
+</head>
+<body>
+<header class="top">
+  <div class="wrap top-in">
+    <div><p class="kicker">Bracket Sweepstakes</p><h1>Study archive &amp; traffic reports</h1><a href="/organizer/">Current friends pilot →</a></div>
+    <div class="top-actions" id="topActions" hidden>
+      <span class="muted" id="updated"></span>
+      <button class="btn ghost" type="button" id="refresh">Refresh</button>
+      <button class="btn ghost" type="button" id="signOut">Sign out</button>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="card login" id="login" aria-labelledby="loginTitle">
+    <h2 id="loginTitle">Sign in</h2>
+    <p class="sub">Use the admin password saved as <code>ADMIN_TOKEN</code> in the Netlify project settings.</p>
+    <form id="loginForm">
+      <label for="token">Admin password</label>
+      <div class="login-row"><input id="token" type="password" autocomplete="current-password" spellcheck="false"><button class="btn red" type="submit">Open dashboard</button></div>
+    </form>
+    <p class="msg" id="loginMsg" role="status"></p>
+  </section>
+
+  <div id="dash" hidden>
+    <p class="scope" id="scope"></p>
+    <section class="kpis" id="kpis" aria-label="Totals"></section>
+
+    <section class="grid two" aria-label="Daily activity">
+      <div class="card"><h2>Visitors per day</h2><p class="sub">Unique devices each day, last 30 days</p><div class="cols" id="chartVisitors"></div></div>
+      <div class="card"><h2>Brackets entered per day</h2><p class="sub">New entries each day, last 30 days</p><div class="cols" id="chartEntries"></div></div>
+    </section>
+    <details class="card table-view"><summary>Daily numbers as a table</summary><div class="table-wrap"><table id="dailyTable"></table></div><button class="btn ghost" type="button" id="dailyCsv">Download daily CSV</button></details>
+
+    <section class="card" aria-labelledby="funnelTitle">
+      <h2 id="funnelTitle">From visit to entry</h2>
+      <p class="sub">Devices that reached each step, as a share of all visitors. A device that enters several pass-around brackets counts once here.</p>
+      <div class="meters" id="funnel"></div>
+    </section>
+
+    <section class="grid three" aria-label="Where visitors go">
+      <div class="card"><h2>Sections opened</h2><p class="sub">Share of visitors</p><div class="meters" id="tabs"></div></div>
+      <div class="card"><h2>Discover tabs</h2><p class="sub">Share of visitors</p><div class="meters" id="discover"></div></div>
+      <div class="card"><h2>Help me choose</h2><p class="sub">Auto-fills used</p><div class="meters" id="fills"></div></div>
+      <div class="card"><h2>How they arrived</h2><p class="sub">Add <code>?src=name</code> to a link or QR code to track it</p><div class="meters" id="sources"></div></div>
+      <div class="card"><h2>Devices</h2><p class="sub">By screen width</p><div class="meters" id="devices"></div></div>
+      <div class="card"><h2>How brackets were made</h2><p class="sub">Share of entries</p><div class="meters" id="rooting"></div></div>
+    </section>
+
+    <section class="card" aria-labelledby="champTitle"><h2 id="champTitle">Champion picks</h2><p class="sub">Share of entries, top 10</p><div class="meters" id="champions"></div></section>
+
+    <section class="card" aria-labelledby="entriesTitle">
+      <div class="card-head"><h2 id="entriesTitle">Entries</h2>
+        <div class="toolbar">
+          <input id="search" type="search" placeholder="Search nicknames" aria-label="Search nicknames">
+          <button class="btn ghost" type="button" id="entriesCsv">Download CSV</button>
+          <button class="btn ghost danger" type="button" id="deleteSel" disabled>Delete selected</button>
+        </div>
+      </div>
+      <p class="sub" id="entriesSub"></p>
+      <div class="table-wrap"><table id="entries"></table></div>
+      <button class="btn ghost" type="button" id="moreEntries" hidden>Show all entries</button>
+      <p class="msg" id="entriesMsg" role="status"></p>
+    </section>
+
+    <section class="card" aria-labelledby="resultsTitle">
+      <h2 id="resultsTitle">Results</h2>
+      <p class="sub" id="resultsSub"></p>
+      <p class="warn">Any result locks every bracket on the website. Reset all results to reopen entries.</p>
+      <div class="row"><button class="btn red" type="button" id="simulate">Simulate next round</button><button class="btn ghost danger" type="button" id="resetResults">Reset all results</button></div>
+      <h3>Record a real result</h3>
+      <p class="sub">Tap the winner of a finished game. Later games appear once both teams are known.</p>
+      <div class="next-games" id="nextGames"></div>
+      <details class="recorded"><summary id="recordedSum">Games with results</summary><div id="recorded"></div></details>
+      <p class="msg" id="resultsMsg" role="status"></p>
+    </section>
+
+    <section class="card" aria-labelledby="dataTitle">
+      <h2 id="dataTitle">Test data</h2>
+      <p class="sub">Before launch, clear your team’s test visits so the counts start from zero. Entries stay. To remove test entries, select them in the table above.</p>
+      <button class="btn ghost danger" type="button" id="clearVisits">Clear visit data</button>
+      <p class="msg" id="dataMsg" role="status"></p>
+    </section>
+  </div>
+</main>
+<div class="tip" id="tip" role="status" hidden></div>
+<script src="../js/logic.js?v=live-entries"></script>
+<script src="admin.js?v=1"></script>
+</body>
+</html>

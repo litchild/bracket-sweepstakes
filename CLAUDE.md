@@ -17,7 +17,8 @@ site omits Bilibili, ESPN and NYU branding. The native development app is a sepa
 Student concept for NYU Stern's Experience Studio | ESPN China course (fall 2026), built by Ever Chin with teammates.
 The pitch is a free March Madness bracket challenge for Chinese basketball fans, streamed free on Bilibili, with a
 prize capped at 50,000 RMB (China's lottery-style prize cap under the Anti-Unfair Competition Law). This repo is the
-working prototype shown to classmates and the professor. It is a demo, not a live contest.
+working prototype shown to classmates and the professor. Since November 25, 2026 it records real entries and visit
+counts for an NYU class test: no prize is paid (see Storage and `docs/backend.md`).
 
 **Read `docs/pitch-context.md` before changing copy, content or features.** It summarizes the pitch deck, the
 teammates' regional pitch, the prize options, precedents, promotion plan and the fan persona (a Chinese NBA fan who
@@ -25,8 +26,12 @@ knows nothing about March Madness or brackets). Put new source material from the
 
 ## Run, test, deploy
 
-- Run: open `index.html` in a browser, or `npm start` to serve the folder locally.
-- Test: `npm test` (Node's built-in test runner; no dependencies). Run it after any change to `js/logic.js`.
+- Run: `npm start` (`scripts/dev-server.mjs`) serves the site with a working `/api` at http://localhost:8888/ and
+  the dashboard at `/admin/` (password `local-admin` unless `ADMIN_TOKEN` is set). Dev data lives in `.data/`
+  (git-ignored). Opening `index.html` from disk still works with the browser-only demo backend.
+- Test: `npm test` (Node's built-in test runner) covers the bracket rules and the API (`tests/api.test.mjs`, in-memory
+  store). Run it after any change to `js/logic.js` or `netlify/lib/api.mjs`. Run `npm install` once for
+  `@netlify/blobs`, the only dependency (used by the Netlify Function only).
 - WeChat development: import `wechat/project.config.json` in WeChat Developer Tools using a test account.
   The user requested a development version first, without a registered AppID. See `wechat/README.md` for the
   import guide, native verification limit, preview and media setup. `wechat/miniprogram/` is the native app root.
@@ -35,7 +40,12 @@ knows nothing about March Madness or brackets). Put new source material from the
   `bracket-sweepstakes`, connected to `litchild/bracket-sweepstakes`). The user explicitly requested on November 15,
   2026 that future changes update this existing GitHub-connected project and preserve its URL. Work on a branch,
   open a PR, and merge the approved update to `main` so Netlify deploys the repository root automatically
-  (`netlify.toml`, no build step). Verify the resulting deployment. Do not create another Netlify project.
+  (`netlify.toml`, no build step; Netlify installs `@netlify/blobs` and bundles `netlify/functions/`). Verify the
+  resulting deployment, including `/api/state`. Do not create another Netlify project.
+- Backend: `/api/*` is a Netlify Function on Netlify Blobs, on the same domain as the site, so it loads wherever the
+  site loads (no third-party database, which may be blocked in mainland China). Production uses the Blobs store
+  `bracket-live`; deploy previews and branch deploys use `bracket-preview`. The dashboard at `/admin/` needs the
+  `ADMIN_TOKEN` environment variable in the Netlify project settings; never commit it. Details: `docs/backend.md`.
 - The November 13 manual review copy at https://timely-klepon-8e4d37.netlify.app/ is a separate, unlinked project.
   Keep it as an old review copy; use the original project for subsequent website updates. Exclude docs, tests,
   repository metadata and the WeChat development project from the public site.
@@ -50,7 +60,14 @@ knows nothing about March Madness or brackets). Put new source material from the
 - `css/styles.css`: all styles, design tokens on `:root`, dark mode, self-hosted `@font-face` rules.
 - `js/logic.js`: pure logic (team data, game tree, auto-fill rules, scoring, compact storage). Loaded as a classic
   script in the browser (globals) and via `require()` in tests. Keep it free of DOM code.
-- `js/app.js`: UI, rendering and storage. Depends on globals from `logic.js`.
+- `js/app.js`: UI, rendering and storage. Depends on globals from `logic.js` and `remote.js`.
+- `js/remote.js`: `remoteBackend()` (entries and results through `/api`, polled every 30 seconds while visible) and
+  `track()` (first-party visit events). Used on http(s); `file://` keeps `localBackend()`.
+- `netlify/functions/api.mjs`: the Netlify Function wrapper. `netlify/lib/api.mjs`: every route, validation and the
+  dashboard summary, written against a small store interface. `netlify/lib/memory-store.mjs`: the store for tests
+  and the dev server. `scripts/dev-server.mjs`: `npm start`.
+- `admin/`: the password-protected entries dashboard (`index.html`, `admin.js`, `admin.css`). It loads
+  `../js/logic.js` read-only and is marked noindex.
 - `js/guide.js`: first-visit journey, interactive home-region map and team profile dialogs.
 - `js/discovery-data.js` and `js/discovery.js`: NBA alumni (with a recognition order and the 12 star picks), the
   2027 lottery watch, the 2026 first round from this bracket, alumni face-offs, per-school discovery and
@@ -71,14 +88,16 @@ knows nothing about March Madness or brackets). Put new source material from the
 - `images/brand/`: ESPN and Bilibili logo SVGs (Wikimedia Commons, editor metadata removed) for the hero link only.
 - `images/hero/`: two local WebP sizes of the owner-supplied tournament banner.
 - `fonts/`: Barlow and Barlow Condensed woff2 files (SIL OFL, see `fonts/OFL.txt`).
-- `tests/logic.test.js`: rule and data checks.
+- `tests/logic.test.js`: rule and data checks. `tests/api.test.mjs`: API checks.
 - `docs/`: project background, not part of the website.
 - `404.html`: Netlify's not-found page.
 - `wechat/`: native WXML/WXSS Mini Program, shared-data sync scripts, controller tests and a browser review adapter.
   Keep this directory off the public website with the `/wechat/*` 404 rule. Manual Netlify uploads exclude it.
 - `AGENTS.md`: short pointer to this file for other coding tools (Codex reads `AGENTS.md`).
-- `netlify.toml`: publish settings, plus rules that keep `docs/`, `tests/`, `CLAUDE.md`, `AGENTS.md`, `README.md` and
-  `package.json` off the public site. Add any new non-site file or folder to those rules.
+- `netlify.toml`: publish settings, the functions folder, Node 22, a noindex header for `/admin/*`, plus rules that keep
+  `docs/`, `tests/`, `netlify/`, `scripts/`, `node_modules/`, `CLAUDE.md`, `AGENTS.md`, `README.md`, `package.json`
+  and `package-lock.json` off the public site. Add any new non-site file or folder to those rules (and to `HIDDEN`
+  in `scripts/dev-server.mjs`).
 
 ## Hard constraints
 
@@ -94,7 +113,11 @@ knows nothing about March Madness or brackets). Put new source material from the
   in mainland China, so the site stays on Netlify. See `docs/history-sources.md` for video and archive sources.
 - The header links the local ESPN and Bilibili logos to Bilibili. Keep them in this location only.
   The user requested that the public website omit the student and affiliation labels and demo wording.
-  Keep the scope of browser-local entries, simulated results and the proposed prize clear in plain language.
+  Keep the scope of recorded entries, simulated results and the proposed prize clear in plain language. The user
+  chose (November 25, 2026) a class test with no prize: the nickname step at Enter, the pass-around card, Learn's
+  Rules and the footer say "NYU class test. Entries are recorded for our study; no prize is paid." Keep the 50,000 RMB
+  hero, entry bar tag and Learn step 4 as they are. The footer also states what is saved: nickname, picks and a
+  random device ID that counts visits, with no contact details.
 - **UI copy in English** (the audience is English-speaking), with Chinese characters for region names and the 中 badge.
 - **Original color palette.** Preserve the original repository's red, black, gray and white surfaces, cyan pick
   accents, and home-region colors in light and dark modes. New sections and illustrations should fit that palette.
@@ -109,7 +132,8 @@ knows nothing about March Madness or brackets). Put new source material from the
   The bracket completion meter shows actual picks out of 63; its moving ball is decorative. A short manual-pick
   confirmation animates only the selected team, never changes picks or scoring, and respects reduced motion.
   Hover effects must have keyboard focus equivalents and must never be required to access information.
-- Use `textContent` for anything a person types (pass-around names).
+- Use `textContent` for anything a person types (nicknames, pass-around names), on the site and in the dashboard.
+- Entries collect a nickname only (the user's choice). Never add contact fields, IP logging or third-party analytics.
 
 ## Data
 
@@ -266,9 +290,13 @@ knows nothing about March Madness or brackets). Put new source material from the
   columns. Preserve adjacent-game ordering and source links. Historical results never populate current results.
 - Results (the former Standings tab, renamed November 25, 2026, with its leaderboard, podium and points removed):
   collapsed simulation controls, game results by round with upset tags, three counts (brackets entered, perfect brackets
-  left, games played) and the Chinese players tracker. The "Regions still alive" cards were removed. Label simulated
-  results and keep the browser-local scope visible.
-- Pass-around entries let several people enter on one device during class.
+  left, games played) and the Chinese players tracker. The "Regions still alive" cards were removed. On the website,
+  results come from the dashboard and are labeled "Simulated results" or "Results entered by our team"; the
+  simulation controls appear only in the browser-only demo (`file://`).
+- Pass-around entries let several people enter on one device during class. On the website each one is recorded as
+  its own entry with the nickname typed there; the card counts entries made on this device (`bs-guests`).
+- Entering on the website: a nickname dialog opens before the first entry from a device ("Choose a nickname", 24
+  characters max, the class-test line). Updates reuse it. Entries lock for everyone once any result exists.
 
 ## Storage
 
@@ -280,19 +308,30 @@ from `wechat/miniprogram/utils/videos.js`; no sources are configured yet. Keep t
 poster and copy-source/practice fallback. Do not insert YouTube iframes or a website wrapper. Never commit an
 AppSecret. The browser adapter is for review, not native compilation or a public Mini Program deployment.
 
-`js/app.js` uses `localBackend()`, which keeps everything in `localStorage` under `bs-local-db`, so each visitor sees
-only their own entries plus simulated fans. Documents:
+On the website (http/https), `js/app.js` uses `remoteBackend()` from `js/remote.js`. It keeps the
+`doc().get/set/delete/onSnapshot` and `collection().limit().onSnapshot` shape over the site's own API:
+
+- `GET /api/state`: every entry's packed picks (no nicknames) plus `{ winners, source }`.
+- `POST /api/entries`: `{ vid, name, pack, cnTeam, star, mode, guest, id?, secret? }`. A new entry returns an id and
+  an edit secret, kept in `localStorage` under `bs-entry` (`{ id, secret, name }`); the server stores only its
+  SHA-256 hash. `GET /api/entry?id=` with the `x-entry-secret` header reads it back on load.
+- `POST /api/events`: `{ vid, events: [{ type, detail }] }`, types `visit src tab discover start fill complete`. The
+  server adds `enter` and `update`. `vid` is a random 16-character id under `bs-vid`; `?src=name` on a link or QR
+  code becomes the `src` event.
+- `/api/admin/*` (Bearer `ADMIN_TOKEN`): `summary`, `results` (simulate, record, undo, reset), `delete-entries`,
+  `clear-events`. Blobs keys and limits are documented in `netlify/lib/api.mjs` and `docs/backend.md`.
+
+Opened from disk, `localBackend()` keeps everything in `localStorage` under `bs-local-db`, so each visitor sees only
+their own entries plus simulated fans. Documents:
 
 - `entries/<id>`: `{ picks: {gameId: teamId}, root: "east"|"south"|"west"|"midwest"|"cn"|"star"|"", cnTeam, star,
   mode, updatedAt, name?, guest? }`. `cnTeam` is the chosen team for the Chinese-player and NBA-star routes; `star` is
   the NBA player id for the star route. Pass-around entries use ids starting `g-`.
 - `state/results`: `{ winners: {gameId: teamId} }`.
-- `state/sims`: `{ list: [packed] }`, each packed string is a root code (`e s w m c x`) plus 11 base64 characters
-  holding the 63 pick bits in `GAMES` order.
+- `state/sims`: `{ list: [packed] }`, each packed string is a root code (`e s w m c n x`, `n` = NBA star) plus 11
+  base64 characters holding the 63 pick bits in `GAMES` order. The API uses the same packed format.
 
-To share entries between visitors, swap `localBackend()` for a hosted database with the same
-`doc().get/set/delete/onSnapshot` and `collection().limit().onSnapshot` shape. Check that the service loads in
-mainland China without a VPN before choosing it.
+Any replacement backend must load in mainland China without a VPN; same-origin Netlify Functions do.
 
 The draft bracket is kept separately in `localStorage` under `bs-draft` (same fields as an entry, including `star`). Journey completion uses `bs-onboarding`.
 The former `bs-intro` dismissal is no longer used. Validated practice choices use `bs-practice`, separately from
@@ -301,8 +340,8 @@ Legacy practice choices retain their progress. XP is derived: 10 per game tried 
 bracket, and 10 per correct quiz answer (30 total). Replaying never adds XP. Badges are First pick, Bracket builder,
 and March ready (all ten challenges). Levels are Rookie, Playmaker (40 XP), and Bracket captain (90 XP).
 Mini semifinal changes clear any incompatible champion pick. Mini replays keep the earned completion badge.
-Practice XP is clearly labeled, never affects contest scoring, and saves only on this device. No shared signup or
-hosted leaderboard service is configured.
+Practice XP is clearly labeled, never affects contest scoring, and saves only on this device. Practice is not sent
+to the API; there is no signup or hosted leaderboard.
 
 ## Open items
 
@@ -311,5 +350,8 @@ hosted leaderboard service is configured.
 - The teammates' pitch lists Houran Dan at Hawaii Pacific. Sina lists the University of Hawaii (transfer from
   Seattle University). The site uses Hawaii.
 - "Picks lock March 18" and the 2026 field are placeholders until the 2027 bracket is set.
-- Shared entries across visitors need a hosted database (see Storage).
+- Set `ADMIN_TOKEN` in the Netlify project (Site configuration > Environment variables), then redeploy, to open
+  `/admin/`. Clear test visits and delete test entries from the dashboard before the class test starts.
+- Netlify Blobs listing reads every event key for the dashboard. That is fine for a class test (tens of thousands of
+  events); a public launch would need daily rollups.
 - An older copy of this page lives as a claude.ai artifact with its own shared entries. This repo is now the source of truth.

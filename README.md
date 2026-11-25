@@ -8,8 +8,12 @@ Not affiliated with or endorsed by ESPN, Bilibili or the NCAA.
 
 - [Website](https://bracket-sweepstakes.netlify.app/). Use this existing GitHub-connected Netlify project for updates.
   The separate November 13 manual review copy is at https://timely-klepon-8e4d37.netlify.app/.
-- Open `index.html` in a browser to try it.
-- `npm test` checks the bracket rules.
+- The website records real entries (nickname and picks) and counts visits for an NYU class test; no prize is paid.
+  The team dashboard is at `/admin/` and needs the `ADMIN_TOKEN` environment variable in Netlify. See
+  [docs/backend.md](docs/backend.md).
+- `npm install`, then `npm start` runs the site with its API at http://localhost:8888/. Opening `index.html` from disk
+  still works with browser-only storage.
+- `npm test` checks the bracket rules and the API.
 - First-time visitors start with How it works and a practice pick, then explore school home regions and tournament
   groups before building their bracket one round at a time. Returning visitors resume their picks.
 - All 64 school profiles and logos load locally. Profiles include archived season records and optional external

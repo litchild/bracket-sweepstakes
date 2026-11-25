@@ -5,3 +5,4 @@ wechat/.preview-cache/
 
 dist/
 server/deploy-store.json
+.data/
