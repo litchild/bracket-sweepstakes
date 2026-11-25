@@ -424,3 +424,63 @@ Utah Jazz|犹他爵士
 San Antonio Spurs|圣安东尼奥马刺
 Portland Trail Blazers|波特兰开拓者
 `.trim().split('\n').map(line=>line.split('|'))));
+Object.assign(ZH_COPY,Object.fromEntries(`
+Choose both semifinal winners to set the final.|先选出两场半决赛的胜者，再预测决赛。
+Kentucky was a No. 3 seed. Oakland was No. 14. A smaller seed number means a higher rank.|肯塔基是3号种子，奥克兰是14号。数字越小，排名越高。
+Oakland’s Jack Gohlke made 10 three-pointers. Hot shooting helped the No. 14 seed beat Kentucky, 80–76.|奥克兰的杰克·戈尔克投进10记三分，帮助14号种子以80比76爆冷击败肯塔基。
+A seed is a ranking, not a promise. A lower-ranked winner is an upset.|种子号代表赛前排名。低排名球队击败强队，就叫「爆冷」。
+Purdue was a No. 1 seed. FDU was No. 16. Choose who you think advanced.|普渡是1号种子，费尔利·狄金森是16号。你觉得谁晋级了？
+FDU held Purdue to 58 points and won by five. Purdue’s tournament ended after this single game.|费尔利·狄金森只让普渡得到58分，以5分优势晋级。普渡就此出局。
+Every round is knockout basketball. Your winner moves forward; the other team goes home.|每轮都是淘汰赛。胜者晋级，败者结束本届征程。
+Florida and Houston both won their regions. Each entered the tournament as a No. 1 seed.|佛罗里达和休斯敦都是赛区头号种子，也都拿到了赛区冠军。
+Florida rallied from 12 points down and forced turnovers on Houston’s final two possessions to win, 65–63.|佛罗里达一度落后12分，最后两次防守造成休斯敦失误，以65比63逆转夺冠。
+Seeds belong to regions, so two No. 1 seeds can meet. Six straight wins make a champion.|每个赛区都有1号种子，所以两支头号种子也会交手。从64强起连赢六场即可夺冠。
+Duke was a No. 1 seed. UConn was No. 2. The winner would be one of the last four teams.|杜克是1号种子，康涅狄格是2号种子。胜者将闯进全国四强。
+UConn won 73–72 on Braylon Mullins’ late three-pointer. That one shot turned an Elite Eight game into a Final Four place.|布雷隆·穆林斯在终场前投进三分，帮助康涅狄格以73比72险胜，锁定四强席位。
+The Elite Eight has eight teams. Its four winners reach the Final Four.|八强赛有八支球队，获胜的四支球队晋级全国四强。
+Florida won the 2025 title and was a No. 1 seed in 2026. Iowa was No. 9.|佛罗里达是2025年的冠军，也是2026年的头号种子。爱荷华则是9号种子。
+Alvaro Folgueiras hit a three with 4.5 seconds left, putting Iowa ahead for a 73–72 win.|终场前4.5秒，阿尔瓦罗·福尔盖拉斯命中三分，爱荷华以73比72取胜。
+Every tournament starts fresh. Last year’s title cannot save a team from one loss.|每届赛事都从头开始，卫冕冠军也会因为一场失利而出局。
+Michigan and UConn had each won five games to reach this final. One more win would earn the title.|密歇根与康涅狄格各自连赢五场闯入决赛，距离冠军都只差一胜。
+Michigan held UConn to 30.9% shooting. Late free throws sealed the 69–63 championship win.|密歇根将对手的投篮命中率压到30.9%，并在最后时刻靠罚球锁定69比63的胜利。
+Your champion needs a path through every round. Pick the team all the way to the final.|想让一支球队夺冠，就要从首轮起一路选它晋级。
+From Beijing to Purdue, via Georgetown Prep. Represented China at the 2025 U19 World Cup.|从北京到乔治城预备学校，再到普渡大学。他曾代表中国参加2025年U19世界杯。
+Played for China at the U17 and U19 World Cups. Joins Louisville from Veritas Academy in California.|曾代表中国参加U17和U19世界杯，从加州维里塔斯学院加盟路易斯维尔大学。
+A former Chinese high-school national champion. Joins Hawaii after two seasons at Seattle.|曾获中国高中篮球全国冠军。在西雅图大学效力两个赛季后加盟夏威夷大学。
+A Beijing native who began his college career at Manhattan. Now a senior with the LIU Sharks.|来自北京，在曼哈顿大学开启大学篮球生涯，现为长岛大学大四球员。
+all brackets|全部参赛预测
+2025 FIBA U19 World Cup|2025年国际篮联U19世界杯
+New to March Madness?|初识疯狂三月？
+School profile|学校资料
+Practice experience|练习经验值
+NBA team source|NBA球队资料
+Seeds & upsets|种子与冷门
+Win or go home|单场淘汰
+Pick a champion|预测冠军
+The regional final|赛区决赛
+A fresh start|重新出发
+The 2026 title|2026年总冠军
+Shared entries unavailable here|暂时无法读取参赛记录
+Unavailable|暂无数据
+Bracket filled. Edit any pick below.|预测已生成，可逐场修改。
+Rounds played|已评分轮次
+Be the first to enter.|快来第一个参加吧。
+`.trim().split('\n').map(line=>line.split('|'))));
+Object.assign(ZH_COPY,Object.fromEntries(`
+Jayson Tatum|杰森·塔图姆
+Michael Jordan|迈克尔·乔丹
+Kevin Durant|凯文·杜兰特
+Kyrie Irving|凯里·欧文
+Devin Booker|德文·布克
+Shai Gilgeous-Alexander|谢伊·吉尔杰斯-亚历山大
+Anthony Davis|安东尼·戴维斯
+Magic Johnson|魔术师约翰逊
+Hakeem Olajuwon|哈基姆·奥拉朱旺
+Jamal Murray|贾马尔·默里
+Paolo Banchero|保罗·班凯罗
+Zion Williamson|锡安·威廉森
+Sinan Huan|郇斯楠
+Zhang Boyuan|张博源
+Xinyi Li|李信仪
+Houran Dan|淡厚然
+`.trim().split('\n').map(line=>line.split('|'))));

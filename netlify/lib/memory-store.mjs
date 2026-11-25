@@ -1,6 +1,7 @@
 // In-memory stand-in for a Netlify Blobs store, used by the tests and the local dev server.
 // Pass a file path to keep the data between dev-server restarts.
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import {createHash} from "node:crypto";
 import { dirname } from "node:path";
 
 export function memoryStore(file) {
@@ -11,11 +12,17 @@ export function memoryStore(file) {
     timer = setTimeout(() => { timer = null; mkdirSync(dirname(file), { recursive: true }); writeFileSync(file, JSON.stringify(Object.fromEntries(data))); }, 100);
   };
   const page = keys => ({ blobs: keys.map(key => ({ key, etag: "" })), directories: [] });
+  const etag = key => data.has(key) ? createHash("sha256").update(data.get(key)).digest("hex") : null;
+  const put = (key, text, opts={}) => {
+    if ((opts.onlyIfNew && data.has(key)) || (opts.onlyIfMatch && opts.onlyIfMatch!==etag(key))) return {modified:false};
+    data.set(key,text); save(); return {modified:true,etag:etag(key)};
+  };
   return {
     data,
     async get(key, opts) { if (!data.has(key)) return null; const v = data.get(key); return opts && opts.type === "json" ? JSON.parse(v) : v; },
-    async set(key, v) { data.set(key, String(v)); save(); },
-    async setJSON(key, v) { data.set(key, JSON.stringify(v)); save(); },
+    async getWithMetadata(key, opts) { return data.has(key) ? {data:await this.get(key,opts),etag:etag(key)} : null; },
+    async set(key, v, opts) { return put(key,String(v),opts); },
+    async setJSON(key, v, opts) { return put(key,JSON.stringify(v),opts); },
     async delete(key) { data.delete(key); save(); },
     list({ prefix = "", paginate = false } = {}) {
       const keys = [...data.keys()].filter(k => k.startsWith(prefix)).sort();

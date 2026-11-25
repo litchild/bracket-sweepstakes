@@ -106,9 +106,9 @@ const FIRST_ROUND_2026 = [
 function nbaTeamLabel(player) { return player.nbaStatus==='retired'?'Retired':player.nbaTeam||'No NBA team listed'; }
 function schoolConnections(team) { return {alumni:NBA_ALUMNI.filter(p=>p.team===team),prospects:DRAFT_WATCH.filter(p=>p.team===team)}; }
 function alumniHint(team, n = 2) { return NBA_ALUMNI.filter(p => p.team === team).slice(0, n).map(p => p.name); }
-function filterConnections(players,schools,school='all',query='') {
-  const normalize=value=>value.normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]/g,'');
+function filterConnections(players,schools,school='all',query='',translations={}) {
+  const normalize=value=>value.normalize('NFKD').replace(/[\u0300-\u036f]/g,'').toLowerCase().replace(/[^\p{L}\p{N}]/gu,'');
   const needle=normalize(query),aliases={E2:'Connecticut UConn',S6:'UNC North Carolina',E3:'MSU Michigan State'};
-  return players.filter(p=>(school==='all'||p.team===school)&&normalize(p.name+' '+(schools[p.team]?.name||p.club||'')+' '+(p.nbaTeam||'')+' '+(aliases[p.team]||'')).includes(needle));
+  return players.filter(p=>(school==='all'||p.team===school)&&normalize(p.name+' '+(schools[p.team]?.name||p.club||'')+' '+(p.nbaTeam||'')+' '+(aliases[p.team]||'')+' '+(translations[p.name]||'')+' '+(translations[schools[p.team]?.name]||'')+' '+(translations[p.nbaTeam]||'')).includes(needle));
 }
 if(typeof module!=='undefined'&&module.exports)module.exports={NBA_ALUMNI,DRAFT_WATCH,FIRST_ROUND_2026,STAR_ORDER,STAR_PICKS,NBA_TEAM_AS_OF,nbaTeamLabel,schoolConnections,alumniHint,filterConnections};

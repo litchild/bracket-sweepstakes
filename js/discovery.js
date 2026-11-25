@@ -45,7 +45,7 @@ function showProspectProfile(name){
   words.append(el('p','kicker','2027 draft watch'),title,el('p','sub',`${p.position} · ${p.team?TEAMS[p.team].name:p.club} · ${p.level}`));if(p.team)hero.append(teamLogo(p.team));hero.append(words);body.append(hero);
   const board=el('div','prospect-board');board.append(el('strong','',`#${p.rank}`),el('span','','Prospect board'),el('small','',p.asOf));body.append(board,el('p','sub','A prospect board ranks the players an analyst expects NBA teams to want most. It is a projection that changes during the season, not the draft order.'));
   if(p.team)profileSchoolBridge(body,p.team);else body.append(el('p','sub',`${p.name} plays for ${p.club}, a professional club, so he is not in the college tournament.`));
-  body.append(discoveryLink('Read Jeremy Woo’s full prospect board',p.source),el('p','sub roster-note','Jeremy Woo · November 5, 2026. The bracket uses the 2026 tournament field as a stand-in for 2027.'));finishProfile();
+  body.append(el('p','sub roster-note','Jeremy Woo · November 5, 2026. The bracket uses the 2026 tournament field as a stand-in for 2027.'));finishProfile();
 }
 // NBA alumni face-off: up to five former players per school, faces in circles. A school-pride graphic, never a lineup.
 function faceoffPoster(a,b){
@@ -65,7 +65,7 @@ function renderNbaDiscovery(append=false){
   $('nbaScope').textContent=`${NBA_ALUMNI.length} NBA players from ${new Set(NBA_ALUMNI.map(p=>p.team)).size} schools in this bracket. Best-known names first.`;
   $('nbaTeamNote').textContent=`NBA teams checked ${NBA_TEAM_AS_OF}. A snapshot, not a live roster feed.`;
   for(const o of $('nbaSchool').options){const count=o.value==='all'?NBA_ALUMNI.length:schoolConnections(o.value).alumni.length;o.textContent=(o.value==='all'?'All schools':TEAMS[o.value].name)+(count?` · ${count}`:'');}
-  const players=filterConnections(NBA_ALUMNI,TEAMS,nbaSchool).filter(p=>!nbaQuery || filterConnections([p],TEAMS,nbaSchool,nbaQuery).length || [TEAMS[p.team].name,nbaTeamLabel(p)].some(v=>ZH_COPY[v]?.includes(nbaQuery))),shown=Math.min(nbaLimit,players.length);
+  const players=filterConnections(NBA_ALUMNI,TEAMS,nbaSchool,nbaQuery,ZH_COPY),shown=Math.min(nbaLimit,players.length);
   $('nbaCount').textContent=players.length?`Showing ${shown} of ${players.length} player${players.length===1?'':'s'}`:'No matching players';
   $('nbaMore').hidden=shown>=players.length;$('nbaMore').textContent=`Show ${Math.min(12,players.length-shown)} more players`;
   if(!players.length){const empty=el('div','card discovery-empty');empty.append(el('h4','','Try another name'),el('p','sub',nbaQuery?'Try a different name or clear the school filter.':'This school has no featured NBA alumni in this collection yet.'));

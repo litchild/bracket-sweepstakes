@@ -15,7 +15,7 @@ function draw(){
     const choices=cands(game,picks);
     choices.filter(Boolean).forEach(t=>select.add(new Option(TEAMS[t].name,t)));
     select.value=picks[game.id]||'';select.disabled=!choices.every(Boolean)||!!baseline.released[game.id];
-    select.onchange=()=>{picks=applyPick(picks,game.id,select.value);if(!select.value)delete picks[game.id];dirty=true;draw();};
+    select.onchange=()=>{picks=applyPick(picks,game.id,select.value);if(!select.value)delete picks[game.id];for(const next of GAMES){if(!cands(next,picks).every(Boolean))delete picks[next.id];}dirty=true;draw();};
     line.append(select);host.append(line);
   }
   byId('progress').textContent=Object.keys(picks).length+' / 63 winners selected · '+Object.keys(baseline.released).length+' scored';

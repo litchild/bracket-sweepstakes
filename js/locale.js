@@ -2,6 +2,7 @@
 const languageLinks=document.querySelectorAll('.lang-switch a');
 let useChinese=new URLSearchParams(location.search).get('lang')!=='en';
 const originals=new WeakMap();
+const initialEnglish = Object.fromEntries(Object.entries(ZH_COPY).map(([en,zh])=>[zh,en]));
 const attributes=['aria-label','aria-valuetext','placeholder','title','alt'];
 const formats=[
   [/^(\d+) of 63 (?:games )?picked$/, '已选 $1 / 63 场'],
@@ -52,7 +53,7 @@ function translateValue(node,field,current,set){
   let record=originals.get(node);
   if(!record){record={};originals.set(node,record);}
   const old=record[field];
-  const source=old && current===old.display ? old.source : current;
+  const source=old && current===old.display ? old.source : (initialEnglish[current.trim()] ? current.replace(current.trim(),initialEnglish[current.trim()]) : current);
   const display=useChinese?source.replace(/\S(?:[\s\S]*\S)?/,s=>chinese(s)):source;
   record[field]={source,display};if(display!==current)set(display);
 }
@@ -70,6 +71,8 @@ function syncLanguage(){
   document.documentElement.lang=useChinese?'zh-CN':'en-US';
   languageLinks.forEach(a=>a.setAttribute('aria-current',(a.lang==='zh-CN')===useChinese?'true':'false'));
   translateNode(document.documentElement);
+  const hand=document.querySelector('.court-art img');
+  if(hand)hand.src=useChinese?'images/your-turn-zh.svg':'images/your-turn.svg';
 }
 languageLinks.forEach(a=>a.addEventListener('click',e=>{
   e.preventDefault();useChinese=a.lang==='zh-CN';history.replaceState(null,'',a.href);syncLanguage();

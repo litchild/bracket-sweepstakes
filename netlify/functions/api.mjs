@@ -12,7 +12,7 @@ export default async (req, context) => {
   const env = globalThis.Netlify && globalThis.Netlify.env;
   const adminToken = (env && env.get("ADMIN_TOKEN")) || process.env.ADMIN_TOKEN || "";
   const token = (req.headers.get("authorization") || "").replace(/^Bearer /,"");
-  const matchesPilotKey = timingSafeEqual(createHash("sha256").update(token).digest(), Buffer.from(keyDigest,"hex"));
+  const matchesPilotKey = timingSafeEqual(createHash("sha256").update(token).digest(), env?.get("PILOT_ADMIN_TOKEN") ? createHash("sha256").update(env.get("PILOT_ADMIN_TOKEN")).digest() : Buffer.from(keyDigest,"hex"));
   return handle(req, { store, adminToken: matchesPilotKey ? token : adminToken });
 };
 
