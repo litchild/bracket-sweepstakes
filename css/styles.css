@@ -1104,6 +1104,13 @@ details.demo { display:block; padding:18px 24px; }details.demo > summary { curso
 .nba-card .alumni-face { border-width:3px; width:104px; height:104px; transition:transform .2s ease; }
 .nba-school-name { display:flex; align-items:center; gap:8px; }
 .nba-school-name .team-logo { width:26px; height:26px; }
+.nba-affiliation { display:flex; align-items:baseline; flex-wrap:wrap; gap:6px 10px; margin:0; padding:10px 12px; border-left:3px solid var(--blue); border-radius:0 6px 6px 0; background:var(--surface-2); font-size:15px; line-height:1.35; }
+.nba-affiliation > span { font-size:12px; font-weight:700; letter-spacing:.06em; color:var(--muted); }
+.nba-affiliation b { min-width:0; overflow-wrap:anywhere; }
+.nba-team-note { font-size:13px; }
+.nba-profile-affiliation { display:grid; gap:8px; }
+.nba-profile-affiliation .link { min-height:36px; text-align:left; justify-self:start; }
+.nba-profile-affiliation > .sub { font-size:13px; }
 .nba-card > .btn { background:#c91d29; color:#fff; }
 .nba-card:nth-child(3n+2) > .btn { background:#007ba7; }
 .alumni-profile-hero { border-bottom:2px solid var(--red); padding-bottom:22px; }

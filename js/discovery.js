@@ -7,7 +7,8 @@ function alumniPortrait(player){const wrap=el('span','alumni-face'),initials=el(
 function goSchoolGames(team){if($('teamDialog').open)$('teamDialog').close();S.br=TEAMS[team].br;S.round=1;navigateTo('bracket',false);renderBTabs();renderBracket();$('btabs').scrollIntoView({block:'start'});$('btabs').querySelector('[aria-selected="true"]')?.focus({preventScroll:true});}
 function schoolGamesButton(id){const b=el('button','btn',`Go to ${TEAMS[id].name}’s games`);b.type='button';b.addEventListener('click',()=>goSchoolGames(id));return b;}
 function openDiscovery(mode,school='all'){nbaSchool=school;nbaQuery='';nbaLimit=12;$('nbaSearch').value='';discoverMode=mode;renderDiscovery();navigateTo('explore');}
-function alumniRow(p){const b=el('button','connection-row');b.type='button';const words=el('span');words.append(el('b','',p.name),el('small','',`${p.year} NBA draft · Pick ${p.pick}`));b.append(alumniPortrait(p),words);b.setAttribute('aria-label',`View ${p.name} profile`);b.addEventListener('click',()=>showAlumniProfile(p.id));return b;}
+function alumniRow(p){const b=el('button','connection-row');b.type='button';const words=el('span');words.append(el('b','',p.name),el('small','',`NBA · ${nbaTeamLabel(p)}`));b.append(alumniPortrait(p),words);b.setAttribute('aria-label',`View ${p.name} profile`);b.addEventListener('click',()=>showAlumniProfile(p.id));return b;}
+function nbaAffiliation(p){const badge=el('p','nba-affiliation');badge.append(el('span','','NBA'),el('b','',nbaTeamLabel(p)));return badge;}
 function appendSchoolConnections(body,id){
   const data=schoolConnections(id),section=el('section','school-connections');section.append(el('h3','','NBA roots & draft watch'));
   const alumni=el('div','connection-list');alumni.append(el('p','kicker',`${data.alumni.length} featured NBA alumni`));
@@ -28,6 +29,7 @@ function showAlumniProfile(id){
   const p=NBA_ALUMNI.find(p=>p.id===id);if(!p)return;
   const body=prepareProfile(),hero=el('div','alumni-profile-hero'),words=el('div'),title=el('h2','',p.name);title.id='teamDialogTitle';
   words.append(el('p','kicker','NBA roots · Former college player'),title,el('p','',`${TEAMS[p.team].name} alumnus`));hero.append(alumniPortrait(p),words);body.append(hero);
+  const affiliation=el('section','nba-profile-affiliation');affiliation.append(nbaAffiliation(p),el('p','sub',`NBA status checked ${NBA_TEAM_AS_OF}`),discoveryLink(p.nbaSource.includes('/player/')?'NBA.com profile':p.nbaStatus==='retired'?'NBA retirement report':'NBA team source',p.nbaSource));body.append(affiliation);
   const facts=el('dl','player-facts alumni-facts');
   for(const [label,value] of [['Position',p.position],['Height',p.height]]){const f=el('div');f.append(el('dt','',label),el('dd','',value));facts.append(f);}body.append(facts);
   const path=el('section','alumni-path');path.append(el('h3','','College to the NBA'));
@@ -50,7 +52,7 @@ function faceoffPoster(a,b){
   const poster=el('div','alumni-poster');poster.append(el('p','kicker','NBA alumni face-off'),el('h4','',`${TEAMS[a].name} / ${TEAMS[b].name}`));
   const grid=el('div','alumni-matchup-grid');
   for(const id of [a,b]){const column=el('div','alumni-side');column.dataset.school=id;const head=el('div','alumni-side-head');head.append(teamLogo(id),el('b','',TEAMS[id].name));column.append(head);
-    NBA_ALUMNI.filter(p=>p.team===id).slice(0,5).forEach(p=>{const btn=el('button','alumni-person');btn.type='button';btn.setAttribute('aria-label',`View ${p.name} profile`);btn.append(alumniPortrait(p),el('span','',p.name));btn.addEventListener('click',()=>showAlumniProfile(p.id));column.append(btn);});column.append(schoolGamesButton(id));grid.append(column);}
+    NBA_ALUMNI.filter(p=>p.team===id).slice(0,5).forEach(p=>{const btn=el('button','alumni-person');btn.type='button';btn.setAttribute('aria-label',`View ${p.name} profile`);btn.title=`${p.name} · NBA: ${nbaTeamLabel(p)} · ${NBA_TEAM_AS_OF}`;btn.append(alumniPortrait(p),el('span','',p.name));btn.addEventListener('click',()=>showAlumniProfile(p.id));column.append(btn);});column.append(schoolGamesButton(id));grid.append(column);}
   poster.append(grid,el('p','alumni-photo-credit','Former college players, not this season’s teams. Photos: NBA.'));return poster;
 }
 function faceoffReady(a,b){return a&&b&&schoolConnections(a).alumni.length>=2&&schoolConnections(b).alumni.length>=2;}
@@ -65,6 +67,7 @@ function renderNbaDiscovery(append=false){
   const box=$('nbaCards'),start=append?box.children.length:0;
   if(!append)box.textContent='';
   $('nbaScope').textContent=`${NBA_ALUMNI.length} NBA players from ${new Set(NBA_ALUMNI.map(p=>p.team)).size} schools in this bracket. Best-known names first.`;
+  $('nbaTeamNote').textContent=`NBA teams checked ${NBA_TEAM_AS_OF}. A snapshot, not a live roster feed.`;
   for(const o of $('nbaSchool').options){const count=o.value==='all'?NBA_ALUMNI.length:schoolConnections(o.value).alumni.length;o.textContent=(o.value==='all'?'All schools':TEAMS[o.value].name)+(count?` · ${count}`:'');}
   const players=filterConnections(NBA_ALUMNI,TEAMS,nbaSchool,nbaQuery),shown=Math.min(nbaLimit,players.length);
   $('nbaCount').textContent=players.length?`Showing ${shown} of ${players.length} player${players.length===1?'':'s'}`:'No matching players';
@@ -76,7 +79,7 @@ function renderNbaDiscovery(append=false){
     // One tap target per player opens the profile; a single small link goes to the school's games.
     const main=el('button','nba-card-main');main.type='button';main.setAttribute('aria-label',`View ${p.name} profile`);main.addEventListener('click',()=>showAlumniProfile(p.id));
     const words=el('span','nba-card-words'),school=el('span','nba-school-name');school.append(teamLogo(p.team),document.createTextNode(TEAMS[p.team].name));
-    words.append(el('b','',p.name),school,el('small','',`${p.position} · ${p.year} NBA draft, No. ${p.pick}`));main.append(alumniPortrait(p),words);
+    words.append(el('b','',p.name),school,el('small','',`NBA: ${nbaTeamLabel(p)} · ${p.year} draft, No. ${p.pick}`));main.append(alumniPortrait(p),words);
     const games=el('button','link nba-games',`${TEAMS[p.team].name}’s games →`);games.type='button';games.addEventListener('click',()=>goSchoolGames(p.team));
     card.append(main,games);box.append(card);
   }

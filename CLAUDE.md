@@ -188,10 +188,19 @@ knows nothing about March Madness or brackets). Put new source material from the
   region explanations, and auto-fill mechanics belong in expandable details.
 - Discover has four tabs: NBA stars (default), Draft watch, Regions and History. Keep it to these four.
   NBA stars: 71 NBA alumni across 25 field schools, best-known names first (editorial `STAR_ORDER`: Jordan,
-  Durant, Kyrie Irving, Tatum, ...). Each player is one compact row (portrait, name, school, position and actual
-  draft) that opens the profile, plus one small link to the school's games. Search accepts player or school names,
-  punctuation variations and UConn/Connecticut aliases; the school select shows counts; 12 rows at a time with Show
-  more. Alumni profiles show local portraits, dated NBA position/height, actual draft outcomes, related alumni and a
+  Durant, Kyrie Irving, Tatum, ...). Each player is one compact row (portrait, name, school, NBA team and actual
+  draft) that opens the profile, plus one small link to the school's games. Search accepts player, school or NBA team
+  names, punctuation variations and UConn/Connecticut aliases; the school select shows counts; 12 rows at a time
+  with Show more.
+  NBA team affiliations were checked against official NBA profiles on November 25, 2026. Show the team on alumni
+  rows, individual profiles, related-player rows and face-off tooltips, with a visible snapshot date and source in
+  the profile. This is a curated snapshot, not a live roster feed. Aldridge is labeled Retired using the NBA
+  retirement report; Jordan, Magic Johnson and Olajuwon are labeled Retired from their NBA.com profiles, which list
+  them as inactive with careers that ended decades ago. Ivey, Morris, Jimmer Fredette and Patty Mills show No NBA team
+  listed because their official profiles list no current team. Never fill these gaps with a former team or infer
+  free-agent status. Recheck all affiliations and update the date when refreshing. Draft-watch prospects never
+  receive NBA team affiliations. School profiles preview four clickable alumni, link to every featured connection
+  and show prospect profiles; keep all 64 school profiles, including honest empty states. Alumni profiles show local portraits, dated NBA position/height, actual draft outcomes, related alumni and a
   school-to-bracket route. This is a curated collection, not a complete alumni database; empty schools say no
   featured data, never no alumni. Alumni are former college players, never current lineups.
   Alumni face-off: up to five alumni per school, faces in circles, opening profiles. Discover shows a collapsed
