@@ -7,7 +7,7 @@ function teamLogo(id) {
   return img;
 }
 function navigateTo(tab, focus = true) {
-  S.tab = tab;
+  S.tab = tab; track('tab', tab);
   if (tab === 'bracket') store('bs-onboarding', { started: true });
   updateJourney(); renderAllLocal(); hideTeamPeek();
   if (focus) {
@@ -121,7 +121,7 @@ function initGuide() {
     const next=e.key==='Home'?0:e.key==='End'?tabs.length-1:(index+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;
     tabs[next].click(); list.querySelectorAll('[role="tab"]')[next]?.focus({preventScroll:true});
   });
-  document.querySelectorAll('[data-discover]').forEach(b=>b.addEventListener('click',()=>{discoverMode=b.dataset.discover;renderDiscovery();}));
+  document.querySelectorAll('[data-discover]').forEach(b=>b.addEventListener('click',()=>{discoverMode=b.dataset.discover;track('discover',discoverMode);renderDiscovery();}));
   $('teamDialogClose').addEventListener('click',()=>$('teamDialog').close());
   $('teamDialog').addEventListener('close',()=>{ if(profileTrigger?.isConnected) profileTrigger.focus({preventScroll:true}); hideTeamPeek(); });
   $('teamPeek').addEventListener('mouseenter',()=>clearTimeout(peekTimer)); $('teamPeek').addEventListener('mouseleave',hideTeamPeek);

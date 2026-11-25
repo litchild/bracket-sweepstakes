@@ -1335,3 +1335,13 @@ details.simulation-tools { display:block; padding:18px 24px; }details.simulation
 .bar-logo { width:20px; height:20px; flex:none; }
 .swipe-hint { margin:0 0 8px; font-size:12.5px; font-weight:600; color:var(--muted); position:sticky; left:0; }
 @media (max-width: 600px) { .draft-head::before { background:linear-gradient(112deg, transparent 0 88%, var(--red) 88% 91%, transparent 91% 93%, rgba(224,37,43,.45) 93% 95%, transparent 95%); } }
+
+/* ---------- entry nickname dialog ---------- */
+.enter-dialog { width: min(440px, calc(100vw - 32px)); padding: 26px 26px 22px; }
+.enter-dialog .sec-h { margin: 2px 0 6px; }
+.enter-label { display: block; margin-top: 14px; font-size: 13px; font-weight: 700; color: var(--muted); }
+.enter-dialog input { display: block; width: 100%; margin-top: 6px; font: inherit; font-size: 16px; padding: 11px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface); color: var(--ink); }
+.enter-note { margin: 12px 0 4px; padding: 9px 12px; border-left: 3px solid var(--red); background: var(--surface-2); border-radius: 0 8px 8px 0; font-size: 13.5px; font-weight: 600; }
+.enter-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+.enter-actions .btn { min-height: 44px; padding-left: 18px; padding-right: 18px; }
+@media (max-width: 600px) { .enter-dialog { width: 100%; padding: 22px 20px calc(24px + env(safe-area-inset-bottom, 0px)); } .enter-actions .btn { flex: 1 1 140px; } }

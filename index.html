@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>One shot to win 50,000 RMB · Bracket Sweepstakes</title>
 <meta name="description" content="Build your March Madness bracket, follow the schools behind your favorite NBA players, and pick your champion.">
-<link rel="stylesheet" href="css/styles.css?v=tournament-banner">
+<link rel="stylesheet" href="css/styles.css?v=live-entries">
 </head>
 <body>
 <header class="hero tournament-hero">
@@ -70,7 +70,7 @@
       <details class="card rules"><summary>Rules</summary><div class="rules-body">
         <p>Your bracket begins with 64 teams after the opening games. Teams advance through the Round of 64, Round of 32, Sweet 16, Elite 8, Final Four, and championship.</p>
         <p>Pick a winner for every game. Changing a winner clears later picks that depend on that team.</p>
-        <p>This bracket uses the 2026 tournament field and dates. Entries save in this browser. The proposed prize is 50,000 RMB. No cash prize is awarded here.</p>
+        <p>This bracket uses the 2026 tournament field and dates. The 50,000 RMB prize is our proposal for the full program. This version is an NYU class test: entries are recorded for our study and no prize is paid.</p>
       </div></details>
     </section>
 
@@ -107,7 +107,7 @@
           <div class="pass-row">
             <div class="pass-copy"><p class="sub" id="passSub"></p></div>
             <div class="pass-form" id="passForm">
-              <input id="passName" type="text" maxlength="40" placeholder="Their name" autocomplete="off" aria-label="Name of the person entering">
+              <input id="passName" type="text" maxlength="24" placeholder="Their nickname" autocomplete="off" aria-label="Nickname of the person entering">
               <button class="btn" id="passStart">Start their entry</button>
             </div>
             <div class="pass-on" id="passOn" hidden>
@@ -217,10 +217,22 @@
   </div>
 </main>
 
-<footer><div class="wrap"><p>Entries are saved in this browser. Open Results to simulate a round.</p>2026 tournament field. Chinese player roster information from Sina Sports, 2026–27. School marks and player photos belong to their respective owners.</div></footer>
+<footer><div class="wrap"><p>NYU class test. Entries are recorded for our study; no prize is paid. We save each entry’s nickname and picks, plus a random device ID that counts visits. No contact details are collected.</p>2026 tournament field. Chinese player roster information from Sina Sports, 2026–27. School marks and player photos belong to their respective owners.</div></footer>
 
 <dialog id="teamDialog" class="team-dialog" aria-labelledby="teamDialogTitle"><div class="profile-topbar"><button type="button" class="dialog-close" id="teamDialogClose" aria-label="Close profile">×</button></div><div id="teamDialogBody"></div></dialog>
 <div id="teamPeek" class="team-peek" role="tooltip" hidden></div>
+<dialog id="enterDialog" class="team-dialog enter-dialog" aria-labelledby="enterTitle">
+  <form id="enterForm" novalidate>
+    <p class="kicker">Enter your bracket</p>
+    <h2 class="sec-h" id="enterTitle">Choose a nickname</h2>
+    <p class="sub">We use it to tell entries apart. No email or phone number needed.</p>
+    <label class="enter-label" for="enterName">Nickname</label>
+    <input id="enterName" type="text" maxlength="24" autocomplete="nickname" spellcheck="false">
+    <p class="enter-note">NYU class test. Entries are recorded for our study; no prize is paid.</p>
+    <p class="msg" id="enterMsg" aria-live="polite"></p>
+    <div class="enter-actions"><button class="btn red" type="submit" id="enterOk">Enter my bracket</button><button class="btn ghost" type="button" id="enterCancel">Cancel</button></div>
+  </form>
+</dialog>
 
 <div class="bar">
   <div class="wrap">
@@ -237,15 +249,16 @@
   <button type="button" data-go="standings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 21V11h5v10M10 21V4h5v17M15 21V8h5v13"/></svg><span>Results</span></button>
 </nav>
 
-<script src="js/logic.js"></script>
+<script src="js/logic.js?v=live-entries"></script>
+<script src="js/remote.js?v=live-entries"></script>
 <script src="js/profiles.js"></script>
 <script src="js/players.js"></script>
 <script src="js/discovery-data.js"></script>
 <script src="js/history-data.js"></script>
 <script src="js/camp.js"></script>
 <script src="js/experience.js"></script>
-<script src="js/guide.js"></script>
+<script src="js/guide.js?v=live-entries"></script>
 <script src="js/discovery.js?v=tournament-banner"></script>
-<script src="js/app.js?v=tournament-banner"></script>
+<script src="js/app.js?v=live-entries"></script>
 </body>
 </html>

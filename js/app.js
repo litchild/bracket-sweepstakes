@@ -1,5 +1,5 @@
-// Page UI: rendering, auto-fill helper, pass-around entries, crowd, standings, simulation controls.
-// Depends on globals from js/logic.js.
+// Page UI: rendering, auto-fill helper, pass-around entries, crowd, results, simulation controls.
+// Depends on globals from js/logic.js and js/remote.js.
 
 
 // ---------- state ----------
@@ -10,7 +10,8 @@ const S = {
   real: [], sims: [], simEntries: [], winners: {},
   entered: false, savedSig: null, busy: false,
   guest: null, ownerSnap: null, resRound: null,
-  round: 1, passOpen: false, seedOpen: false, fullBracket: true
+  round: 1, passOpen: false, seedOpen: false, fullBracket: true,
+  live: false, resultsSource: "", nickname: ""
 };
 const MAX_SIMS = 5000;
 const $ = id => document.getElementById(id);
@@ -25,6 +26,8 @@ function saveDraft() { if (S.guest) return; store("bs-draft", { picks: S.picks, 
 function locked() { return decidedIds(S.winners).length > 0; }
 function allEntries() { return S.real.concat(S.simEntries); }
 function classEntries() { return S.real.filter(e => e.guest); }
+// Pass-around entries made on this device. The website records their ids locally; the browser-only demo lists them.
+function passCount() { return S.live ? (lsGet("bs-guests") || []).length : classEntries().length; }
 function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
 function teamColor(t) { return `var(${ROOTS[t.home].color})`; }
 function cnBadge() { const b = el("span", "cnb", "中"); b.title = "Chinese player on the roster"; return b; }
@@ -52,7 +55,7 @@ function renderLive() {
   $("liveWord").textContent = locked() ? "Live" : "Open";
   $("eyeTxt").textContent = "March Madness 2026";
   if (S.dbState === "connecting") { $("liveN").textContent = "–"; $("liveL").textContent = "Connecting…"; }
-  else if (S.dbState === "off") { $("liveN").textContent = "–"; $("liveL").textContent = "Shared entries unavailable here"; }
+  else if (S.dbState === "off") { $("liveN").textContent = "–"; $("liveL").textContent = "Entry count unavailable right now"; }
   else { $("liveN").textContent = fmt(N); $("liveL").textContent = `bracket${N === 1 ? "" : "s"} entered${S.simEntries.length ? ` · ${fmt(S.simEntries.length)} simulated` : ""}`; }
 }
 
@@ -76,6 +79,7 @@ function fillWith(root, cnTeam, star) {
   S.mode = root === "cn" ? "cn" : root === "star" ? "star" : root ? "region" : "seed";
   S.picks = randomBracket(helperFor(S.root, S.cnTeam));
   S.helpOpen = false; S.round = 1;
+  track("fill", root === "cn" || root === "star" ? root : root ? "region" : "seed");
   if (team && cnTeam) S.br = TEAMS[cnTeam].br;
   saveDraft(); renderAllLocal();
 }
@@ -251,25 +255,27 @@ document.querySelectorAll("[data-view]").forEach(b => b.addEventListener("click"
 // ---------- pass-around ----------
 function renderPass() {
   const box = $("pass");
-  box.hidden = !(S.canEdit && S.db);
+  box.hidden = !S.db;
   if (box.hidden) return;
   box.classList.toggle("active", !!S.guest);
   const open = S.passOpen || !!S.guest;
   $("passBar").setAttribute("aria-expanded", String(open)); $("passBody").hidden = !open;
-  const n = classEntries().length;
+  const n = passCount(), made = `${n} pass-around entr${n === 1 ? "y" : "ies"}${S.live ? " entered on this device" : " collected"}`;
   if (locked()) {
     $("passForm").hidden = true; $("passOn").hidden = true;
-    $("passSub").textContent = `Entries are closed because results are in. ${n} pass-around entr${n === 1 ? "y" : "ies"} collected. Reset results on Standings to collect more.`;
+    $("passSub").textContent = `Entries are closed because results are in. ${made}.${S.live ? "" : " Reset results on Results to collect more."}`;
     return;
   }
   $("passForm").hidden = !!S.guest; $("passOn").hidden = !S.guest;
   if (S.guest) $("passWho").textContent = S.guest.name;
-  $("passSub").textContent = `Hand this device around. Each person types their name, fills a bracket and taps Enter. ${n} so far.`;
+  $("passSub").textContent = S.live
+    ? `Hand this device around. Each person types a nickname, fills a bracket and taps Enter. Entries are recorded for our NYU class test; no prize is paid. ${n} entered on this device.`
+    : `Hand this device around. Each person types their name, fills a bracket and taps Enter. ${n} so far.`;
 }
 function startGuest() {
   if (locked()) return;
-  const name = $("passName").value.trim().replace(/\s+/g, " ").slice(0, 40);
-  if (!name) { $("passMsg").textContent = "Type their name first."; $("passMsg").className = "msg bad"; $("passName").focus(); return; }
+  const name = $("passName").value.trim().replace(/\s+/g, " ").slice(0, 24);
+  if (!name) { $("passMsg").textContent = "Type their nickname first."; $("passMsg").className = "msg bad"; $("passName").focus(); return; }
   if (!S.guest) S.ownerSnap = { picks: S.picks, root: S.root, cnTeam: S.cnTeam, star: S.star, mode: S.mode };
   S.guest = { id: "g-" + Date.now().toString(36) + Math.random().toString(36).slice(2, 7), name };
   S.picks = {}; S.root = null; S.cnTeam = null; S.star = null; S.mode = "manual"; S.br = "E"; S.round = 1; S.helpOpen = false;
@@ -296,22 +302,45 @@ function renderBar() {
   $('shotMeter').setAttribute('aria-valuetext',`${n} of 63 games picked`);
   $('shotMeter').style.setProperty('--completion',`${n / 63 * 100}%`);
   $("pM").style.width = `${(n / 63) * 100}%`;
+  if (n) track("start"); if (n === 63) track("complete");
   const who = (S.guest ? `Entering for ${S.guest.name} · ` : "") + (S.root ? `Rooting for ${fanText(S.root, S.cnTeam)}` : "Picking on your own");
   const btn = $("btnEnter");
   const dirty = sig(S.picks, S.root, S.cnTeam) !== S.savedSig;
   if (locked()) { $("pS").textContent = `${who} · Brackets are locked: games have started.`; btn.disabled = true; btn.textContent = S.entered ? "Entered" : "Closed"; return; }
-  if (!S.db) { $("pS").textContent = `${who} · Shared entries aren’t available in this view.`; btn.disabled = true; btn.textContent = "Enter free"; return; }
-  if (!S.uid) { $("pS").textContent = `${who} · Sign in to claude.ai to enter.`; btn.disabled = true; btn.textContent = "Enter free"; return; }
-  $("pS").textContent = n < 63 ? `${who} · Fill all 63 games to enter.` : `${who} · Ready to enter.`;
+  if (!S.db || !S.uid) { $("pS").textContent = `${who} · Connecting to entries…`; btn.disabled = true; btn.textContent = "Enter free"; return; }
+  $("pS").textContent = n < 63 ? `${who} · Fill all 63 games to enter.` : S.dbState === "off" ? `${who} · Can’t reach the entry server right now.` : `${who} · Ready to enter.`;
   if (S.guest) { btn.textContent = `Enter ${S.guest.name}`; btn.disabled = S.busy || n < 63; return; }
-  if (S.entered && !dirty && n === 63) $("pS").textContent = `${who} · You’re entered. Change any pick to update your entry.`;
+  const myName = S.live && S.user && S.user.name ? S.user.name() : "";
+  if (S.entered && !dirty && n === 63) $("pS").textContent = `${who} · You’re entered${myName ? ` as ${myName}` : ""}. Change any pick to update your entry.`;
   btn.textContent = S.entered ? (dirty ? "Update entry" : "Entered") : "Enter free";
   btn.disabled = S.busy || n < 63 || (S.entered && !dirty);
 }
+function saveError(e, guest) {
+  if (e && e.code === "locked") return "Brackets are locked because games have started.";
+  if (e && e.code === "quota_exceeded") return guest ? "The entry list is full. Remove some entries first." : "The entry list is full. Ask the host to clear space.";
+  if (e && (e.code === "rate_limited" || e.status === 400) && e.message) return e.message;
+  return guest ? "Couldn’t save this entry. Try again in a moment." : "Couldn’t save your entry. Try again in a moment.";
+}
+// The website asks for a nickname once, before the first entry from this device.
+function askNickname() {
+  $("enterName").value = S.nickname || ""; $("enterMsg").textContent = ""; $("enterMsg").className = "msg";
+  $("enterDialog").showModal(); $("enterName").focus();
+}
+$("enterForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const name = $("enterName").value.trim().replace(/\s+/g, " ").slice(0, 24);
+  if (!name) { $("enterMsg").textContent = "Type a nickname first."; $("enterMsg").className = "msg bad"; $("enterName").focus(); return; }
+  S.nickname = name; $("enterDialog").close(); submit();
+});
+$("enterCancel").addEventListener("click", () => $("enterDialog").close());
+$("enterDialog").addEventListener("close", () => $("btnEnter").focus({ preventScroll: true }));
 async function submit() {
   if (!S.db || !S.uid || locked() || countPicks(S.picks) < 63) return;
+  const ownName = S.live && !S.guest ? (S.nickname || S.user.name()) : "";
+  if (S.live && !S.guest && !ownName) { askNickname(); return; }
   S.busy = true; renderBar(); $("sMsg").textContent = ""; $("sMsg").className = "msg";
   const doc = { picks: Object.assign({}, S.picks), root: S.root || "", cnTeam: S.cnTeam || "", star: S.star || "", mode: S.mode, updatedAt: new Date().toISOString() };
+  if (ownName) doc.name = ownName;
   if (S.guest) {
     const g = S.guest;
     try {
@@ -321,17 +350,18 @@ async function submit() {
       $("pass").scrollIntoView({ block: "start" }); $("passName").focus({ preventScroll: true });
     } catch (e) {
       S.busy = false;
-      $("sMsg").textContent = e && e.code === "quota_exceeded" ? "The entry list is full. Remove some entries first." : "Couldn’t save this entry. Try again in a moment.";
+      $("sMsg").textContent = saveError(e, true);
       $("sMsg").className = "msg bad"; renderBar();
     }
     return;
   }
   try {
+    const wasEntered = S.entered;
     await S.db.doc("entries/" + S.uid).set(doc);
     S.entered = true; S.savedSig = sig(S.picks, S.root, S.cnTeam);
-    $("sMsg").textContent = "You’re in. Good luck!"; $("sMsg").className = "msg good";
+    $("sMsg").textContent = wasEntered ? "Entry updated." : "You’re in. Good luck!"; $("sMsg").className = "msg good";
   } catch (e) {
-    $("sMsg").textContent = e && e.code === "quota_exceeded" ? "The entry list is full. Ask the host to clear space." : "Couldn’t save your entry. Try again in a moment.";
+    $("sMsg").textContent = saveError(e, false);
     $("sMsg").className = "msg bad";
   }
   S.busy = false; renderBar();
@@ -347,7 +377,7 @@ function hbar(labelNodes, frac, cssColor) {
 }
 function renderCrowd() {
   const E = allEntries(); const N = E.length; const simN = S.simEntries.length;
-  $("crowdSub").textContent = N ? `${fmt(N)} local bracket${N === 1 ? "" : "s"}${simN ? ` · ${fmt(simN)} simulated` : ""}` : "Enter a bracket to see the crowd’s choices.";
+  $("crowdSub").textContent = N ? `${fmt(N)} ${S.live ? "" : "local "}bracket${N === 1 ? "" : "s"}${S.live ? " entered" : ""}${simN ? ` · ${fmt(simN)} simulated` : ""}` : "Enter a bracket to see the crowd’s choices.";
   const cb = $("champBars"); cb.textContent = "";
   if (!N) cb.append(el("p", "empty", "Waiting for the first entry."));
   else {
@@ -453,7 +483,7 @@ function renderStandings() {
   $("kGames").textContent = `${played} / 63`;
   const nr = GAMES.filter(g => !win[g.id] && cands(g, win).every(Boolean));
   $("kGamesL").textContent = played === 63 ? "Tournament complete" : `Next: ${nr.length ? ROUND_NAME[Math.min(...nr.map(g => g.round))] : "Round of 64"}`;
-  $("stSub").textContent = played ? `${played} of 63 games complete · Simulated results` : "No games played yet. Results appear here as games are played.";
+  $("stSub").textContent = played ? `${played} of 63 games complete · ${S.resultsSource === "recorded" ? "Results entered by our team" : "Simulated results"}` : "No games played yet. Results appear here as games are played.";
   // Chinese players tracker
   const ctk = $("cnTrack"); ctk.textContent = "";
   CN_IDS.forEach(id => {
@@ -536,13 +566,14 @@ function localBackend() {
 // ---------- boot ----------
 initGuide();
 renderAll();
+trackVisit(); track("tab", S.tab);
 (async () => {
-  // Storage backend. localBackend() keeps everything in this browser.
-  // To share entries between visitors, replace it with an object that has the same
-  // doc(path).get/set/delete/onSnapshot and collection(path).limit(n).onSnapshot shape,
-  // backed by a hosted database.
-  const { db, user } = localBackend();
-  S.db = db; S.user = user; S.dbState = "on";
+  // Storage backend. On the website, remoteBackend() (js/remote.js) records entries through the site's own /api.
+  // Opened from disk, localBackend() keeps everything in this browser, with the simulation controls.
+  // Both have the same doc(path).get/set/delete/onSnapshot and collection(path).limit(n).onSnapshot shape.
+  const backend = LIVE ? remoteBackend() : localBackend();
+  const { db, user } = backend;
+  S.db = db; S.user = user; S.live = !!backend.live; S.dbState = S.live ? "connecting" : "on";
   S.uid = user ? await user.id() : null;
   S.canEdit = user ? await user.canEdit() : false;
   if (S.uid) {
@@ -555,10 +586,11 @@ renderAll();
     } catch (e) {}
   }
   db.collection("entries").limit(1000).onSnapshot(snap => {
+    S.dbState = "on";
     S.real = snap.docs.filter(d => d.exists).map(d => { const v = d.data() || {}; return { id: d.id, picks: v.picks || {}, root: v.root || null, cnTeam: v.cnTeam || null, guest: !!v.guest, name: typeof v.name === "string" ? v.name.slice(0, 40) : "" }; });
-    renderLive(); if (S.tab !== "bracket") renderAllLocal(); else renderPass();
-  }, () => { S.dbState = "off"; renderLive(); });
-  db.doc("state/results").onSnapshot(s => { const v = s.exists ? s.data() : null; S.winners = Object.assign({}, (v && v.winners) || {}); renderAll(); }, () => {});
+    renderLive(); if (S.tab !== "bracket") renderAllLocal(); else { renderPass(); renderBar(); }
+  }, () => { S.dbState = "off"; renderLive(); renderBar(); });
+  db.doc("state/results").onSnapshot(s => { const v = s.exists ? s.data() : null; S.winners = Object.assign({}, (v && v.winners) || {}); S.resultsSource = (v && v.source) || ""; renderAll(); }, () => {});
   db.doc("state/sims").onSnapshot(s => {
     const v = s.exists ? s.data() : null; S.sims = v && Array.isArray(v.list) ? v.list : [];
     S.simEntries = S.sims.map((x, i) => { const u = unpackSim(x); return u ? { id: "sim-" + i, sim: true, n: i + 1, root: u.root, cnTeam: u.cnTeam, picks: u.picks } : null; }).filter(Boolean);
