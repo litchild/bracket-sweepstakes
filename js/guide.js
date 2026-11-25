@@ -34,7 +34,7 @@ function showTeamProfile(id) {
   const head = el('div', 'profile-head');
   const names = el('div'); names.append(el('p', 'kicker', `#${t.seed} seed · ${BR[t.br].name} bracket`), el('h2', '', p.fullName)); names.lastChild.id = 'teamDialogTitle';
   head.append(teamLogo(id), names); body.append(head);
-  body.append(el('p','sub',`${ROOTS[t.home].zh} ${ROOTS[t.home].name} school · ${t.seed<=4?'Top-four seed':t.seed>=12?'Underdog seed':'Middle seed'}`));
+  body.append(el('p','sub',t.seed<=4?'Top-four seed':t.seed>=12?'Underdog seed':'Middle seed'));
   const history = el('div', 'profile-records');
   for (const [label, record] of [['2025–26',p.recent],['2024–25',p.previous]]) {
     const item = el('div'); item.append(el('p','kicker',label),el('strong','',record || 'Unavailable'),el('small','','Wins–losses')); history.append(item);
@@ -85,7 +85,6 @@ function showPlayerProfile(id) {
   body.append(source,el('p','sub roster-note',`2026–27 roster · Photo: ${p.credit}`));finishProfile();
 }
 function renderDiscovery() {
-  $('discoverRegions').hidden=discoverMode!=='regions';
   $('discoverNba').hidden=discoverMode!=='nba';$('discoverDraft').hidden=discoverMode!=='draft';
   if(discoverMode==='nba')renderNbaDiscovery();if(discoverMode==='draft')renderDraftWatch();
   $('discoverArchive').hidden=discoverMode!=='archive';if(discoverMode==='archive')renderArchive();
@@ -97,7 +96,7 @@ function attachTeamPeek(row, id) {
     if ($('teamDialog').open) return;
     clearTimeout(peekTimer);
     const t = TEAMS[id], p = TEAM_PROFILES[id], tip = $('teamPeek'); tip.textContent = '';
-    tip.append(el('strong','',p.fullName),el('span','',`#${t.seed} seed · ${BR[t.br].name} tournament group`),el('span','',`Home: ${ROOTS[t.home].name}`),el('small','',CN_PLAYERS[id] ? `${CN_PLAYERS[id]} · 2026–27 roster` : 'Tap ⓘ for the school profile.'));
+    tip.append(el('strong','',p.fullName),el('span','',`#${t.seed} seed · ${BR[t.br].name} tournament group`),el('small','',CN_PLAYERS[id] ? `${CN_PLAYERS[id]} · 2026–27 roster` : 'Tap ⓘ for the school profile.'));
     tip.hidden = false; row.querySelector('button')?.setAttribute('aria-describedby','teamPeek');
     const r = row.getBoundingClientRect();
     tip.style.left = `${Math.max(8,Math.min(r.left,innerWidth-tip.offsetWidth-8))}px`;
@@ -107,38 +106,6 @@ function attachTeamPeek(row, id) {
   row.addEventListener('mouseleave', () => { peekTimer = setTimeout(hideTeamPeek,150); });
   row.addEventListener('focusin', e => { if (e.target.classList.contains('team-info')) show(); });
   row.addEventListener('focusout', hideTeamPeek);
-}
-function selectRegion(key) {
-  if (mapRegion === key) return;
-  mapRegion = key; renderRegion();
-}
-function renderRegion() {
-  const home = mapMode === 'home', root = ROOTS[mapRegion];
-  const bracketKey = {east:'E',west:'W',south:'S',midwest:'M'}[mapRegion];
-  const teams = Object.values(TEAMS).filter(t => (home ? t.home === mapRegion : t.br === bracketKey)&&(!$('chineseRosterFilter').checked||CN_PLAYERS[t.id])).sort((a,b)=>a.seed-b.seed || a.name.localeCompare(b.name));
-  $('regionTeams').closest('.region-roster').dataset.rosterRegion=mapRegion;
-  $('regionTitle').textContent = `${root.zh} ${root.name}`;
-  $('regionCount').textContent = `${teams.length} schools · ${home ? 'Home region' : 'Tournament group'}`;
-  $('regionExplanation').textContent = home ? 'Where schools are based. Tap a region to explore.' : 'Who plays whom. Each group sends one team to the Final Four.';
-  $('homeMap').hidden = !home; $('tournamentGroups').hidden = home;
-  document.querySelectorAll('[data-region]').forEach(g=>g.setAttribute('aria-pressed',String(g.dataset.region === mapRegion)));
-  document.querySelectorAll('[data-map-choice]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.mapChoice === mapRegion)));
-  const story = $('regionStory'); story.textContent = '';
-  if (home) {
-    story.append(el('p','sub',root.see));
-    const detail=el('details','region-details');detail.append(el('summary','','Regional ambassadors'),el('p','',root.guides));story.append(detail);
-    const fill = el('button','btn',`Pick for the ${root.name}`); fill.type='button'; fill.disabled=locked();
-    fill.addEventListener('click',()=>{ navigateTo('bracket'); fillWith(mapRegion,null); }); story.append(fill);
-    story.append(el('p','sub','Auto-fills 63 picks for this region. Edit any game.'));
-  } else story.append(el('p','sub',`${root.name}: 16 teams → 1 Final Four place`));
-  const list=$('regionTeams'); list.textContent='';
-  if(!teams.length)list.append(el('p','sub','No Chinese-player teams in this group in the roster snapshot. Try another region or clear the filter.'));
-  teams.forEach(t=>{
-    const b=el('button','school-item'); b.type='button';
-    const words=el('span'); words.append(el('b','',t.name),el('small','',home ? `${BR[t.br].name} tournament group · #${t.seed} seed` : `${ROOTS[t.home].name} school · #${t.seed} seed`));
-    b.append(teamLogo(t.id),words); if(CN_PLAYERS[t.id]) b.append(cnBadge()); b.append(el('span','school-arrow','→'));
-    b.addEventListener('click',()=>showTeamProfile(t.id)); list.append(b);
-  });
 }
 function initGuide() {
   S.tab = 'bracket';
@@ -155,22 +122,10 @@ function initGuide() {
     tabs[next].click(); list.querySelectorAll('[role="tab"]')[next]?.focus({preventScroll:true});
   });
   document.querySelectorAll('[data-discover]').forEach(b=>b.addEventListener('click',()=>{discoverMode=b.dataset.discover;renderDiscovery();}));
-  document.querySelectorAll('[data-map-mode]').forEach(b=>b.addEventListener('click',()=>{
-    mapMode=b.dataset.mapMode; document.querySelectorAll('[data-map-mode]').forEach(x=>x.setAttribute('aria-selected',String(x===b))); renderRegion();
-  }));
-  ROOT_ORDER.forEach(k=>{
-    const b=el('button','pill',`${ROOTS[k].zh} ${ROOTS[k].name}`); b.type='button'; b.dataset.mapChoice=k; b.addEventListener('click',()=>selectRegion(k)); $('mapButtons').append(b);
-    const g=el('button','tournament-group'); g.type='button'; g.dataset.mapChoice=k; g.append(el('b','',ROOTS[k].name),el('span','','16 teams'),el('strong','','↓'),el('span','','1 Final Four place')); g.addEventListener('click',()=>selectRegion(k)); $('tournamentGroups').append(g);
-  });
-  document.querySelectorAll('[data-region]').forEach(g=>{
-    g.addEventListener('mouseenter',()=>{ if(matchMedia('(hover: hover)').matches) selectRegion(g.dataset.region); });
-    g.addEventListener('focus',()=>selectRegion(g.dataset.region)); g.addEventListener('click',()=>selectRegion(g.dataset.region));
-    g.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){e.preventDefault();selectRegion(g.dataset.region);} });
-  });
   $('teamDialogClose').addEventListener('click',()=>$('teamDialog').close());
   $('teamDialog').addEventListener('close',()=>{ if(profileTrigger?.isConnected) profileTrigger.focus({preventScroll:true}); hideTeamPeek(); });
   $('teamPeek').addEventListener('mouseenter',()=>clearTimeout(peekTimer)); $('teamPeek').addEventListener('mouseleave',hideTeamPeek);
   document.addEventListener('keydown',e=>{if(e.key==='Escape')hideTeamPeek();});
   window.addEventListener('scroll',hideTeamPeek,true); window.addEventListener('resize',hideTeamPeek);
-  initDiscovery();renderDiscovery(); renderRegion(); updateJourney(); initExperience();
+  initDiscovery();renderDiscovery(); updateJourney(); initExperience();
 }

@@ -9,8 +9,8 @@ const S = {
   db: null, user: null, uid: null, canEdit: false, dbState: "connecting",
   real: [], sims: [], simEntries: [], winners: {},
   entered: false, savedSig: null, busy: false,
-  guest: null, ownerSnap: null, resRound: null, tickerText: "",
-  round: 1, passOpen: false, seedOpen: false, fullBracket: false
+  guest: null, ownerSnap: null, resRound: null,
+  round: 1, passOpen: false, seedOpen: false, fullBracket: true
 };
 const MAX_SIMS = 5000;
 const $ = id => document.getElementById(id);
@@ -46,45 +46,6 @@ function fanTag(root, cnTeam) {
   return s;
 }
 
-// ---------- ticker ----------
-function tickerItems() {
-  const E = allEntries(), N = E.length, win = S.winners, items = [];
-  const last = latestRound(win);
-  if (last) {
-    const games = GAMES.filter(g => g.round === last && win[g.id]).map(g => { const [a, b] = cands(g, win); const w = TEAMS[win[g.id]], l = TEAMS[win[g.id] === a ? b : a]; return { w, l, d: w.seed - l.seed }; }).sort((x, y) => y.d - x.d).slice(0, 4);
-    games.forEach(x => items.push(`${ROUND_NAME[last]}: ${x.w.seed} ${x.w.name} beat ${x.l.seed} ${x.l.name}${x.d > 0 ? " (upset)" : ""}`));
-    const cnAlive = CN_IDS.filter(id => !lostIn(id, win)).length;
-    items.push(`${cnAlive} of ${CN_IDS.length} teams with Chinese players still alive`);
-    if (N) items.push(`${fmt(E.filter(e => isPerfect(e.picks, win)).length)} perfect brackets left`);
-  }
-  if (N) {
-    items.push(`${fmt(N)} brackets entered`);
-    const cnt = {}; E.forEach(e => { const c = e.picks["F6-0"]; if (c) cnt[c] = (cnt[c] || 0) + 1; });
-    const top = Object.entries(cnt).sort((a, b) => b[1] - a[1])[0];
-    if (top) items.push(`${pct(top[1], N)}% pick ${TEAMS[top[0]].name} to win it all`);
-    const rc = ROOT_ORDER.map(k => [k, E.filter(e => e.root === k).length]).sort((a, b) => b[1] - a[1])[0];
-    if (rc && rc[1]) items.push(`Most popular region: ${ROOTS[rc[0]].name} (${pct(rc[1], N)}% of fans)`);
-    const cnFans = E.filter(e => e.root === "cn").length;
-    if (cnFans) items.push(`${fmt(cnFans)} fans rooting for Chinese players`);
-  }
-  items.push("Free to enter", "Picks lock March 18");
-  items.unshift("Win 50,000 RMB");
-  if (!last) items.push(`Chinese players to follow: ${CN_IDS.map(id => `${CN_PLAYERS[id]} (${TEAMS[id].name})`).join(", ")}`);
-  return items;
-}
-function renderTicker() {
-  const items = tickerItems(); const text = items.join("|");
-  if (text === S.tickerText) return;
-  S.tickerText = text;
-  const tr = $("tTrack"); tr.textContent = "";
-  for (let k = 0; k < 2; k++) {
-    const grp = el("span"); if (k) grp.setAttribute("aria-hidden", "true");
-    items.forEach(t => grp.append(el("span", null, t), el("b", null, "/")));
-    tr.append(grp);
-  }
-  tr.style.setProperty("--dur", `${Math.max(28, Math.round(text.length * 0.2))}s`);
-}
-
 // ---------- header ----------
 function renderLive() {
   const N = allEntries().length;
@@ -93,7 +54,6 @@ function renderLive() {
   if (S.dbState === "connecting") { $("liveN").textContent = "–"; $("liveL").textContent = "Connecting…"; }
   else if (S.dbState === "off") { $("liveN").textContent = "–"; $("liveL").textContent = "Shared entries unavailable here"; }
   else { $("liveN").textContent = fmt(N); $("liveL").textContent = `bracket${N === 1 ? "" : "s"} entered${S.simEntries.length ? ` · ${fmt(S.simEntries.length)} simulated` : ""}`; }
-  renderTicker();
 }
 
 // ---------- seed definition ----------
@@ -107,7 +67,7 @@ function helperSummary() {
   if (S.root && ROOTS[S.root]) { const r = ROOTS[S.root]; return { title: `Rooting for ${r.zh} ${r.name}`, sub: "Bracket filled. Edit any pick below." }; }
   if (S.root === "star" && S.cnTeam) { const t = TEAMS[S.cnTeam], p = NBA_ALUMNI.find(x => x.id === S.star); return { title: `${t.name} is your champion`, sub: `${p ? `${p.name}’s school` : "Your star’s school"} wins every game. Edit any pick below.` }; }
   if (S.mode === "seed") return { title: "Quick-filled by seed", sub: "Edit any pick below." };
-  return { title: "Help me choose", sub: "Start from an NBA star, a region or a Chinese player." };
+  return { title: "Help me choose", sub: "Start from an NBA star or a Chinese player." };
 }
 function fillWith(root, cnTeam, star) {
   if (locked()) return;
@@ -129,7 +89,7 @@ function renderHelper() {
   $("btnShuffle").hidden = !(S.root || S.mode === "seed") || locked();
   $("btnClear").disabled = locked(); $("btnClear").hidden = !countPicks(S.picks);
   document.querySelectorAll("#helperSeg button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.h === S.helpTab)));
-  $("hNba").hidden = S.helpTab !== "nba"; $("hRegion").hidden = S.helpTab !== "region"; $("hCn").hidden = S.helpTab !== "cn";
+  $("hNba").hidden = S.helpTab !== "nba"; $("hCn").hidden = S.helpTab !== "cn";
   if (!S.helpOpen) return;
   const so = $("starOpts"); so.textContent = "";
   STAR_PICKS.forEach(pid => {
@@ -140,14 +100,6 @@ function renderHelper() {
     b.append(alumniPortrait(p), words);
     b.addEventListener("click", () => fillWith("star", p.team, pid));
     so.append(b);
-  });
-  const ro = $("regionOpts"); ro.textContent = "";
-  ROOT_ORDER.forEach(k => {
-    const r = ROOTS[k]; const b = el("button", "opt"); b.type = "button";
-    b.style.setProperty("--c", `var(${r.color})`); b.setAttribute("aria-pressed", String(S.root === k));
-    b.append(el("span", "opt-zh", r.zh), el("span", "opt-nm", r.name), el("span", "opt-meta", `${homeCount(k)} schools`), el("span", "opt-go", "Auto-fill →"));
-    b.addEventListener("click", () => fillWith(k, null));
-    ro.append(b);
   });
   const co = $("cnOpts"); co.textContent = "";
   CN_IDS.forEach(id => {
@@ -175,12 +127,11 @@ function teamBtn(g, tid, elim) {
   if (isMine(tid)) b.classList.add("mine");
   if (elim.has(tid)) b.classList.add("lost");
   b.setAttribute("aria-pressed", String(S.picks[g.id] === tid));
-  b.title = `${t.name}, ${ROOTS[t.home].name} school${CN_PLAYERS[tid] ? `, Chinese player: ${CN_PLAYERS[tid]}` : ""}`;
+  b.title = `${t.name}, ${t.seed} seed${CN_PLAYERS[tid] ? `, Chinese player: ${CN_PLAYERS[tid]}` : ""}`;
   const hint = typeof alumniHint === "function" ? alumniHint(tid) : [];
   const name = el("span", "tn-wrap"); name.append(el("span", "tn", t.name)); if (hint.length) name.append(el("span", "tn-hint", `NBA: ${hint.join(", ")}`));
   b.append(el("span", "seed", String(t.seed)), teamLogo(tid), name);
-  if (CN_PLAYERS[tid]) b.append(cnBadge());
-  b.append(el("span", "dot")); const check=el('span','pick-check','✓');check.setAttribute('aria-hidden','true');b.append(check);
+  const check=el('span','pick-check','✓');check.setAttribute('aria-hidden','true');b.append(check);
   b.disabled = locked();
   b.setAttribute("aria-label", `Pick ${t.name}, seed ${t.seed}`);
   b.addEventListener("click", () => {
@@ -220,7 +171,7 @@ function champBanner() {
   const ch = el("div", "champ"); const left = el("div");
   left.append(el("div", "k", "Your champion"), el("div", "v", champ ? champ.name : "Not picked yet"));
   ch.append(left);
-  if (champ) ch.append(el("div", "k", `${ROOTS[champ.home].name} school · ${champ.seed} seed${CN_PLAYERS[champ.id] ? ` · ${CN_PLAYERS[champ.id]}` : ""}`));
+  if (champ) ch.append(el("div", "k", `${champ.seed} seed · ${BR[champ.br].name} bracket${CN_PLAYERS[champ.id] ? ` · ${CN_PLAYERS[champ.id]}` : ""}`));
   return ch;
 }
 // Phone view (600px wide or less): one round at a time as full-width cards. Wider screens keep the four-column bracket.
@@ -264,19 +215,21 @@ function renderPhoneBracket(view, elim) {
   view.append(list);
 }
 if (PHONE.addEventListener) PHONE.addEventListener("change", () => { renderBTabs(); renderBracket(); });
+// Desktop opens on the full bracket; phones open round by round. Either view is one tap away.
+S.fullBracket = !PHONE.matches;
 function renderBracket() {
   hideTeamPeek();
   const view = $("bracketView"); view.textContent = ""; const elim = eliminated(S.winners);
   $("rndTabs").textContent = ""; $("rndTabs").hidden = true;
-  const guided = PHONE.matches || !S.fullBracket;
-  view.classList.toggle("phone", guided);
-  $("viewToggle").hidden = PHONE.matches;
-  $("viewToggle").textContent = S.fullBracket ? "Pick one round at a time" : "Show full bracket";
-  $("viewToggle").setAttribute("aria-pressed", String(S.fullBracket));
+  const guided = !S.fullBracket;
+  view.classList.toggle("phone", guided); view.classList.toggle("full", !guided);
+  document.querySelectorAll("[data-view]").forEach(b => b.setAttribute("aria-pressed", String((b.dataset.view === "full") === S.fullBracket)));
   const done = S.br === "F" ? countPicks(S.picks, "F") : roundGames(S.br, S.round).filter(g => S.picks[g.id]).length;
   const total = S.br === "F" ? 3 : roundGames(S.br, S.round).length;
   $("roundCoach").textContent = countPicks(S.picks) === 63 ? "All 63 picked. Your bracket is ready." : S.br === "F" ? `${done} of 3 picked · Choose your champion.` : done === total ? "Round complete. Next round below ↓" : `Pick ${total - done} winner${total - done === 1 ? "" : "s"}.`;
   if (guided) { renderPhoneBracket(view, elim); return; }
+  if (PHONE.matches) view.append(el("p", "swipe-hint", "Swipe sideways for later rounds →"));
+  if (S.br !== "F") $("roundCoach").textContent = countPicks(S.picks) === 63 ? "All 63 picked. Your bracket is ready." : `${BR[S.br].name}: pick every game. Winners move right.`;
   if (S.br !== "F") {
     const grid = el("div", "bracket");
     for (let r = 1; r <= 4; r++) {
@@ -293,13 +246,7 @@ function renderBracket() {
     view.append(grid, champBanner());
   }
 }
-$("viewToggle").addEventListener("click", () => { S.fullBracket = !S.fullBracket; renderBracket(); });
-function renderLegend() {
-  const lg = $("legend"); lg.textContent = "";
-  lg.append(el("span", null, "School’s home region:"));
-  ROOT_ORDER.forEach(k => { const s = el("span"); const d = el("span", "dot"); d.style.setProperty("--c", `var(${ROOTS[k].color})`); s.append(d, document.createTextNode(`${ROOTS[k].zh} ${ROOTS[k].name}`)); lg.append(s); });
-  const c = el("span"); c.append(cnBadge(), document.createTextNode("Chinese player on the roster")); lg.append(c);
-}
+document.querySelectorAll("[data-view]").forEach(b => b.addEventListener("click", () => { S.fullBracket = b.dataset.view === "full"; renderBracket(); }));
 
 // ---------- pass-around ----------
 function renderPass() {
@@ -406,15 +353,14 @@ function renderCrowd() {
   else {
     const cnt = {}; E.forEach(e => { const c = e.picks["F6-0"]; if (c) cnt[c] = (cnt[c] || 0) + 1; });
     Object.entries(cnt).sort((a, b) => b[1] - a[1]).slice(0, 8).forEach(([tid, n]) => {
-      const t = TEAMS[tid]; const d = el("span", "dot"); d.style.setProperty("--c", teamColor(t));
+      const t = TEAMS[tid]; const d = teamLogo(tid); d.classList.add("bar-logo");
       const nodes = [d, document.createTextNode(`${t.seed} ${t.name}`)]; if (CN_PLAYERS[tid]) nodes.push(cnBadge());
-      cb.append(hbar(nodes, n / N, teamColor(t)));
+      cb.append(hbar(nodes, n / N, "var(--blue)"));
     });
   }
   const rb = $("rootBars"); rb.textContent = "";
   if (!N) rb.append(el("p", "empty", "Waiting for the first entry."));
   else {
-    ROOT_ORDER.forEach(k => rb.append(hbar([zhSpan(k), document.createTextNode(ROOTS[k].name)], E.filter(e => e.root === k).length / N, `var(${ROOTS[k].color})`)));
     rb.append(hbar([cnBadge(), document.createTextNode("Chinese players")], E.filter(e => e.root === "cn").length / N, "var(--cn)"));
     rb.append(hbar([document.createTextNode("NBA star’s school")], E.filter(e => e.root === "star").length / N, "var(--blue)"));
     const own = E.filter(e => !e.root || (e.root !== "cn" && e.root !== "star" && !ROOTS[e.root])).length;
@@ -461,7 +407,6 @@ function resGame(g, label) {
     row.append(el("span", "seed", String(t.seed)), el("span", "tn", t.name));
     if (CN_PLAYERS[tid]) row.append(cnBadge());
     if (isW && t.seed > TEAMS[l].seed) row.append(el("span", "up", "Upset"));
-    row.append(el("span", "dot"));
     row.title = `${t.name}${isW ? " won" : " lost"}`;
     box.append(row);
   });
@@ -491,29 +436,24 @@ function renderResults() {
     const grid = el("div", "res-grid narrow"); grid.append(resGame(G["F6-0"], "Championship")); body.append(grid);
     const c = TEAMS[win["F6-0"]]; const ch = el("div", "champ"); const left = el("div");
     left.append(el("div", "k", "National champion"), el("div", "v", c.name)); ch.append(left);
-    ch.append(el("div", "k", `${ROOTS[c.home].name} school · ${c.seed} seed${CN_PLAYERS[c.id] ? ` · ${CN_PLAYERS[c.id]}` : ""}`));
+    ch.append(el("div", "k", `${c.seed} seed · ${BR[c.br].name} bracket${CN_PLAYERS[c.id] ? ` · ${CN_PLAYERS[c.id]}` : ""}`));
     body.append(ch);
   }
 }
 
 // ---------- standings ----------
-async function renderStandings() {
-  const boardRequest=S.boardRequest=(S.boardRequest||0)+1;
-  $('tournamentPanel').hidden=S.standingsPanel!=='tournament';
-  $('leaderboardCard').hidden=S.standingsPanel==='tournament';
-  document.querySelectorAll('[data-standings]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.standings===(S.standingsPanel||'board'))));
-  if(S.boardMode==='demo'&&!S.simEntries.length)S.boardMode='entries';
+function renderStandings() {
   renderResults();
-  const E = S.boardMode==='demo'?S.simEntries:S.real; const N = E.length; const win = S.winners; const played = decidedIds(win).length;
+  const E = allEntries(); const N = E.length; const win = S.winners; const played = decidedIds(win).length;
   const perfect = E.filter(e => isPerfect(e.picks, win));
   $("kEntries").textContent = fmt(N);
-  $("kEntries").nextElementSibling.textContent=S.boardMode==='demo'?'Demo brackets':'Brackets entered';
+  $("kEntries").nextElementSibling.textContent=S.simEntries.length?`Brackets entered (${fmt(S.simEntries.length)} simulated)`:'Brackets entered';
   $("kPerfect").textContent = fmt(perfect.length);
   $("kPerfectL").textContent = played ? `Perfect brackets left of ${fmt(N)}` : "Perfect brackets left (all of them, until games start)";
   $("kGames").textContent = `${played} / 63`;
   const nr = GAMES.filter(g => !win[g.id] && cands(g, win).every(Boolean));
   $("kGamesL").textContent = played === 63 ? "Tournament complete" : `Next: ${nr.length ? ROUND_NAME[Math.min(...nr.map(g => g.round))] : "Round of 64"}`;
-  $("stSub").textContent = played ? `${played} of 63 games scored · Demo results` : "Rankings begin when results are added.";
+  $("stSub").textContent = played ? `${played} of 63 games played · Demo results` : "No games played yet. Results appear here as games are played.";
   // Chinese players tracker
   const ctk = $("cnTrack"); ctk.textContent = "";
   CN_IDS.forEach(id => {
@@ -523,43 +463,6 @@ async function renderStandings() {
     const st = champ ? el("span", "status champ-s", "Champion") : out ? el("span", "status out", `Out in ${ROUND_NAME[out]}`) : el("span", "status alive-s", "Alive");
     c.append(top, el("span", "nm", t.name), el("span", "sub", CN_PLAYERS[id]), st);
     ctk.append(c);
-  });
-  // regions alive
-  const elim = eliminated(win); const ac = $("aliveCards"); ac.textContent = "";
-  ROOT_ORDER.forEach(k => {
-    const teams = Object.values(TEAMS).filter(t => t.home === k); const alive = teams.filter(t => !elim.has(t.id)).length;
-    const c = el("div", "card"); c.style.setProperty("--c", `var(${ROOTS[k].color})`);
-    const hh = el("h3", "card-h"); hh.append(zhSpan(k, " "), document.createTextNode(ROOTS[k].name)); c.append(hh);
-    c.append(el("div", "big", `${alive} / ${teams.length}`), el("div", "empty", alive ? "teams still alive" : "eliminated"));
-    ac.append(c);
-  });
-  // leaderboard
-  const rows = rankBrackets(E,win,Object.fromEntries(GAMES.map(g=>[g.id,POINTS[g.round]])));
-  const top = rows.slice(0, 10);
-  const meRow = rows.find(r => r.e.id === S.uid);
-  if (meRow && !top.includes(meRow)) top.push(meRow);
-  const canShow=N>=2;
-  $("boardEmpty").hidden=canShow;$("boardTable").hidden=!canShow;
-  $("boardModes").hidden=!S.simEntries.length;
-  document.querySelectorAll('[data-board]').forEach(b=>b.setAttribute('aria-selected',String(b.dataset.board===(S.boardMode||'entries'))));
-  $("lbSub").textContent = canShow ? `${fmt(N)} ${S.boardMode==='demo'?'simulated brackets':'entries'} · ${played?'Ties share a rank.':'Points begin when results are added.'}` : "A little friendly competition.";
-  $("boardScope").textContent=S.boardMode==='demo'?'Demo fans and results are simulated. They are separate from entered brackets.':'Local demo · Only entries saved in this browser appear here.';
-  if(!canShow)renderBoardEmpty(N,S.boardMode==='demo');
-  const ids = top.filter(r => !r.e.sim && !r.e.guest).map(r => r.e.id);
-  let ps = {};
-  if (S.user && ids.length) { try { ps = await S.user.profiles(ids); } catch (e) { ps = {}; } }
-  if(boardRequest!==S.boardRequest)return;
-  const tb = $("lb"); tb.textContent = "";
-  const podium=$("boardPodium");podium.textContent='';podium.hidden=!canShow||!played;
-  (canShow?top:[]).forEach((r,i) => {
-    const tr = el("tr"); if (r.e.id === S.uid) tr.className = "me";
-    const rank = r.rank;
-    const pn = (ps[r.e.id] && ps[r.e.id].name) || "";
-    const name = r.e.sim ? `Simulated fan ${r.e.n}` : r.e.guest ? (r.e.name || "Guest") : r.e.id === S.uid ? (pn ? `${pn} (you)` : "You") : (pn || "Someone");
-    const ch = r.e.picks["F6-0"] ? TEAMS[r.e.picks["F6-0"]] : null;
-    tr.append(el("td", "n", played?String(rank):'–'), el("td", null, name), el("td", null, ch ? ch.name : "–"),el('td','n',`${r.correct}/${played}`), el("td", "n", String(r.pts)));
-    tb.append(tr);
-    if(i<3&&played){const card=el('div','podium-place');card.append(el('span','podium-rank',`#${rank}`),el('b','',name),el('strong','',`${r.pts}`),el('small','','points'));podium.append(card);}
   });
   $("demo").hidden = !S.canEdit || !S.db;
   $("dSim").disabled = S.busy || played === 63; $("dReset").disabled = S.busy || !played;
@@ -591,7 +494,7 @@ $("dSim").addEventListener("click", () => demo(async () => {
 }, "Round simulated. The winners are under Results."));
 $("dReset").addEventListener("click", () => demo(() => S.db.doc("state/results").set({ winners: {}, updatedAt: new Date().toISOString() }), "Results cleared. Brackets are open again."));
 $("dFans").addEventListener("click", () => demo(async () => {
-  const opts = ["east", "south", "west", "midwest", "cn", "east", "south", "west", "midwest", "cn", ""];
+  const opts = ["cn", "cn", "", "", ""];
   const list = S.sims.map(x => typeof x === "string" ? x : (() => { const u = unpackSim(x); return u ? packSim(u.root, u.picks) : null; })()).filter(Boolean);
   const add = Math.min(1000, MAX_SIMS - list.length);
   for (let i = 0; i < add; i++) {
@@ -632,7 +535,6 @@ function localBackend() {
 
 // ---------- boot ----------
 initGuide();
-renderLegend();
 renderAll();
 (async () => {
   // Storage backend. localBackend() keeps everything in this browser.
