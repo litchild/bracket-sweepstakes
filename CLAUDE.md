@@ -84,7 +84,7 @@ knows nothing about March Madness or brackets). Put new source material from the
   logos (local SVGs in `images/brand/`, from Wikimedia Commons) as one link to https://www.bilibili.com/ in a new tab,
   and a "Student concept · Not affiliated" label always sits right beside them. Do not add the logos anywhere else
   (prize, Enter button, share cards), and keep the "Student concept" tag and the footer disclaimer. The look still
-  borrows the feel (black broadcast hero, red slashes, condensed italic headlines, a scrolling ticker,
+  borrows the feel (black broadcast hero, red slashes, condensed italic headlines,
   Bilibili-style gray canvas with white rounded cards).
 - **UI copy in English** (the audience is English-speaking), with Chinese characters for region names and the 中 badge.
 - **Original color palette.** Preserve the original repository's red, black, gray and white surfaces, cyan pick
@@ -160,7 +160,7 @@ knows nothing about March Madness or brackets). Put new source material from the
   and "Free to enter · Picks lock March 18" below on every screen size. Desktop adds a red "Make your picks" button.
   While picking on phones, the header shrinks to one "One shot to win 50,000 RMB" line and the decorative hoop is
   hidden so it never covers the prize. The fixed entry bar carries a red "Win 50,000 RMB" tag on every screen size,
-  the ticker leads with "Win 50,000 RMB", and the browser tab title starts with "One shot to win 50,000 RMB". Learn's
+  and the browser tab title starts with "One shot to win 50,000 RMB". Learn's
   "What is a bracket?" steps end with a red step 4, "Win 50,000 RMB". Never state which
   prize rule applies or mention the odds (see `docs/pitch-context.md`).
 - All website visits open My bracket, per the November 18 feedback. The compact mobile prize headline and bracket
@@ -183,6 +183,8 @@ knows nothing about March Madness or brackets). Put new source material from the
   the information button opens a keyboard-accessible native dialog with archived recent history and form, Chinese
   player context where applicable, and an external team information link. Profile access remains available when
   predictions are locked.
+- Removed on November 25, 2026: the "Bracket wire" ticker under the hero, and the 中 icon on bracket game rows (the
+  Chinese players helper tab, Results tracker and Results game rows keep it).
 - The "What is a seed?" key sits beside the round instruction ("Pick 8 winners.") and explains seeds, ⓘ and "NBA:".
   There is no color or icon legend and no home-region dots on team rows (removed November 25). One short line ("Tap
   who you think wins each game. How it works") sits under "Your bracket". "Clear all" appears only once there is a

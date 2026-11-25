@@ -9,7 +9,7 @@ const S = {
   db: null, user: null, uid: null, canEdit: false, dbState: "connecting",
   real: [], sims: [], simEntries: [], winners: {},
   entered: false, savedSig: null, busy: false,
-  guest: null, ownerSnap: null, resRound: null, tickerText: "",
+  guest: null, ownerSnap: null, resRound: null,
   round: 1, passOpen: false, seedOpen: false, fullBracket: true
 };
 const MAX_SIMS = 5000;
@@ -46,43 +46,6 @@ function fanTag(root, cnTeam) {
   return s;
 }
 
-// ---------- ticker ----------
-function tickerItems() {
-  const E = allEntries(), N = E.length, win = S.winners, items = [];
-  const last = latestRound(win);
-  if (last) {
-    const games = GAMES.filter(g => g.round === last && win[g.id]).map(g => { const [a, b] = cands(g, win); const w = TEAMS[win[g.id]], l = TEAMS[win[g.id] === a ? b : a]; return { w, l, d: w.seed - l.seed }; }).sort((x, y) => y.d - x.d).slice(0, 4);
-    games.forEach(x => items.push(`${ROUND_NAME[last]}: ${x.w.seed} ${x.w.name} beat ${x.l.seed} ${x.l.name}${x.d > 0 ? " (upset)" : ""}`));
-    const cnAlive = CN_IDS.filter(id => !lostIn(id, win)).length;
-    items.push(`${cnAlive} of ${CN_IDS.length} teams with Chinese players still alive`);
-    if (N) items.push(`${fmt(E.filter(e => isPerfect(e.picks, win)).length)} perfect brackets left`);
-  }
-  if (N) {
-    items.push(`${fmt(N)} brackets entered`);
-    const cnt = {}; E.forEach(e => { const c = e.picks["F6-0"]; if (c) cnt[c] = (cnt[c] || 0) + 1; });
-    const top = Object.entries(cnt).sort((a, b) => b[1] - a[1])[0];
-    if (top) items.push(`${pct(top[1], N)}% pick ${TEAMS[top[0]].name} to win it all`);
-    const cnFans = E.filter(e => e.root === "cn").length;
-    if (cnFans) items.push(`${fmt(cnFans)} fans rooting for Chinese players`);
-  }
-  items.push("Free to enter", "Picks lock March 18");
-  items.unshift("Win 50,000 RMB");
-  if (!last) items.push(`Chinese players to follow: ${CN_IDS.map(id => `${CN_PLAYERS[id]} (${TEAMS[id].name})`).join(", ")}`);
-  return items;
-}
-function renderTicker() {
-  const items = tickerItems(); const text = items.join("|");
-  if (text === S.tickerText) return;
-  S.tickerText = text;
-  const tr = $("tTrack"); tr.textContent = "";
-  for (let k = 0; k < 2; k++) {
-    const grp = el("span"); if (k) grp.setAttribute("aria-hidden", "true");
-    items.forEach(t => grp.append(el("span", null, t), el("b", null, "/")));
-    tr.append(grp);
-  }
-  tr.style.setProperty("--dur", `${Math.max(28, Math.round(text.length * 0.2))}s`);
-}
-
 // ---------- header ----------
 function renderLive() {
   const N = allEntries().length;
@@ -91,7 +54,6 @@ function renderLive() {
   if (S.dbState === "connecting") { $("liveN").textContent = "–"; $("liveL").textContent = "Connecting…"; }
   else if (S.dbState === "off") { $("liveN").textContent = "–"; $("liveL").textContent = "Shared entries unavailable here"; }
   else { $("liveN").textContent = fmt(N); $("liveL").textContent = `bracket${N === 1 ? "" : "s"} entered${S.simEntries.length ? ` · ${fmt(S.simEntries.length)} simulated` : ""}`; }
-  renderTicker();
 }
 
 // ---------- seed definition ----------
@@ -169,7 +131,6 @@ function teamBtn(g, tid, elim) {
   const hint = typeof alumniHint === "function" ? alumniHint(tid) : [];
   const name = el("span", "tn-wrap"); name.append(el("span", "tn", t.name)); if (hint.length) name.append(el("span", "tn-hint", `NBA: ${hint.join(", ")}`));
   b.append(el("span", "seed", String(t.seed)), teamLogo(tid), name);
-  if (CN_PLAYERS[tid]) b.append(cnBadge());
   const check=el('span','pick-check','✓');check.setAttribute('aria-hidden','true');b.append(check);
   b.disabled = locked();
   b.setAttribute("aria-label", `Pick ${t.name}, seed ${t.seed}`);
