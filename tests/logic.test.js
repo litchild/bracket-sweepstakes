@@ -75,8 +75,8 @@ test("changing an early pick clears later picks that depended on it", () => {
 });
 
 test("compact storage round-trips", () => {
-  for (const root of [...L.ROOT_ORDER, "cn", null]) {
-    const cn = root === "cn" ? "W2" : null;
+  for (const root of [...L.ROOT_ORDER, "cn", "star", null]) {
+    const cn = root === "cn" ? "W2" : root === "star" ? "W11" : null;
     const p = L.randomBracket(L.helperFor(root, cn));
     assert.strictEqual(L.encode(L.decode(L.encode(p))), L.encode(p));
     const u = L.unpackSim(L.packSim(root, p));
