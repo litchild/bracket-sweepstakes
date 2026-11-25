@@ -1,4 +1,4 @@
-// Page UI: rendering, auto-fill helper, pass-around entries, crowd, standings, demo controls.
+// Page UI: rendering, auto-fill helper, pass-around entries, crowd, standings, simulation controls.
 // Depends on globals from js/logic.js.
 
 
@@ -453,7 +453,7 @@ function renderStandings() {
   $("kGames").textContent = `${played} / 63`;
   const nr = GAMES.filter(g => !win[g.id] && cands(g, win).every(Boolean));
   $("kGamesL").textContent = played === 63 ? "Tournament complete" : `Next: ${nr.length ? ROUND_NAME[Math.min(...nr.map(g => g.round))] : "Round of 64"}`;
-  $("stSub").textContent = played ? `${played} of 63 games played · Demo results` : "No games played yet. Results appear here as games are played.";
+  $("stSub").textContent = played ? `${played} of 63 games complete · Simulated results` : "No games played yet. Results appear here as games are played.";
   // Chinese players tracker
   const ctk = $("cnTrack"); ctk.textContent = "";
   CN_IDS.forEach(id => {
@@ -464,7 +464,7 @@ function renderStandings() {
     c.append(top, el("span", "nm", t.name), el("span", "sub", CN_PLAYERS[id]), st);
     ctk.append(c);
   });
-  $("demo").hidden = !S.canEdit || !S.db;
+  $("simulationTools").hidden = !S.canEdit || !S.db;
   $("dSim").disabled = S.busy || played === 63; $("dReset").disabled = S.busy || !played;
   $("dFans").disabled = S.busy || S.sims.length >= MAX_SIMS; $("dNoFans").disabled = S.busy || !S.sims.length;
   $("dNoClass").disabled = S.busy || !classEntries().length;
@@ -480,20 +480,20 @@ function renderAllLocal() {
 function renderAll() { renderLive(); renderAllLocal(); }
 document.querySelectorAll(".tab").forEach(t => t.addEventListener("click", () => navigateTo(t.dataset.tab)));
 
-// ---------- demo controls ----------
-async function demo(fn, okMsg) {
+// ---------- simulation controls ----------
+async function runSimulationAction(fn, okMsg) {
   S.busy = true; renderStandings(); $("dMsg").textContent = ""; $("dMsg").className = "msg";
   try { await fn(); $("dMsg").textContent = okMsg; $("dMsg").className = "msg good"; }
   catch (e) { $("dMsg").textContent = "That didn’t save. Try again in a moment."; $("dMsg").className = "msg bad"; }
   S.busy = false; renderAll();
 }
-$("dSim").addEventListener("click", () => demo(async () => {
+$("dSim").addEventListener("click", () => runSimulationAction(async () => {
   S.resRound = null;
   const nx = nextRound(S.winners); if (!nx) return;
   await S.db.doc("state/results").set({ winners: nx.winners, updatedAt: new Date().toISOString() });
 }, "Round simulated. The winners are under Results."));
-$("dReset").addEventListener("click", () => demo(() => S.db.doc("state/results").set({ winners: {}, updatedAt: new Date().toISOString() }), "Results cleared. Brackets are open again."));
-$("dFans").addEventListener("click", () => demo(async () => {
+$("dReset").addEventListener("click", () => runSimulationAction(() => S.db.doc("state/results").set({ winners: {}, updatedAt: new Date().toISOString() }), "Results cleared. Brackets are open again."));
+$("dFans").addEventListener("click", () => runSimulationAction(async () => {
   const opts = ["cn", "cn", "", "", ""];
   const list = S.sims.map(x => typeof x === "string" ? x : (() => { const u = unpackSim(x); return u ? packSim(u.root, u.picks) : null; })()).filter(Boolean);
   const add = Math.min(1000, MAX_SIMS - list.length);
@@ -504,8 +504,8 @@ $("dFans").addEventListener("click", () => demo(async () => {
   }
   await S.db.doc("state/sims").set({ list, updatedAt: new Date().toISOString() });
 }, "Added 1,000 simulated fans."));
-$("dNoFans").addEventListener("click", () => demo(() => S.db.doc("state/sims").set({ list: [], updatedAt: new Date().toISOString() }), "Simulated fans removed."));
-$("dNoClass").addEventListener("click", () => demo(() => Promise.all(classEntries().map(e => S.db.doc("entries/" + e.id).delete())), "Pass-around entries removed."));
+$("dNoFans").addEventListener("click", () => runSimulationAction(() => S.db.doc("state/sims").set({ list: [], updatedAt: new Date().toISOString() }), "Simulated fans removed."));
+$("dNoClass").addEventListener("click", () => runSimulationAction(() => Promise.all(classEntries().map(e => S.db.doc("entries/" + e.id).delete())), "Pass-around entries removed."));
 
 // ---------- local storage backend ----------
 function localBackend() {

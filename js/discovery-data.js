@@ -83,7 +83,7 @@ NBA_ALUMNI.sort((a, b) => fameRank(a.id) - fameRank(b.id));
 // Twelve stars for the bracket's "NBA stars" auto-fill: recognizable names across different schools.
 const STAR_PICKS = ['893','201142','202681','1628369','203076','1628983','203954','201566','1630162','77142','165','202690'];
 // 2027 lottery watch: ESPN's top 14 (Jeremy Woo big board, November 5, 2026). Board ranks, not a mock draft.
-// team is the school's id in the 2026 demo field, or null for players outside college basketball.
+// team is the school's id in the 2026 tournament field, or null for players outside college basketball.
 const DRAFT_SOURCE='https://abc11.com/post/2027-nba-draft-big-board-rankings-top-100-prospects/20017483/';
 const DRAFT_WATCH = [
   [1,'Tyran Stokes','SF/PG','Kansas','Freshman','E4'],[2,'Stefan Joksimovic','PG','Baskonia','Pro club in Spain',null],
