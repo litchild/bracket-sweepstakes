@@ -78,7 +78,7 @@ Find a familiar face. Follow his college team.|找到熟悉的球星，看看他
 Featured alumni school connections|精选球星与母校
 NBA alumni. Your bracket follows each school’s current college team.|这些球星曾就读于这些大学。参赛的是学校本届的校队。
 Player, college or NBA team|球员、大学或NBA球队
-Try Jordan, Duke or Celtics|试试 Jordan、杜克或凯尔特人
+Try Jordan, Duke or Celtics|试试 Jordan、Duke或凯尔特人
 Explore a school|选择大学
 Show more players|查看更多球员
 See them in March.|三月看他们征战大学赛场，
@@ -259,10 +259,10 @@ Source: Jeremy Woo’s prospect board, November 5, 2026. Board ranks are project
 Source: Basketball Reference 2026 draft. Tournament runs from the official 2026 bracket.|选秀资料来自Basketball Reference。赛季战绩来自2026年官方对阵图。
 Profile →|球员资料 →
 Games →|查看比赛 →
-Michigan’s 2026 title|密歇根大学2026年夺冠
+Michigan’s 2026 title|Michigan 2026年夺冠
 One more win. One national champion.|再赢一场，捧起全国冠军奖杯。
 Ten threes. One upset.|十记三分，一场冷门。
-Oakland knocks out Kentucky in 2024.|2024年，奥克兰大学爆冷淘汰肯塔基大学。
+Oakland knocks out Kentucky in 2024.|2024年，Oakland爆冷淘汰Kentucky。
 Before the NBA: Curry|库里的大学时代
 Davidson’s 2008 run. A historical NCAA story.|回顾戴维森学院2008年的晋级之路。
 Watch official NCAA highlights ▶|观看NCAA官方集锦 ▶
@@ -334,69 +334,6 @@ Neimenggu, China|中国内蒙古
 Points / game|场均得分
 Blocks / game|场均盖帽
 Rebounds / game|场均篮板
-Duke|杜克大学
-Siena|锡耶纳学院
-Ohio State|俄亥俄州立大学
-TCU|得克萨斯基督教大学
-St. John’s|圣约翰大学
-Northern Iowa|北爱荷华大学
-Kansas|堪萨斯大学
-California Baptist|加州浸会大学
-Louisville|路易斯维尔大学
-South Florida|南佛罗里达大学
-Michigan State|密歇根州立大学
-North Dakota State|北达科他州立大学
-UCLA|加州大学洛杉矶分校
-UCF|中佛罗里达大学
-UConn|康涅狄格大学
-Furman|弗曼大学
-Arizona|亚利桑那大学
-LIU|长岛大学
-Villanova|维拉诺瓦大学
-Utah State|犹他州立大学
-Wisconsin|威斯康星大学
-High Point|海波因特大学
-Arkansas|阿肯色大学
-Hawaii|夏威夷大学
-BYU|杨百翰大学
-Texas|得克萨斯大学
-Gonzaga|冈萨加大学
-Kennesaw State|肯尼索州立大学
-Miami (FL)|迈阿密大学（佛州）
-Missouri|密苏里大学
-Purdue|普渡大学
-Queens|夏洛特皇后大学
-Florida|佛罗里达大学
-Prairie View A&M|普雷里维尤农工大学
-Clemson|克莱姆森大学
-Iowa|爱荷华大学
-Vanderbilt|范德堡大学
-McNeese|麦克尼斯州立大学
-Nebraska|内布拉斯加大学
-Troy|特洛伊大学
-North Carolina|北卡罗来纳大学
-VCU|弗吉尼亚联邦大学
-Illinois|伊利诺伊大学
-Saint Mary’s|圣玛丽学院
-Texas A&M|得克萨斯农工大学
-Houston|休斯敦大学
-Idaho|爱达荷大学
-Michigan|密歇根大学
-Howard|霍华德大学
-Georgia|佐治亚大学
-Saint Louis|圣路易斯大学
-Texas Tech|得克萨斯理工大学
-Akron|阿克伦大学
-Alabama|阿拉巴马大学
-Hofstra|霍夫斯特拉大学
-Tennessee|田纳西大学
-Miami (OH)|迈阿密大学（俄州）
-Virginia|弗吉尼亚大学
-Wright State|莱特州立大学
-Kentucky|肯塔基大学
-Santa Clara|圣克拉拉大学
-Iowa State|爱荷华州立大学
-Tennessee State|田纳西州立大学
 Boston Celtics|波士顿凯尔特人
 Golden State Warriors|金州勇士
 Los Angeles Lakers|洛杉矶湖人
@@ -426,28 +363,28 @@ Portland Trail Blazers|波特兰开拓者
 `.trim().split('\n').map(line=>line.split('|'))));
 Object.assign(ZH_COPY,Object.fromEntries(`
 Choose both semifinal winners to set the final.|先选出两场半决赛的胜者，再预测决赛。
-Kentucky was a No. 3 seed. Oakland was No. 14. A smaller seed number means a higher rank.|肯塔基是3号种子，奥克兰是14号。数字越小，排名越高。
-Oakland’s Jack Gohlke made 10 three-pointers. Hot shooting helped the No. 14 seed beat Kentucky, 80–76.|奥克兰的杰克·戈尔克投进10记三分，帮助14号种子以80比76爆冷击败肯塔基。
+Kentucky was a No. 3 seed. Oakland was No. 14. A smaller seed number means a higher rank.|Kentucky是3号种子，Oakland是14号。数字越小，排名越高。
+Oakland’s Jack Gohlke made 10 three-pointers. Hot shooting helped the No. 14 seed beat Kentucky, 80–76.|Oakland的杰克·戈尔克投进10记三分，帮助14号种子以80比76爆冷击败Kentucky。
 A seed is a ranking, not a promise. A lower-ranked winner is an upset.|种子号代表赛前排名。低排名球队击败强队，就叫「爆冷」。
-Purdue was a No. 1 seed. FDU was No. 16. Choose who you think advanced.|普渡是1号种子，费尔利·狄金森是16号。你觉得谁晋级了？
-FDU held Purdue to 58 points and won by five. Purdue’s tournament ended after this single game.|费尔利·狄金森只让普渡得到58分，以5分优势晋级。普渡就此出局。
+Purdue was a No. 1 seed. FDU was No. 16. Choose who you think advanced.|Purdue是1号种子，FDU是16号。你觉得谁晋级了？
+FDU held Purdue to 58 points and won by five. Purdue’s tournament ended after this single game.|FDU只让Purdue得到58分，以5分优势晋级。Purdue就此出局。
 Every round is knockout basketball. Your winner moves forward; the other team goes home.|每轮都是淘汰赛。胜者晋级，败者结束本届征程。
-Florida and Houston both won their regions. Each entered the tournament as a No. 1 seed.|佛罗里达和休斯敦都是赛区头号种子，也都拿到了赛区冠军。
-Florida rallied from 12 points down and forced turnovers on Houston’s final two possessions to win, 65–63.|佛罗里达一度落后12分，最后两次防守造成休斯敦失误，以65比63逆转夺冠。
+Florida and Houston both won their regions. Each entered the tournament as a No. 1 seed.|Florida和Houston都是赛区头号种子，也都拿到了赛区冠军。
+Florida rallied from 12 points down and forced turnovers on Houston’s final two possessions to win, 65–63.|Florida一度落后12分，最后两次防守造成Houston失误，以65比63逆转夺冠。
 Seeds belong to regions, so two No. 1 seeds can meet. Six straight wins make a champion.|每个赛区都有1号种子，所以两支头号种子也会交手。从64强起连赢六场即可夺冠。
-Duke was a No. 1 seed. UConn was No. 2. The winner would be one of the last four teams.|杜克是1号种子，康涅狄格是2号种子。胜者将闯进全国四强。
-UConn won 73–72 on Braylon Mullins’ late three-pointer. That one shot turned an Elite Eight game into a Final Four place.|布雷隆·穆林斯在终场前投进三分，帮助康涅狄格以73比72险胜，锁定四强席位。
+Duke was a No. 1 seed. UConn was No. 2. The winner would be one of the last four teams.|Duke是1号种子，UConn是2号种子。胜者将闯进全国四强。
+UConn won 73–72 on Braylon Mullins’ late three-pointer. That one shot turned an Elite Eight game into a Final Four place.|布雷隆·穆林斯在终场前投进三分，帮助UConn以73比72险胜，锁定四强席位。
 The Elite Eight has eight teams. Its four winners reach the Final Four.|八强赛有八支球队，获胜的四支球队晋级全国四强。
-Florida won the 2025 title and was a No. 1 seed in 2026. Iowa was No. 9.|佛罗里达是2025年的冠军，也是2026年的头号种子。爱荷华则是9号种子。
-Alvaro Folgueiras hit a three with 4.5 seconds left, putting Iowa ahead for a 73–72 win.|终场前4.5秒，阿尔瓦罗·福尔盖拉斯命中三分，爱荷华以73比72取胜。
+Florida won the 2025 title and was a No. 1 seed in 2026. Iowa was No. 9.|Florida是2025年的冠军，也是2026年的头号种子。Iowa则是9号种子。
+Alvaro Folgueiras hit a three with 4.5 seconds left, putting Iowa ahead for a 73–72 win.|终场前4.5秒，阿尔瓦罗·福尔盖拉斯命中三分，Iowa以73比72取胜。
 Every tournament starts fresh. Last year’s title cannot save a team from one loss.|每届赛事都从头开始，卫冕冠军也会因为一场失利而出局。
-Michigan and UConn had each won five games to reach this final. One more win would earn the title.|密歇根与康涅狄格各自连赢五场闯入决赛，距离冠军都只差一胜。
-Michigan held UConn to 30.9% shooting. Late free throws sealed the 69–63 championship win.|密歇根将对手的投篮命中率压到30.9%，并在最后时刻靠罚球锁定69比63的胜利。
+Michigan and UConn had each won five games to reach this final. One more win would earn the title.|Michigan与UConn各自连赢五场闯入决赛，距离冠军都只差一胜。
+Michigan held UConn to 30.9% shooting. Late free throws sealed the 69–63 championship win.|Michigan将UConn的投篮命中率压到30.9%，并在最后时刻靠罚球锁定69比63的胜利。
 Your champion needs a path through every round. Pick the team all the way to the final.|想让一支球队夺冠，就要从首轮起一路选它晋级。
-From Beijing to Purdue, via Georgetown Prep. Represented China at the 2025 U19 World Cup.|从北京到乔治城预备学校，再到普渡大学。他曾代表中国参加2025年U19世界杯。
-Played for China at the U17 and U19 World Cups. Joins Louisville from Veritas Academy in California.|曾代表中国参加U17和U19世界杯，从加州维里塔斯学院加盟路易斯维尔大学。
-A former Chinese high-school national champion. Joins Hawaii after two seasons at Seattle.|曾获中国高中篮球全国冠军。在西雅图大学效力两个赛季后加盟夏威夷大学。
-A Beijing native who began his college career at Manhattan. Now a senior with the LIU Sharks.|来自北京，在曼哈顿大学开启大学篮球生涯，现为长岛大学大四球员。
+From Beijing to Purdue, via Georgetown Prep. Represented China at the 2025 U19 World Cup.|从北京到乔治城预备学校，再到Purdue。他曾代表中国参加2025年U19世界杯。
+Played for China at the U17 and U19 World Cups. Joins Louisville from Veritas Academy in California.|曾代表中国参加U17和U19世界杯，从加州维里塔斯学院加盟Louisville。
+A former Chinese high-school national champion. Joins Hawaii after two seasons at Seattle.|曾获中国高中篮球全国冠军。在Seattle效力两个赛季后加盟Hawaii。
+A Beijing native who began his college career at Manhattan. Now a senior with the LIU Sharks.|来自北京，在Manhattan开启大学篮球生涯，现为LIU Sharks大四球员。
 all brackets|全部参赛预测
 2025 FIBA U19 World Cup|2025年国际篮联U19世界杯
 New to March Madness?|初识疯狂三月？
@@ -484,3 +421,6 @@ Zhang Boyuan|张博源
 Xinyi Li|李信仪
 Houran Dan|淡厚然
 `.trim().split('\n').map(line=>line.split('|'))));
+
+// Chinese school names. School names stay in English in both languages; team profiles show these beside them.
+const SCHOOL_ZH = {"Duke": "杜克大学", "Siena": "锡耶纳学院", "Ohio State": "俄亥俄州立大学", "TCU": "得克萨斯基督教大学", "St. John’s": "圣约翰大学", "Northern Iowa": "北爱荷华大学", "Kansas": "堪萨斯大学", "California Baptist": "加州浸会大学", "Louisville": "路易斯维尔大学", "South Florida": "南佛罗里达大学", "Michigan State": "密歇根州立大学", "North Dakota State": "北达科他州立大学", "UCLA": "加州大学洛杉矶分校", "UCF": "中佛罗里达大学", "UConn": "康涅狄格大学", "Furman": "弗曼大学", "Arizona": "亚利桑那大学", "LIU": "长岛大学", "Villanova": "维拉诺瓦大学", "Utah State": "犹他州立大学", "Wisconsin": "威斯康星大学", "High Point": "海波因特大学", "Arkansas": "阿肯色大学", "Hawaii": "夏威夷大学", "BYU": "杨百翰大学", "Texas": "得克萨斯大学", "Gonzaga": "冈萨加大学", "Kennesaw State": "肯尼索州立大学", "Miami (FL)": "迈阿密大学（佛州）", "Missouri": "密苏里大学", "Purdue": "普渡大学", "Queens": "夏洛特皇后大学", "Florida": "佛罗里达大学", "Prairie View A&M": "普雷里维尤农工大学", "Clemson": "克莱姆森大学", "Iowa": "爱荷华大学", "Vanderbilt": "范德堡大学", "McNeese": "麦克尼斯州立大学", "Nebraska": "内布拉斯加大学", "Troy": "特洛伊大学", "North Carolina": "北卡罗来纳大学", "VCU": "弗吉尼亚联邦大学", "Illinois": "伊利诺伊大学", "Saint Mary’s": "圣玛丽学院", "Texas A&M": "得克萨斯农工大学", "Houston": "休斯敦大学", "Idaho": "爱达荷大学", "Michigan": "密歇根大学", "Howard": "霍华德大学", "Georgia": "佐治亚大学", "Saint Louis": "圣路易斯大学", "Texas Tech": "得克萨斯理工大学", "Akron": "阿克伦大学", "Alabama": "阿拉巴马大学", "Hofstra": "霍夫斯特拉大学", "Tennessee": "田纳西大学", "Miami (OH)": "迈阿密大学（俄州）", "Virginia": "弗吉尼亚大学", "Wright State": "莱特州立大学", "Kentucky": "肯塔基大学", "Santa Clara": "圣克拉拉大学", "Iowa State": "爱荷华州立大学", "Tennessee State": "田纳西州立大学", "Penn": "宾夕法尼亚大学"};

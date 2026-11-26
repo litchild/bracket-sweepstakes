@@ -21,7 +21,8 @@ function locked() { return pilot.closed || Date.now() >= Date.parse(pilot.closes
 
 function el(tag, cls, text) { const e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
 function teamColor(t) { return `var(${ROOTS[t.home].color})`; }
-function cnBadge() { const b = el("span", "cnb", "中"); b.title = "Chinese player on the roster"; return b; }
+// translate="no" keeps browser page translation from turning 中 into "middle".
+function cnBadge() { const b = el("span", "cnb"), z = el("span", null, "中"); z.setAttribute("translate", "no"); b.append(z); b.title = "Chinese player on the roster"; return b; }
 function zhSpan(k, extra) { const z = el("span", "zh", ROOTS[k].zh + (extra || "")); z.style.setProperty("--c", `var(${ROOTS[k].color})`); return z; }
 function homeCount(k) { return Object.values(TEAMS).filter(t => t.home === k).length; }
 function isMine(tid) { if (S.root === "star") return tid === S.cnTeam; if (S.root === "cn") return tid in CN_PLAYERS; if (S.root && ROOTS[S.root]) return TEAMS[tid].home === S.root; return false; }
@@ -307,8 +308,8 @@ function renderCrowd() {
     const counts = crowd.games[g.id] || {};
     const na = counts[a] || 0, nb = counts[b] || 0, tot = na + nb;
     const box = el("div", "mu"); const row = el("div", "row");
-    const la = el("span"); la.append(el("b", null, tot ? `${pct(na, tot)}%` : "–"), document.createTextNode(` ${TEAMS[a].seed} ${TEAMS[a].name}${CN_PLAYERS[a] ? " 中" : ""}`));
-    const lb = el("span"); lb.append(document.createTextNode(`${TEAMS[b].seed} ${TEAMS[b].name}${CN_PLAYERS[b] ? " 中" : ""} `), el("b", null, tot ? `${pct(nb, tot)}%` : "–"));
+    const la = el("span"); la.append(el("b", null, tot ? `${pct(na, tot)}%` : "–"), document.createTextNode(` ${TEAMS[a].seed} ${TEAMS[a].name} `)); if (CN_PLAYERS[a]) la.append(cnBadge());
+    const lb = el("span"); if (CN_PLAYERS[b]) lb.append(cnBadge(), document.createTextNode(" ")); lb.append(document.createTextNode(`${TEAMS[b].seed} ${TEAMS[b].name} `), el("b", null, tot ? `${pct(nb, tot)}%` : "–"));
     row.append(la, lb);
     const sp = el("div", "split"); const ia = el("i", "a"), ib = el("i", "b");
     ia.style.width = tot ? `${na / tot * 100}%` : "0"; ib.style.width = tot ? `${nb / tot * 100}%` : "0"; sp.append(ia, ib);

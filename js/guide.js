@@ -33,6 +33,9 @@ function showTeamProfile(id) {
   addProfileTabs(body,id,'school');
   const head = el('div', 'profile-head');
   const names = el('div'); names.append(el('p', 'kicker', `#${t.seed} seed · ${BR[t.br].name} bracket`), el('h2', '', p.fullName)); names.lastChild.id = 'teamDialogTitle';
+  // School names stay in English everywhere else; the profile adds the Chinese name in both languages.
+  const zhName = typeof SCHOOL_ZH === 'object' && SCHOOL_ZH[t.name];
+  if (zhName) { const z = el('p', 'school-zh', zhName); z.lang = 'zh-CN'; z.setAttribute('translate', 'no'); names.append(z); }
   head.append(teamLogo(id), names); body.append(head);
   body.append(el('p','sub',t.seed<=4?'Top-four seed':t.seed>=12?'Underdog seed':'Middle seed'));
   const history = el('div', 'profile-records');

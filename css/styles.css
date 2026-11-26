@@ -1357,3 +1357,6 @@ html:lang(zh) .j-num { line-height:.9; }
 .admin details { margin:10px 0; padding:12px; background:var(--surface); }
 .admin #games { display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:0 14px; }
 .admin label select { display:block; width:100%; }
+
+/* Chinese school name under the English name in team profiles. */
+.school-zh { margin: 4px 0 0; font-family: var(--cjk); font-size: 15px; font-weight: 600; color: var(--muted); }
