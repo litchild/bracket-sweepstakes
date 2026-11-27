@@ -262,8 +262,10 @@ knows nothing about March Madness or brackets). Put new source material from the
   from 2026 tournament teams as cards with seed and a colored badge for the team's actual 2026 run (red for the title,
   cyan for the Final Four or final), a callout for the champion's picks, and links to the school's games.
   History: past brackets first, then the three highlight clips.
-  "Help me choose" in My bracket offers two tabs: NBA stars (12 star cards; default) and Chinese players, then "Quick
-  fill by seed". Never call any fill a draw or lottery.
+  "Help me choose" in My bracket offers three tabs (requested November 27, 2026): Random (default), NBA stars (12 star
+  cards) and Chinese players. Random says "If you just want to try your luck, use this button." with a "Fill randomly"
+  button (the seed-weighted random fill, which replaced the "Quick fill by seed" button). After a random fill the
+  helper stays open and a "↻ Fill again" button refills. Never call any fill a draw or lottery.
   The standalone Players tab, cards and introduction were removed at the user's request on November 15, 2026.
   Four verified player profiles remain connected to
   their school profiles through School/Player tabs in the same dialog. On phones this dialog is a bottom sheet

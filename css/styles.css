@@ -1360,3 +1360,8 @@ html:lang(zh) .j-num { line-height:.9; }
 
 /* Chinese school name under the English name in team profiles. */
 .school-zh { margin: 4px 0 0; font-family: var(--cjk); font-size: 15px; font-weight: 600; color: var(--muted); }
+
+/* Help me choose > Random: one clear fill button, then a refill button after a random fill. */
+.random-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.random-actions .btn { min-height: 48px; padding-left: 20px; padding-right: 20px; font-size: 15px; }
+.refill span { display: inline-block; margin-right: 2px; font-size: 17px; line-height: 1; }
