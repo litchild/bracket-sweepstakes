@@ -115,8 +115,11 @@ More stars and their schools →|查看更多球星和母校 →
 Choose a player's team as your champion. Edit any pick afterward.|选一位球员，让他的校队夺冠。生成后仍可逐场修改。
 How auto-fill works|自动预测规则
 Your chosen team wins every game. Other teams with Chinese players advance against teams without one. Other matchups use seed-weighted random picks.|你选的球队会一路夺冠。其他有中国球员的球队对阵没有中国球员的球队时优先晋级，其余比赛按种子排名随机选择。
-Quick fill by seed|按种子排名一键预测
-Fills all 63 games. Higher seeds win more often. Edit any game after.|一次生成63场预测，排名靠前的球队胜算更高。每场都可修改。
+Random|随机
+If you just want to try your luck, use this button.|只想试试手气？点这个按钮。
+Fill randomly|随机填写
+Fill again|再随机一次
+Fill randomly again|再随机填写一次
 16 teams per group. One reaches the Final Four.|每区16队，只有一队能晋级全国四强。
 Bracket regions|赛区
 What is a seed?|什么是种子排名？
@@ -162,7 +165,7 @@ The entry deadline has passed.|提交时间已截止。
 Use a nickname of 1 to 32 characters.|昵称长度须为1至32个字符。
 Could not save. Check your connection and try again.|提交失败，请检查网络后重试。
 Help me choose|帮我选队
-Start from an NBA star or a Chinese player.|从NBA球星或中国球员开始。
+Fill randomly, or start from an NBA star or a Chinese player.|随机填写，或从NBA球星、中国球员开始。
 To be picked|待选
 East|东区
 West|西区
@@ -182,7 +185,7 @@ The percentage of brackets picking each team to advance.|各队的支持率按�
 NBA star’s school|球星母校
 Own picks|自主选择
 Upcoming|待赛
-Quick-filled by seed|已按种子排名自动预测
+Filled randomly|已随机填写
 Edit any pick below.|点选下方球队即可修改。
 Your earlier winners become the teams here.|先选出上一轮的胜者，就能看到本轮对阵。
 Finish the previous round →|完成上一轮 →

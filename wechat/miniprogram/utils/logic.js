@@ -45,7 +45,9 @@ function helperFor(root, cnTeam) {
 // Chinese-player rule: your chosen team wins every game; other Chinese-player teams beat everyone else.
 // NBA-star rule: the star's college team wins every game.
 // Every other matchup is a coin flip weighted by seed.
+// Pure coin flip ({ coin: true }, the website's "Fill randomly"): every game is 50/50, whatever the seeds.
 function winProb(a, b, h) {
+  if (h && h.coin) return 0.5;
   if (h && h.team) {
     if (a === h.team) return 1;
     if (b === h.team) return 0;

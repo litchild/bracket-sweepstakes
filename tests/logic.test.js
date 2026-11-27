@@ -74,6 +74,19 @@ test("changing an early pick clears later picks that depended on it", () => {
   assert.ok(L.countPicks(q) < 63);
 });
 
+test("coin flip fill: every game is 50/50, whatever the seeds", () => {
+  assert.strictEqual(L.winProb("E1", "E16", { coin: true }), 0.5);
+  let upsets = 0, games = 0, longShots = 0;
+  for (let i = 0; i < N; i++) {
+    const p = L.randomBracket({ coin: true });
+    assert.strictEqual(L.countPicks(p), 63);
+    for (const g of L.GAMES.filter(g => g.round === 1)) { games++; if (L.TEAMS[p[g.id]].seed > Math.min(...L.cands(g, p).map(t => L.TEAMS[t].seed))) upsets++; }
+    if (L.TEAMS[p["F6-0"]].seed >= 9) longShots++;
+  }
+  assert.ok(Math.abs(upsets / games - 0.5) < 0.03, `first-round upset share ${upsets / games}`);
+  assert.ok(longShots > N * 0.3, "low seeds win the title often under a coin flip");
+});
+
 test("compact storage round-trips", () => {
   for (const root of [...L.ROOT_ORDER, "cn", "star", null]) {
     const cn = root === "cn" ? "W2" : root === "star" ? "W11" : null;

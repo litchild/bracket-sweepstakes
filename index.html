@@ -123,10 +123,18 @@
           </button>
           <div class="helper-body" id="helperBody" hidden>
             <div class="seg" role="tablist" id="helperSeg" aria-label="Ways to fill your bracket">
+              <button role="tab" data-h="random">Random</button>
               <button role="tab" data-h="nba">NBA stars</button>
               <button role="tab" data-h="cn"><span class="cnb"><span translate="no">中</span></span>Chinese players</button>
             </div>
-            <div id="hNba" class="helper-body" style="padding:0">
+            <div id="hRandom" class="helper-body" style="padding:0">
+              <p class="rule">If you just want to try your luck, use this button.</p>
+              <div class="random-actions">
+                <button class="btn quick-fill" id="btnSeed" type="button">Fill randomly</button>
+                <button class="btn ghost refill" id="btnRefill" type="button" aria-label="Fill randomly again" hidden><span aria-hidden="true">↻</span> Fill again</button>
+              </div>
+            </div>
+            <div id="hNba" class="helper-body" style="padding:0" hidden>
               <p class="rule"><b>NBA fan?</b> Pick a star you know. His college team wins every game, and seeds decide the rest.</p>
               <div class="opts star-opts" id="starOpts"></div>
               <button class="link" type="button" data-discover-go="nba">More stars and their schools →</button>
@@ -136,7 +144,6 @@
               <details class="rule"><summary>How auto-fill works</summary><p>Your chosen team wins every game. Other teams with Chinese players advance against teams without one. Other matchups use seed-weighted random picks.</p></details>
               <div class="opts" id="cnOpts"></div>
             </div>
-            <button class="btn quick-fill" id="btnSeed" type="button">Quick fill by seed</button><p class="sub">Fills all 63 games. Higher seeds win more often. Edit any game after.</p>
           </div>
         </div>
 
