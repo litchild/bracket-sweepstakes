@@ -164,7 +164,9 @@ knows nothing about March Madness or brackets). Put new source material from the
 - Root for an NBA star's school (added November 25, 2026): the fan picks one of 12 NBA stars. The star's college
   team wins every game; every other game is a seed-weighted coin flip. Stored as `root: "star"`, the school id in
   `cnTeam` and the NBA player id in `star`.
-- Random by seed ("Quick fill by seed"): seed-weighted coin flips everywhere.
+- Fill randomly (requested November 27, 2026): a pure coin flip, every game 50/50 whatever the seeds
+  (`randomBracket({ coin: true })`, stored as `mode: "random"`). Older drafts with `mode: "seed"` keep the
+  seed-weighted reshuffle.
 - Scoring: `POINTS` and `score()` (10, 20, 40, 80, 160, 320 per correct pick, max 1,920) stay in `logic.js` for the
   WeChat app, the Concept Lab and tests. The website shows no points or leaderboard since November 25, 2026.
 - Brackets lock once any result exists.
@@ -264,7 +266,7 @@ knows nothing about March Madness or brackets). Put new source material from the
   History: past brackets first, then the three highlight clips.
   "Help me choose" in My bracket offers three tabs (requested November 27, 2026): Random (default), NBA stars (12 star
   cards) and Chinese players. Random says "If you just want to try your luck, use this button." with a "Fill randomly"
-  button (the seed-weighted random fill, which replaced the "Quick fill by seed" button). After a random fill the
+  button (a pure 50/50 coin flip per game; it replaced the "Quick fill by seed" button). After a random fill the
   helper stays open and a "↻ Fill again" button refills. Never call any fill a draw or lottery.
   The standalone Players tab, cards and introduction were removed at the user's request on November 15, 2026.
   Four verified player profiles remain connected to

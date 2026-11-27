@@ -61,16 +61,18 @@ function helperSummary() {
   if (S.root === "cn" && S.cnTeam) { const t = TEAMS[S.cnTeam]; return { title: `${t.name} is your champion`, sub: `${CN_PLAYERS[S.cnTeam]} · Edit any pick below.` }; }
   if (S.root && ROOTS[S.root]) { const r = ROOTS[S.root]; return { title: `Rooting for ${r.zh} ${r.name}`, sub: "Bracket filled. Edit any pick below." }; }
   if (S.root === "star" && S.cnTeam) { const t = TEAMS[S.cnTeam], p = NBA_ALUMNI.find(x => x.id === S.star); return { title: `${t.name} is your champion`, sub: `${p ? `${p.name}’s school` : "Your star’s school"} wins every game. Edit any pick below.` }; }
-  if (S.mode === "seed") return { title: "Filled randomly", sub: "Edit any pick below." };
+  if (S.mode === "random" || S.mode === "seed") return { title: "Filled randomly", sub: "Edit any pick below." };
   return { title: "Help me choose", sub: "Fill randomly, or start from an NBA star or a Chinese player." };
 }
+// "Fill randomly" is a pure coin flip; older drafts filled by seed reshuffle by seed.
+function fillRule() { return S.mode === "random" ? { coin: true } : helperFor(S.root, S.cnTeam); }
 function fillWith(root, cnTeam, star) {
   if (locked()) return;
-  track("fill",root || "seed");
+  track("fill",root || "random");
   const team = root === "cn" || root === "star";
   S.root = root; S.cnTeam = team ? cnTeam : null; S.star = root === "star" ? star : null;
-  S.mode = root === "cn" ? "cn" : root === "star" ? "star" : root ? "region" : "seed";
-  S.picks = randomBracket(helperFor(S.root, S.cnTeam));
+  S.mode = root === "cn" ? "cn" : root === "star" ? "star" : root ? "region" : "random";
+  S.picks = randomBracket(fillRule());
   // A random fill keeps the helper open so "Fill again" stays in reach; team fills close it.
   S.helpOpen = !root && S.helpOpen; S.round = 1;
   if (team && cnTeam) S.br = TEAMS[cnTeam].br;
@@ -83,11 +85,11 @@ function renderHelper() {
   bar.setAttribute("aria-expanded", String(S.helpOpen && !locked())); bar.disabled = locked();
   if (locked()) $("hbSub").textContent = "The entry deadline has passed.";
   $("helperBody").hidden = !S.helpOpen || locked();
-  $("btnShuffle").hidden = !(S.root || S.mode === "seed") || locked();
+  $("btnShuffle").hidden = !(S.root || S.mode === "random" || S.mode === "seed") || locked();
   $("btnClear").disabled = locked(); $("btnClear").hidden = !countPicks(S.picks);
   document.querySelectorAll("#helperSeg button").forEach(b => b.setAttribute("aria-selected", String(b.dataset.h === S.helpTab)));
   $("hRandom").hidden = S.helpTab !== "random"; $("hNba").hidden = S.helpTab !== "nba"; $("hCn").hidden = S.helpTab !== "cn";
-  $("btnRefill").hidden = !(S.mode === "seed" && !S.root && countPicks(S.picks) === 63) || locked();
+  $("btnRefill").hidden = !(S.mode === "random" && !S.root && countPicks(S.picks) === 63) || locked();
   if (!S.helpOpen) return;
   const so = $("starOpts"); so.textContent = "";
   STAR_PICKS.forEach(pid => {
@@ -113,7 +115,7 @@ $("helperBar").addEventListener("click", () => { if (locked()) return; S.helpOpe
 document.querySelectorAll("#helperSeg button").forEach(b => b.addEventListener("click", () => { S.helpTab = b.dataset.h; renderHelper(); }));
 $("btnSeed").addEventListener("click", () => fillWith(null, null));
 $("btnRefill").addEventListener("click", () => fillWith(null, null));
-$("btnShuffle").addEventListener("click", () => { if (locked()) return; S.picks = randomBracket(helperFor(S.root, S.cnTeam)); saveDraft(); renderAllLocal(); });
+$("btnShuffle").addEventListener("click", () => { if (locked()) return; S.picks = randomBracket(fillRule()); saveDraft(); renderAllLocal(); });
 $("btnClear").addEventListener("click", () => { if (locked()) return; S.picks = {}; S.root = null; S.cnTeam = null; S.star = null; S.mode = "manual"; S.br = "E"; S.round = 1; saveDraft(); renderAllLocal(); });
 
 // ---------- bracket ----------
