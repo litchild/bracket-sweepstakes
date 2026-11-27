@@ -2,6 +2,9 @@
 
 The public pilot on the existing Netlify project supersedes the older prototype notes below.
 The root opens in Simplified Chinese. The top-right switch offers US English. The friends prize is 500 RMB.
+School names stay in English in both languages (requested November 27, 2026); `SCHOOL_ZH` in `js/zh-dictionary.js`
+holds each school's Chinese name, shown under the English name in its team profile. Never add school names to
+`ZH_COPY`. The 中 badge carries `translate="no"` so browser page translation leaves it alone.
 Entries close at 2026-12-03 00:00 Asia/Shanghai. Drafts stay in the browser. Submitted entries go to
 a site-wide Netlify Blobs store via the same-origin pilot function. A random browser credential owns an
 entry. The leaderboard awards one point per correct game and uses competition ranking for ties.
